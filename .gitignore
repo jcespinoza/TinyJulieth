@@ -1,0 +1,10 @@
+julieth
+*.o
+bin/*
+obj/*
+lexer.cpp
+parser.cpp
+*.output
+tokens.h
+main.S
+genexe
