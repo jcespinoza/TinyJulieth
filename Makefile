@@ -47,3 +47,4 @@ clean:
 	rm -f $(TARGET)
 	rm -f main.S
 	rm -f genexe
+	rm -f lexmain

@@ -1,0 +1,41 @@
+#ifndef TOKENSL_H
+#define TOKENSL_H
+
+#define OP_INCREMENT 1000
+#define OP_DECREMENT 1001
+#define OP_GEQUAL 1002
+#define OP_LEQUAL 1003
+#define OP_EQUALS 1004
+#define OP_NEQUAL 1005
+#define OP_GTHAN 1006
+#define OP_LTHAN 1007
+
+#define OP_POWER 1008
+
+#define KW_IF 1009
+#define KW_FOR 1010
+#define KW_ELSE 1011
+#define KW_PRINT 1012
+#define KW_WHILE 1013
+#define TK_STRING 1014
+#define TK_NUMBER 1015
+#define TK_ID 1016
+#define TK_ERROR 1017
+#define TK_NEWLINE 1018
+#define TK_COLONS 1019
+#define OP_ASHIFTL 1020
+#define OP_ASHIFTR 1021
+#define KW_FUNCTION 1022
+#define KW_END 1023
+#define KW_RETURN 1024
+#define KW_ELSEIF 1025
+#define OP_LOGAND 1026
+#define OP_LOGOR 1027
+#define KW_BREAK 1028
+#define KW_CONTINUE 1029
+#define KW_LOCAL 1030
+#define KW_GLOBAL 1031
+#define KW_BOOL 1032
+#define KW_INT32 1033
+
+#endif
