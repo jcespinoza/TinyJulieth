@@ -1,7 +1,7 @@
 TARGET=julieth
-EXPR_PARSER_SRC=expr_parser.cpp
-EXPR_LEXER_SRC=expr_lexer.cpp
-SRCFILES=$(EXPR_PARSER_SRC) $(EXPR_LEXER_SRC) ast.cpp main.cpp
+PARSER_SRC=grammar.cpp
+LEXER_SRC=lexer.cpp
+SRCFILES=$(PARSER_SRC) $(LEXER_SRC) ast.cpp main.cpp
 OBJ_FILES=${SRCFILES:.cpp=.o}
 .PHONY: clean
 .SUFFIXES:
@@ -9,10 +9,10 @@ OBJ_FILES=${SRCFILES:.cpp=.o}
 $(TARGET): $(OBJ_FILES)
 	g++ -g -o $@ $(OBJ_FILES)
 
-$(EXPR_LEXER_SRC): lexer.l
+$(LEXER_SRC): lexer.l
 	flex -o $@ $^
 
-$(EXPR_PARSER_SRC): parser.y
+$(PARSER_SRC): grammar.y
 	bison -rall --defines=tokens.h -o $@ $<
 
 %.o:%.cpp
@@ -20,6 +20,12 @@ $(EXPR_PARSER_SRC): parser.y
 
 run: $(TARGET)
 	./$(TARGET) input1.txt > main.S
+
+lexmain:  lexer.l
+	flex -o lexer.cpp $^
+	g++ -std=c++11 -g -c -o lexer.o lexer.cpp
+	g++ -std=c++11 -g -c -o lexmain.o lexmain.cpp
+	g++ -g -o lexmain lexmain.o lexer.o
 
 main.S: $(TARGET)
 	./$(TARGET) input1.txt > $@
@@ -34,7 +40,7 @@ exe: compile
 	./genexe
 
 clean:
-	rm -f $(EXPR_PARSER_SRC) $(EXPR_LEXER_SRC)
+	rm -f $(PARSER_SRC) $(LEXER_SRC)
 	rm -f *.o
 	rm -f tokens.h
 	rm -f *.output

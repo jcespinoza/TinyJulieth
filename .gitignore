@@ -8,3 +8,4 @@ parser.cpp
 tokens.h
 main.S
 genexe
+lexmain

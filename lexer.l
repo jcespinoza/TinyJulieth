@@ -11,9 +11,11 @@ letter [_a-zA-Z]
 %x comments
 
 %%
-[ \t\n]	{ /* Nada */ }
+
+[ \t]	{ /* Nada */ }
 "#="         { BEGIN(comments); }
-"#".*\n     { /* ignore */ }
+"#".*\n      { /* ignore */ }
+\n    { return TK_NEWLINE; }
 "++"  { return OP_INCREMENT; }
 "--"  { return OP_DECREMENT; }
 ">="  { return OP_GEQUAL; }
@@ -43,12 +45,14 @@ letter [_a-zA-Z]
         char* newText = new char[strlen(yytext)-1];
         strncpy(newText, &yytext[1], strlen(yytext)-2);
 
-        yylval.string_t = strdup(newText);
+        //yylval.string_t = strdup(newText);
 
         return TK_STRING;
       }
-[0-9]+	{ yylval.string_t = strdup(yytext); return TK_NUMBER; }
-{letter}({letter}|[0-9])* { yylval.string_t = strdup(yytext); return TK_ID; }
+[0-9]+	{ //yylval.string_t = strdup(yytext);
+      return TK_NUMBER; }
+{letter}({letter}|[0-9])* { //yylval.string_t = strdup(yytext);
+      return TK_ID; }
 .		{ return TK_ERROR; }
 
 <comments>"=#" { BEGIN(INITIAL); }
