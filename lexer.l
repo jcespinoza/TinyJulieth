@@ -13,8 +13,9 @@ letter [_a-zA-Z]
 %%
 
 [ \t]	{ /* Nada */ }
-"#="         { BEGIN(comments); }
-"#".*\n      { /* ignore */ }
+#=         { BEGIN(comments); }
+#[^=][^\n]*\n      { /* ignore */ }
+#\n   { /* ignore */ }
 \n    { return TK_NEWLINE; }
 "++"  { return OP_INCREMENT; }
 "--"  { return OP_DECREMENT; }
@@ -55,7 +56,7 @@ letter [_a-zA-Z]
       return TK_ID; }
 .		{ return TK_ERROR; }
 
-<comments>"=#" { BEGIN(INITIAL); }
+<comments>=# { BEGIN(INITIAL); }
 <comments>.|\n { /* NADA */ }
 <comments><<EOLF>> { printf("Line %d: Unmatched block comment\n", yylineno); return 0; }
 
