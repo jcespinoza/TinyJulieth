@@ -17,11 +17,9 @@ letter [_a-zA-Z]
 #=                    { BEGIN(comments); }
 #[^=][^\n]*[\r]?\n    { unput('\n'); }
 \r\n                  {
-                        //printf("Matched this shit. Length:%d \n", yyleng);
                         //return TK_NEWLINE;
                       }
 \n                    {
-                        //printf("Matched this other shit. Length:%d \n", yyleng);
                         //return TK_NEWLINE;
                       }
 ">="                  { return OP_GEQUAL; }
@@ -87,10 +85,10 @@ letter [_a-zA-Z]
 {letter}({letter}|[0-9])* { //yylval.string_t = strdup(yytext);
                         return TK_ID;
                       }
-<INITIAL><<EOF>>      { printf("I think I got here\n"); return 0; }
-.                     { printf("Returning an error\n"); return TK_ERROR; }
+<INITIAL><<EOF>>      { return 0; }
+.                     { return TK_ERROR; }
 
-<comments>=#          { BEGIN(INITIAL); printf("Back to initial\n"); }
+<comments>=#          { BEGIN(INITIAL); }
 <comments>.|\n        { /* NADA */ }
 <comments><<EOF>>     { fprintf(stderr, "Line %d: Unmatched block comment\n", yylineno); return 0; }
 

@@ -68,8 +68,23 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %debug
 %%
 
-root: ':' { YYTRACE("Yeap, all good\n"); }
-	| %empty { YYTRACE("empty file, yep\n"); }
+root: opt_statements { YYTRACE("Matched a list of optional statements\n"); }
+	//':' { YYTRACE("Yeap, all good\n"); }
+	//| %empty { YYTRACE("empty file, yep\n"); }
+;
+
+opt_statements: statement_list { }
+	| %empty { }
+;
+
+statement_list: statement statement_list { }
+	| statement { }
+;
+
+statement: assign_statement { }
+;
+
+assign_statement: TK_ID TK_COLONS '=' TK_NUMBER ';' { }
 ;
 
 %%
