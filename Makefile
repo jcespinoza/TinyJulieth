@@ -13,7 +13,7 @@ $(LEXER_SRC): lexer.l
 	flex -o $@ $^
 
 $(PARSER_SRC): grammar.y
-	bison -rall -t --debug --verbose -Dparse.trace --defines=tokens.h -o $@ $<
+	bison -rall -t --defines=tokens.h -o $@ $<
 
 %.o:%.cpp
 	g++ -std=c++11 -g -c -o $@ $<

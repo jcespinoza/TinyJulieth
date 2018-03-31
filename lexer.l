@@ -4,7 +4,7 @@
 
 %{
 #include <stdio.h>
-#include "tokensl.h"
+#include "tokens.h"
 %}
 
 letter [_a-zA-Z]
@@ -17,17 +17,17 @@ letter [_a-zA-Z]
 #=                    { BEGIN(comments); }
 #[^=][^\n]*[\r]?\n    { unput('\n'); }
 \r\n                  {
-                        //return TK_NEWLINE;
+                        return TK_NEWLINE;
                       }
 \n                    {
-                        //return TK_NEWLINE;
+                        return TK_NEWLINE;
                       }
 ">="                  { return OP_GEQUAL; }
 "<="                  { return OP_LEQUAL; }
 "=="                  { return OP_EQUALS; }
 "!="                  { return OP_NEQUAL; }
-">"                   { return OP_GTHAN; }
-"<"                   { return OP_LTHAN; }
+">"                   { return '>'; }
+"<"                   { return '<'; }
 "<<"                  { return OP_ASHIFTL; }
 ">>"                  { return OP_ASHIFTR; }
 "+"                   { return '+'; }
@@ -59,6 +59,7 @@ letter [_a-zA-Z]
 "else"                { return KW_ELSE; }
 "elseif"              { return KW_ELSEIF; }
 "print"               { return KW_PRINT; }
+"println"               { return KW_PRINTLN; }
 "while"               { return KW_WHILE; }
 "Bool"                { return KW_BOOL; }
 "Int32"               { return KW_INT32; }
@@ -83,9 +84,9 @@ letter [_a-zA-Z]
                         return TK_NUMBER;
                       }
 {letter}({letter}|[0-9])* { //yylval.string_t = strdup(yytext);
-                        return TK_ID;
+                        return TK_IDENTIFIER;
                       }
-<INITIAL><<EOF>>      { return 0; }
+<INITIAL><<EOF>>      { unput('\n'); return 0; }
 .                     { return TK_ERROR; }
 
 <comments>=#          { BEGIN(INITIAL); }
