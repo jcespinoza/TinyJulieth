@@ -3,12 +3,13 @@
 #include <set>
 #include <string>
 #include "ast.h"
+#include "tokens.h"
 
 using namespace std;
 
 extern FILE *yyin;
 extern int yylineno;
-extern char* yytext;
+extern int errors;
 
 int yylex();
 
@@ -23,12 +24,10 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "Cannot open input file '%s'\n", argv[1]);
 		return 2;
 	}
+	errors = 0;
 	yylineno = 1;
 
-	int tokenCode;
-  while((tokenCode = yylex())){
-    printf("Code: %d Input:%s", tokenCode, yytext);
-  }
-
-  return 0;
+	yyparse();
+  
+  return errors > 0;
 }

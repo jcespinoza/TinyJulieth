@@ -4,6 +4,7 @@ bin/*
 obj/*
 lexer.cpp
 parser.cpp
+grammar.cpp
 *.output
 tokens.h
 main.S

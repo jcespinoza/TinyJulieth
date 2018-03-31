@@ -1,4 +1,5 @@
 %option noyywrap
+%option yylineno
 %option nodefault
 
 %{
@@ -14,9 +15,15 @@ letter [_a-zA-Z]
 
 [ \t]                 { /* Nada */ }
 #=                    { BEGIN(comments); }
-#[^=][^\n]*\n         { /* ignore */ }
-#\n                   { /* ignore */ }
-\n                    { return TK_NEWLINE; }
+#[^=][^\n]*[\r]?\n    { unput('\n'); }
+\r\n                  {
+                        //printf("Matched this shit. Length:%d \n", yyleng);
+                        //return TK_NEWLINE;
+                      }
+\n                    {
+                        //printf("Matched this other shit. Length:%d \n", yyleng);
+                        //return TK_NEWLINE;
+                      }
 ">="                  { return OP_GEQUAL; }
 "<="                  { return OP_LEQUAL; }
 "=="                  { return OP_EQUALS; }
@@ -74,16 +81,17 @@ letter [_a-zA-Z]
                         return TK_STRING;
                       }
 [0-9]+                {
-                        //yylval.string_t = strdup(yytext);
+                        //yylval.int_t = strdup(yytext);
                         return TK_NUMBER;
                       }
 {letter}({letter}|[0-9])* { //yylval.string_t = strdup(yytext);
                         return TK_ID;
                       }
-.                     { return TK_ERROR; }
+<INITIAL><<EOF>>      { printf("I think I got here\n"); return 0; }
+.                     { printf("Returning an error\n"); return TK_ERROR; }
 
-<comments>=#          { BEGIN(INITIAL); }
+<comments>=#          { BEGIN(INITIAL); printf("Back to initial\n"); }
 <comments>.|\n        { /* NADA */ }
-<comments><<EOLF>>    { fprintf(stderr, "Line %d: Unmatched block comment\n", yylineno); return 0; }
+<comments><<EOF>>     { fprintf(stderr, "Line %d: Unmatched block comment\n", yylineno); return 0; }
 
 %%

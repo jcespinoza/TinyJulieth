@@ -1,4 +1,9 @@
 #ifndef AST_H
 #define AST_H
 
+class Expression{
+public:
+
+};
+
 #endif
