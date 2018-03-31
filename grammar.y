@@ -24,7 +24,7 @@ using namespace std;
 
 #define YYERROR_VERBOSE 1
 #define YYDEBUG 1
-#define YYTRACE(str) fprintf(stderr, " <Yacc>%s", str);
+#define YYTRACE(str) fprintf(stderr, " ___%s", str);
 
 static void yyprint (FILE* file, int type, YYSTYPE value)
 {
@@ -72,8 +72,8 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %debug
 %%
 
-root: opt_newlines statement_list { YYTRACE("Matched a list of optional statements\n"); }
-	| opt_newlines { YYTRACE("Matched an empty file, possibly with comments\n"); }
+root: opt_newlines statement_list { YYTRACE("PASSED: File with Statements\n"); }
+	| opt_newlines { YYTRACE("PASSED: Empty File\n"); }
 ;
 
 opt_newlines: newlines { }
