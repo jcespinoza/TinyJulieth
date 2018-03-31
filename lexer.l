@@ -38,7 +38,7 @@ letter [_a-zA-Z]
 "/"                   { return '/'; }
 "("                   { return '('; }
 ")"                   { return ')'; }
-";"                   { return ';'; }
+";"                   { return TK_NEWLINE; }
 "="                   { return '='; }
 "{"                   { return '{'; }
 "}"                   { return '}'; }
@@ -62,7 +62,7 @@ letter [_a-zA-Z]
 "println"               { return KW_PRINTLN; }
 "while"               { return KW_WHILE; }
 "Bool"                { return KW_BOOL; }
-"Int32"               { return KW_INT32; }
+"Int"               { return KW_INT; }
 "function"            { return KW_FUNCTION; }
 "end"                 { return KW_END; }
 "return"              { return KW_RETURN; }

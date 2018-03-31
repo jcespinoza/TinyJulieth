@@ -51,7 +51,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token OP_LOGAND OP_LOGOR OP_POWER
 %token OP_ASHIFTL OP_ASHIFTR
 %token KW_IF KW_FOR KW_ELSE KW_ELSEIF KW_PRINT KW_PRINTLN KW_WHILE KW_BOOL
-%token KW_INT32 KW_FUNCTION KW_END KW_RETURN KW_BREAK KW_CONTINUE
+%token KW_INT KW_FUNCTION KW_END KW_RETURN KW_BREAK KW_CONTINUE
 %token KW_LOCAL KW_GLOBAL
 %token TK_ERROR TK_NEWLINE
 
@@ -72,7 +72,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %debug
 %%
 
-root: opt_newlines statement_list opt_newlines { YYTRACE("Matched a list of optional statements\n"); }
+root: opt_newlines statement_list { YYTRACE("Matched a list of optional statements\n"); }
 	| opt_newlines { YYTRACE("Matched an empty file, possibly with comments\n"); }
 ;
 
@@ -84,8 +84,11 @@ newlines: TK_NEWLINE newlines { }
 	| TK_NEWLINE { }
 ;
 
-statement_list: statement ';' statement_list { }
-	| statement { }
+statement_list: statement_nl statement_list { }
+	| statement_nl { }
+;
+
+statement_nl: statement newlines { }
 ;
 
 statement: assign_statement { }
@@ -95,7 +98,7 @@ statement: assign_statement { }
 assign_statement: TK_IDENTIFIER TK_COLONS assert_type '=' expression { }
 ;
 
-assert_type: KW_INT32 { }
+assert_type: KW_INT { }
 	| KW_BOOL { }
 ;
 
@@ -133,6 +136,7 @@ term: factor '/' term { /* $$ = new DivExpression($1, $3); */ }
 ;
 
 factor: TK_NUMBER { /* $$ = new NumExpression($1); */ }
+| '-' factor { }
 | TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
 | '(' expression ')' { /* $$ = $2; */ }
 ;

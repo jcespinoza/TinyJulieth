@@ -30,6 +30,12 @@ lexmain:  lexer.l
 main.S: $(TARGET)
 	./$(TARGET) input1.txt > $@
 
+test: $(TARGET)
+	./$(TARGET) ./samples/comments.jl
+	./$(TARGET) ./samples/block_comments.jl
+	./$(TARGET) ./samples/helloworld.jl
+	./$(TARGET) ./samples/Arithmetic.jl
+
 gen.o: main.S
 	nasm -felf -o $@ $<
 
