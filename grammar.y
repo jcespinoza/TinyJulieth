@@ -45,6 +45,9 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 	Statement* statement_t;
 	StatementList* statementlist_t;
 	Expression* expression_t;
+	ParamList* paramlist_t;
+	FuncParam* param_t;
+	ObjectType* type_t;
 }
 
 %token TK_COLONS
@@ -63,8 +66,11 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token<string_t> TK_IDENTIFIER "identifier"
 
 //%type<expression_t> expression term factor
-%type<statementlist_t> gstatement_list
-%type<statement_t> gstatement_nl g_statement
+%type<statementlist_t> gstatement_list statement_list
+%type<statement_t> gstatement_nl g_statement func_declaration statement statement_nl
+%type<paramlist_t> opt_func_params func_params
+%type<param_t> param_decl
+%type<type_t> assert_type
 // %type<statement_t> assign_statement
 // %type<statement_t> if_statement
 // %type<statement_t> opt_else
@@ -90,7 +96,7 @@ newlines: TK_NEWLINE newlines { }
 	| TK_NEWLINE { }
 ;
 
-gstatement_list: gstatement_nl gstatement_list { $2->AddNew($1); }
+gstatement_list: gstatement_nl gstatement_list {$$ = $2; $$->AddNew($1); }
 	| gstatement_nl { $$ = new StatementList(); $$->AddNew($1); };
 ;
 
@@ -123,14 +129,14 @@ statement_list: statement_nl statement_list { }
 statement_nl: statement newlines { }
 ;
 
-statement: assign_statement { }
-	| decl_statement { }
-	| print_statement { }
-	| return_statement { }
-	| while_statement { }
-	| for_statement { }
-	| if_statement { }
-;
+statement: assign_statement { $$ = new PassStatement(); }
+	| decl_statement  { $$ = new PassStatement(); }
+	| print_statement  { $$ = new PassStatement(); }
+	| return_statement  { $$ = new PassStatement(); }
+	| while_statement  { $$ = new PassStatement(); }
+	| for_statement  { $$ = new PassStatement(); }
+	| if_statement  { $$ = new PassStatement(); }
+	;
 
 if_statement: KW_IF expression opt_newlines statement_list
 	 							opt_otherwise KW_END { }
@@ -170,8 +176,8 @@ assign_statement: TK_IDENTIFIER '=' expression { }
 	| TK_IDENTIFIER '[' expression ']' '=' expression { }
 ;
 
-assert_type: KW_INT { }
-	| KW_BOOL { }
+assert_type: KW_INT { $$ = new ObjectType(IntType); }
+	| KW_BOOL { $$ = new ObjectType(BoolType); }
 ;
 
 print_statement: KW_PRINT '(' print_args ')' { }
