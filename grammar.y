@@ -67,7 +67,9 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 
 //%type<expression_t> expression term factor
 %type<statementlist_t> gstatement_list statement_list
-%type<statement_t> gstatement_nl g_statement func_declaration statement statement_nl
+%type<statement_t> gstatement_nl g_statement
+%type<statement_t> statement statement_nl
+%type<statement_t> print_statement func_declaration
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
@@ -84,8 +86,8 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 
 %%
 
-root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2;  YYTRACE("PASSED: File with Statements\n"); }
-	| opt_newlines { document = new JuliaDocument(); document->statements = new StatementList();;  YYTRACE("PASSED: Empty File\n"); }
+root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2; document->Print(); YYTRACE("PASSED: File with Statements\n"); }
+	| opt_newlines { document = new JuliaDocument(); document->statements = new StatementList();  YYTRACE("PASSED: Empty File\n"); }
 ;
 
 opt_newlines: newlines { }
@@ -96,15 +98,15 @@ newlines: TK_NEWLINE newlines { }
 	| TK_NEWLINE { }
 ;
 
-gstatement_list: gstatement_nl gstatement_list {$$ = $2; $$->AddNew($1); }
+gstatement_list: gstatement_nl gstatement_list {$$ = $2; $$->AddNew($1);  }
 	| gstatement_nl { $$ = new StatementList(); $$->AddNew($1); };
 ;
 
-gstatement_nl: g_statement newlines { }
+gstatement_nl: g_statement newlines { $$ = $1; }
 ;
 
-g_statement: statement { }
-	| func_declaration { }
+g_statement: statement { $$ = $1; }
+	| func_declaration { $$ = $1; }
 ;
 
 func_declaration: KW_FUNCTION TK_IDENTIFIER '(' opt_func_params ')' TK_COLONS assert_type
@@ -122,11 +124,11 @@ func_params: param_decl ',' func_params { }
 param_decl: TK_IDENTIFIER TK_COLONS assert_type { }
 ;
 
-statement_list: statement_nl statement_list { }
-	| statement_nl { }
+statement_list: statement_nl statement_list { $$ = new StatementList(); }
+	| statement_nl { $$ = new StatementList();   }
 ;
 
-statement_nl: statement newlines { }
+statement_nl: statement newlines { $$ = $1; }
 ;
 
 statement: assign_statement { $$ = new PassStatement(); }
@@ -180,7 +182,7 @@ assert_type: KW_INT { $$ = new ObjectType(IntType); }
 	| KW_BOOL { $$ = new ObjectType(BoolType); }
 ;
 
-print_statement: KW_PRINT '(' print_args ')' { }
+print_statement: KW_PRINT '(' print_args ')' { $$ = new PassStatement(); }
 	| KW_PRINTLN '(' print_args ')' { }
 ;
 

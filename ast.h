@@ -293,12 +293,12 @@ public:
   StatementList(){ }
 
   void AddNew(Statement* stm){
-    stms.push_front(stm);
+    statements.push_front(stm);
   }
 
   int getType(){ return StmListStm; }
 
-  std::list<Statement*> stms;
+  std::list<Statement*> statements;
 };
 
 class AssignStatement: public Statement {
@@ -427,6 +427,8 @@ public:
 class JuliaDocument {
 public:
   JuliaDocument(){}
+
+  void Print();
 
   StatementList* statements;
 };
