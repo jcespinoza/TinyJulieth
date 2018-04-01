@@ -70,9 +70,10 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %start root
 %error-verbose
 %debug
+
 %%
 
-root: opt_newlines statement_list { YYTRACE("PASSED: File with Statements\n"); }
+root: opt_newlines gstatement_list { YYTRACE("PASSED: File with Statements\n"); }
 	| opt_newlines { YYTRACE("PASSED: Empty File\n"); }
 ;
 
@@ -84,6 +85,32 @@ newlines: TK_NEWLINE newlines { }
 	| TK_NEWLINE { }
 ;
 
+gstatement_list: gstatement_nl gstatement_list { }
+	| gstatement_nl { };
+;
+
+gstatement_nl: g_statement newlines { }
+;
+
+g_statement: statement { }
+	| func_declaration { }
+;
+
+func_declaration: KW_FUNCTION TK_IDENTIFIER '(' opt_func_params ')' TK_COLONS assert_type
+											opt_newlines statement_list KW_END
+;
+
+opt_func_params: func_params { }
+	| %empty { }
+;
+
+func_params: param_decl ',' func_params { }
+	| param_decl { }
+;
+
+param_decl: TK_IDENTIFIER TK_COLONS assert_type { }
+;
+
 statement_list: statement_nl statement_list { }
 	| statement_nl { }
 ;
@@ -92,10 +119,26 @@ statement_nl: statement newlines { }
 ;
 
 statement: assign_statement { }
+	| decl_statement { }
 	| print_statement { }
+	| return_statement { }
+	| while_statement { }
+	| for_statement { }
 ;
 
-assign_statement: TK_IDENTIFIER TK_COLONS assert_type '=' expression { }
+for_statement: KW_FOR TK_IDENTIFIER '=' expression ':' expression
+	opt_newlines statement_list KW_END { }
+;
+
+while_statement: KW_WHILE expression opt_newlines statement_list KW_END { }
+
+return_statement: KW_RETURN expression { }
+;
+
+decl_statement: TK_IDENTIFIER TK_COLONS assert_type '=' expression { }
+;
+
+assign_statement: TK_IDENTIFIER '=' expression { }
 ;
 
 assert_type: KW_INT { }
@@ -137,8 +180,20 @@ term: factor '/' term { /* $$ = new DivExpression($1, $3); */ }
 
 factor: TK_NUMBER { /* $$ = new NumExpression($1); */ }
 | '-' factor { }
-| TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
+| id_expressions { }
 | '(' expression ')' { /* $$ = $2; */ }
+;
+
+id_expressions: TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
+	| TK_IDENTIFIER '(' opt_call_args ')'
+;
+
+opt_call_args: call_args { }
+	| %empty { }
+;
+
+call_args: expression ',' call_args { }
+	| expression { }
 ;
 
 %%

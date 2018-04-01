@@ -35,6 +35,10 @@ test: $(TARGET)
 	./$(TARGET) ./samples/block_comments.jl
 	./$(TARGET) ./samples/helloworld.jl
 	./$(TARGET) ./samples/Arithmetic.jl
+	./$(TARGET) ./own_samples/empty_function.jl
+	./$(TARGET) ./samples/Relational.jl
+	./$(TARGET) ./own_samples/for_loop.jl
+	./$(TARGET) ./samples/while.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<
