@@ -130,8 +130,8 @@ func_params: param_decl ',' func_params { }
 param_decl: TK_IDENTIFIER TK_COLONS assert_type { }
 ;
 
-statement_list: statement_nl statement_list { $$ = new StatementList(); }
-	| statement_nl { $$ = new StatementList();   }
+statement_list: statement_nl statement_list { $$ = $2; $$->AddNew($1);  }
+	| statement_nl { $$ = new StatementList(); $$->AddNew($1);  }
 ;
 
 statement_nl: statement newlines { $$ = $1; }
