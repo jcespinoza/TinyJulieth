@@ -20,7 +20,10 @@ enum StatemetTypes{
 
   StmListStm,
   PassStm,
-  RetStm
+  RetStm,
+
+  ScVarDeclStm,
+  ArVarDeclStm
 };
 
 enum TypeNames{
@@ -388,6 +391,37 @@ public:
 
 	Expression* condition;
 	Statement* statements;
+};
+
+class VarDeclStatement: public Statement {
+public:
+  VarDeclStatement(char* name) {
+    varName = varName.append(name);
+  }
+
+  string varName;
+};
+
+class ScalarVarDeclStatement: public VarDeclStatement{
+public:
+  ScalarVarDeclStatement(char* name, Expression* value) : VarDeclStatement(name){
+    valueExpression = value;
+  }
+
+  int getType(){ return ScVarDeclStm; }
+
+  Expression* valueExpression;
+};
+
+class ArrayVarDeclStatement: public VarDeclStatement{
+public:
+  ArrayVarDeclStatement(char* name, ExpressionList* value): VarDeclStatement(name){
+    values = value;
+  }
+
+  int getType(){ return ArVarDeclStm; }
+
+  ExpressionList* values;
 };
 
 class ObjectType{

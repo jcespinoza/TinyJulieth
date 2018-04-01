@@ -136,7 +136,7 @@ statement_nl: statement newlines { $$ = $1; }
 ;
 
 statement: assign_statement { $$ = $1; }
-	| decl_statement  { $$ = new PassStatement(); }
+	| decl_statement  { $$ = $1; }
 	| print_statement  { $$ = $1; }
 	| return_statement  { $$ = $1; }
 	| while_statement  { $$ = $1; }
@@ -173,7 +173,7 @@ while_statement: KW_WHILE expression opt_newlines statement_list KW_END { $$ = n
 return_statement: KW_RETURN expression { $$ = new ReturnStatement($2); }
 ;
 
-decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { }
+decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { $$ = new PassStatement(); }
 ;
 
 type_and_value: assert_type '=' expression { }
