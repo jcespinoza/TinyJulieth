@@ -20,7 +20,7 @@ void yyerror(const char *msg) {
 
 using namespace std;
 
-//BlockStatement *statement;
+JuliaDocument* document;
 
 #define YYERROR_VERBOSE 1
 #define YYDEBUG 1
@@ -42,6 +42,9 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %union {
 	int int_t;
   char *string_t;
+	Statement* statement_t;
+	StatementList* statementlist_t;
+	Expression* expression_t;
 }
 
 %token TK_COLONS
@@ -59,7 +62,9 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token<string_t> TK_STRING "str_literal"
 %token<string_t> TK_IDENTIFIER "identifier"
 
-// %type<expr_t> expr term factor
+//%type<expression_t> expression term factor
+%type<statementlist_t> gstatement_list
+%type<statement_t> gstatement_nl g_statement
 // %type<statement_t> assign_statement
 // %type<statement_t> if_statement
 // %type<statement_t> opt_else
@@ -73,8 +78,8 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 
 %%
 
-root: opt_newlines gstatement_list { YYTRACE("PASSED: File with Statements\n"); }
-	| opt_newlines { YYTRACE("PASSED: Empty File\n"); }
+root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2;  YYTRACE("PASSED: File with Statements\n"); }
+	| opt_newlines { document = new JuliaDocument(); document->statements = new StatementList();;  YYTRACE("PASSED: Empty File\n"); }
 ;
 
 opt_newlines: newlines { }
@@ -85,11 +90,11 @@ newlines: TK_NEWLINE newlines { }
 	| TK_NEWLINE { }
 ;
 
-gstatement_list: gstatement_nl gstatement_list { }
-	| gstatement_nl { };
+gstatement_list: gstatement_nl gstatement_list { $2->AddNew($1); }
+	| gstatement_nl { $$ = new StatementList(); $$->AddNew($1); };
 ;
 
-gstatement_nl: g_statement newlines { }
+gstatement_nl: g_statement newlines { return NULL; }
 ;
 
 g_statement: statement { }

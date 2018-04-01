@@ -293,4 +293,79 @@ public:
   std::list<Statement*> stms;
 };
 
+class AssignStatement: public Statement {
+public:
+	AssignStatement(string varName, Expression *expr) {
+		this->varName = varName;
+		this->valueExpression = expr;
+	}
+
+  int getType() { return AssiStm; };
+
+	string varName;
+	Expression *valueExpression;
+};
+
+class PrintStatement: public Statement {
+public:
+	PrintStatement(ExpressionList *expr) {
+		this->expressionList = expr;
+	}
+
+  int getType() { return PrintStm; };
+
+	ExpressionList* expressionList;
+};
+
+class IfStatement: public Statement {
+public:
+	IfStatement(Expression* expr, Statement* st_true, Statement* st_false) {
+		this->condition = expr;
+		this->trueStatements = st_true;
+		this->falseStatements = st_false;
+	}
+
+  int getType() { return IfStm; };
+
+	Expression* condition;
+	Statement* trueStatements;
+	Statement* falseStatements;
+};
+
+class ForStatement: public Statement {
+public:
+	ForStatement(Expression* minExpr, Expression* maxExpr, Statement* st) {
+		this->minExpression = minExpr;
+    this->maxExpression = maxExpr;
+		this->statements = st;
+	}
+
+  int getType() { return ForStm; };
+
+	Expression* minExpression;
+  Expression* maxExpression;
+
+	Statement* statements;
+};
+
+class WhileStatement: public Statement {
+public:
+	WhileStatement(Expression* expr, Statement* st) {
+		this->condition = expr;
+		this->statements = st;
+	}
+
+  int getType() { return WhileStm; };
+
+	Expression* condition;
+	Statement* statements;
+};
+
+class JuliaDocument {
+public:
+  JuliaDocument(){}
+
+  StatementList* statements;
+};
+
 #endif
