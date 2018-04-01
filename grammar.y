@@ -263,7 +263,7 @@ bool_literal: KW_TRUE { $$ = new BoolExpression(true); }
 
 id_expressions: TK_IDENTIFIER { $$ = new IdExpression($1); }
 	| TK_IDENTIFIER '(' opt_call_args ')' { $$ = new FuncCallExpression($1, $3); }
-	| TK_IDENTIFIER '[' expression ']' { $$ = new ArrayAccesxExpression($1, $3); }
+	| TK_IDENTIFIER '[' expression ']' { $$ = new ArrayAccessExpression($1, $3); }
 ;
 
 opt_call_args: expression_list { $$ = $1; }

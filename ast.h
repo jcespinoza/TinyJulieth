@@ -118,9 +118,9 @@ public:
   std::string varName;
 };
 
-class ArrayAccesxExpression : public Expression {
+class ArrayAccessExpression : public Expression {
 public:
-  ArrayAccesxExpression(char* arrName, Expression* index){
+  ArrayAccessExpression(char* arrName, Expression* index){
     varName = varName.append( arrName );
     indexExpression = index;
   }
