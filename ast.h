@@ -20,6 +20,8 @@ enum StatemetTypes{
 
   StmListStm,
   PassStm,
+  ContStm,
+  BrkStm,
   RetStm,
 
   ScVarDeclStm,
@@ -486,6 +488,20 @@ public:
   PassStatement(){ }
 
   int getType(){ return PassStm;}
+};
+
+class ContinueStatement : public Statement {
+public:
+  ContinueStatement(){ }
+
+  int getType(){ return ContStm;}
+};
+
+class BreakStatement : public Statement {
+public:
+  BreakStatement(){ }
+
+  int getType(){ return BrkStm;}
 };
 
 class ReturnStatement : public Statement {

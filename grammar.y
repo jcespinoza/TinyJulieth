@@ -72,7 +72,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %type<statement_t> gstatement_nl g_statement
 %type<statement_t> statement statement_nl while_statement for_statement
 %type<statement_t> print_statement func_declaration return_statement if_statement
-%type<statement_t> assign_statement
+%type<statement_t> assign_statement continue_statement break_statement
 %type<vardecl_t> decl_statement type_and_value
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
@@ -138,7 +138,12 @@ statement: assign_statement { $$ = $1; }
 	| while_statement  { $$ = $1; }
 	| for_statement  { $$ = $1; }
 	| if_statement  { $$ = $1; }
+	| continue_statement { $$ = $1; }
+	| break_statement { $$ = $1; }
 	;
+
+continue_statement: KW_CONTINUE { $$ = new ContinueStatement(); }
+break_statement: KW_BREAK { $$ = new BreakStatement(); }
 
 if_statement: KW_IF expression opt_newlines statement_list
 	 							opt_otherwise KW_END { $$ = new IfStatement($2, $4, $5); }
