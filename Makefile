@@ -42,6 +42,7 @@ test: $(TARGET)
 	./$(TARGET) ./own_samples/array_declaration.jl
 	./$(TARGET) ./samples/Bitwise.jl
 	./$(TARGET) ./own_samples/array_access.jl
+	./$(TARGET) ./samples/if.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<

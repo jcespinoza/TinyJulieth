@@ -124,6 +124,22 @@ statement: assign_statement { }
 	| return_statement { }
 	| while_statement { }
 	| for_statement { }
+	| if_statement { }
+;
+
+if_statement: KW_IF expression opt_newlines statement_list
+	 							opt_otherwise KW_END
+;
+
+opt_otherwise: elseif { }
+	| else_clause { }
+	| %empty { }
+;
+
+elseif: KW_ELSEIF expression opt_newlines statement_list opt_otherwise { }
+;
+
+else_clause: KW_ELSE opt_newlines statement_list { }
 ;
 
 for_statement: KW_FOR TK_IDENTIFIER '=' expression ':' expression
