@@ -100,7 +100,7 @@ gstatement_list: gstatement_nl gstatement_list {$$ = $2; $$->AddNew($1); }
 	| gstatement_nl { $$ = new StatementList(); $$->AddNew($1); };
 ;
 
-gstatement_nl: g_statement newlines { return NULL; }
+gstatement_nl: g_statement newlines { }
 ;
 
 g_statement: statement { }
@@ -108,7 +108,7 @@ g_statement: statement { }
 ;
 
 func_declaration: KW_FUNCTION TK_IDENTIFIER '(' opt_func_params ')' TK_COLONS assert_type
-											opt_newlines statement_list KW_END
+											opt_newlines statement_list KW_END { $$ = new PassStatement(); }
 ;
 
 opt_func_params: func_params { }
