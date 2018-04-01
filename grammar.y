@@ -63,7 +63,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token KW_LOCAL KW_GLOBAL KW_ARRAY KW_TRUE KW_FALSE
 %token TK_ERROR TK_NEWLINE
 
-%token<string_t> TK_NUMBER "number"
+%token<int_t> TK_NUMBER "number"
 %token<string_t> TK_STRING "str_literal"
 %token<string_t> TK_IDENTIFIER "identifier"
 
@@ -212,62 +212,62 @@ print_arg: expression { $$ = $1; }
 ;
 
 expression: log_expression OP_LOGAND expression { $$ = new LandExpression($1, $3); }
-	| log_expression OP_LOGOR expression { $$ = new NumExpression(0); }
-	| log_expression { $$ = new NumExpression(0); }
+	| log_expression OP_LOGOR expression { $$ = new LorExpression($1, $3); }
+	| log_expression { $$ = $1; }
 ;
 
-log_expression: add_expression '<' log_expression { /*$$ = new LthanExpression($1, $3); */ }
-| add_expression '>' log_expression { /*$$ = new GthanExpression($1, $3); */ }
-| add_expression OP_EQUALS log_expression { /*$$ = new EquExpression($1, $3); */ }
-| add_expression OP_NEQUAL log_expression { /*$$ = new NequExpression($1, $3); */ }
-| add_expression OP_LEQUAL log_expression { /*$$ = new LeqExpression($1, $3); */ }
-| add_expression OP_GEQUAL log_expression { /*$$ = new GeqExpression($1, $3); */ }
-| add_expression { /* $$ = $1; */ }
+log_expression: add_expression '<' log_expression { $$ = new LthanExpression($1, $3); }
+| add_expression '>' log_expression { $$ = new GthanExpression($1, $3); }
+| add_expression OP_EQUALS log_expression { $$ = new EquExpression($1, $3); }
+| add_expression OP_NEQUAL log_expression { $$ = new NequExpression($1, $3); }
+| add_expression OP_LEQUAL log_expression { $$ = new LeqExpression($1, $3); }
+| add_expression OP_GEQUAL log_expression { $$ = new GeqExpression($1, $3); }
+| add_expression { $$ = $1; }
 ;
 
-add_expression: shift_expression '+' add_expression { /* $$ = new AddExpression($1, $3); */ }
-| shift_expression '-' add_expression { /* $$ = new SubExpression($1, $3); */ }
-| shift_expression '$' add_expression { } //XOR
-| shift_expression '|' add_expression { }
-| shift_expression { /* $$ = $1; */ }
+add_expression: shift_expression '+' add_expression { $$ = new AddExpression($1, $3); }
+| shift_expression '-' add_expression { $$ = new SubExpression($1, $3); }
+| shift_expression '$' add_expression { $$ = new XorExpression($1, $3); } //XOR
+| shift_expression '|' add_expression { $$ = new BorExpression($1, $3); }
+| shift_expression { $$ = $1; }
 ;
 
-shift_expression: term OP_ASHIFTL shift_expression { }
-	| term OP_ASHIFTR shift_expression { }
-	| term { }
+shift_expression: term OP_ASHIFTL shift_expression { $$ = new ShiftLeftExpression($1, $3); }
+	| term OP_ASHIFTR shift_expression { $$ = new ShiftRightExpression($1, $3); }
+	| term { $$ = $1; }
 ;
 
-term: factor '/' term { /* $$ = new DivExpression($1, $3); */ }
-| factor '%' term { /* $$ = new ModExpression($1, $3); */ }
-| factor '*' term { /* $$ = new MulExpression($1, $3); */ }
-| factor '&' term { }
-| factor { /* $$ = $1; */ }
+term: factor '/' term { $$ = new DivExpression($1, $3);}
+| factor '%' term { $$ = new ModExpression($1, $3); }
+| factor '*' term { $$ = new MulExpression($1, $3); }
+| factor '&' term { $$ = new BandExpression($1, $3); }
+| factor { $$ = $1; }
 ;
 
-factor: expofactor '^' factor { }
-	| expofactor { }
+factor: expofactor '^' factor { $$ = new PowExpression($1, $3); }
+	| expofactor { $$ = $1; }
 ;
 
-expofactor: TK_NUMBER { /* $$ = new NumExpression($1); */ }
-| bool_literal { }
-| '-' expofactor { }
-| '~' expofactor { }
-| '!' expofactor { }
-| id_expressions { }
-| '(' expression ')' { /* $$ = $2; */ }
+expofactor: TK_NUMBER { $$ = new NumExpression($1); }
+| bool_literal { $$ = $1; }
+| '-' expofactor { $$ = new MulExpression(new NumExpression(-1), $2); }
+| '~' expofactor { $$ = new BitNotExpression($2); }
+| '!' expofactor { $$ = new LogNotExpression($2); }
+| id_expressions { $$ = $1; }
+| '(' expression ')' { $$ = $2; }
 ;
 
-bool_literal: KW_TRUE { }
-	| KW_FALSE { }
+bool_literal: KW_TRUE { $$ = new BoolExpression(true); }
+	| KW_FALSE { $$ = new BoolExpression(false); }
 ;
 
-id_expressions: TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
-	| TK_IDENTIFIER '(' opt_call_args ')' { }
-	| TK_IDENTIFIER '[' expression ']' { }
+id_expressions: TK_IDENTIFIER { $$ = new IdExpression($1); }
+	| TK_IDENTIFIER '(' opt_call_args ')' { $$ = new FuncCallExpression($1, $3); }
+	| TK_IDENTIFIER '[' expression ']' { $$ = new ArrayAccesxExpression($1, $3); }
 ;
 
-opt_call_args: expression_list { }
-	| %empty { }
+opt_call_args: expression_list { $$ = $1; }
+	| %empty { $$ = new ExpressionList(); }
 ;
 
 %%

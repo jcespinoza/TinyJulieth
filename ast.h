@@ -120,23 +120,27 @@ public:
 
 class ArrayAccesxExpression : public Expression {
 public:
-  ArrayAccesxExpression(char* arrName){
+  ArrayAccesxExpression(char* arrName, Expression* index){
     varName = varName.append( arrName );
+    indexExpression = index;
   }
 
   int getType(){ return ArrAccExp; }
 
+  Expression* indexExpression;
   std::string varName;
 };
 
 class FuncCallExpression : public Expression {
 public:
-  FuncCallExpression(char* fName){
+  FuncCallExpression(char* fName, ExpressionList* args){
     funcName = funcName.append( fName );
+    arguments = args;
   }
 
   int getType(){ return FCallExp; }
 
+  ExpressionList* arguments;
   std::string funcName;
 };
 
@@ -160,6 +164,17 @@ public:
   }
 
   int getType(){ return BitNotExp; }
+
+  Expression* targetExpression;
+};
+
+class LogNotExpression : public Expression{
+public:
+  LogNotExpression(Expression* exp){
+    targetExpression = exp;
+  }
+
+  int getType(){ return NotExp; }
 
   Expression* targetExpression;
 };
