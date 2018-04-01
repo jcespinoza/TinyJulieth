@@ -39,6 +39,7 @@ test: $(TARGET)
 	./$(TARGET) ./samples/Relational.jl
 	./$(TARGET) ./own_samples/for_loop.jl
 	./$(TARGET) ./samples/while.jl
+	./$(TARGET) ./own_samples/array_declaration.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<

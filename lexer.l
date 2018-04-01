@@ -59,10 +59,11 @@ letter [_a-zA-Z]
 "else"                { return KW_ELSE; }
 "elseif"              { return KW_ELSEIF; }
 "print"               { return KW_PRINT; }
-"println"               { return KW_PRINTLN; }
+"println"             { return KW_PRINTLN; }
 "while"               { return KW_WHILE; }
 "Bool"                { return KW_BOOL; }
-"Int"               { return KW_INT; }
+"Int"                 { return KW_INT; }
+"Array"               { return KW_ARRAY; }
 "function"            { return KW_FUNCTION; }
 "end"                 { return KW_END; }
 "return"              { return KW_RETURN; }

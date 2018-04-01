@@ -52,7 +52,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token OP_ASHIFTL OP_ASHIFTR
 %token KW_IF KW_FOR KW_ELSE KW_ELSEIF KW_PRINT KW_PRINTLN KW_WHILE KW_BOOL
 %token KW_INT KW_FUNCTION KW_END KW_RETURN KW_BREAK KW_CONTINUE
-%token KW_LOCAL KW_GLOBAL
+%token KW_LOCAL KW_GLOBAL KW_ARRAY
 %token TK_ERROR TK_NEWLINE
 
 %token<string_t> TK_NUMBER "number"
@@ -135,7 +135,14 @@ while_statement: KW_WHILE expression opt_newlines statement_list KW_END { }
 return_statement: KW_RETURN expression { }
 ;
 
-decl_statement: TK_IDENTIFIER TK_COLONS assert_type '=' expression { }
+decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { }
+;
+type_and_value: assert_type '=' expression { }
+	| KW_ARRAY '{' assert_type '}' '=' '[' expression_list ']' { }
+;
+
+expression_list: expression ',' expression_list { }
+	| expression { }
 ;
 
 assign_statement: TK_IDENTIFIER '=' expression { }
@@ -188,12 +195,8 @@ id_expressions: TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
 	| TK_IDENTIFIER '(' opt_call_args ')'
 ;
 
-opt_call_args: call_args { }
+opt_call_args: expression_list { }
 	| %empty { }
-;
-
-call_args: expression ',' call_args { }
-	| expression { }
 ;
 
 %%
