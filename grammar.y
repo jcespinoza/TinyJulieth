@@ -46,6 +46,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 	StatementList* statementlist_t;
 	Expression* expression_t;
 	ExpressionList* expressionlist_t;
+	VarDeclStatement* vardecl_t;
 	ParamList* paramlist_t;
 	FuncParam* param_t;
 	ObjectType* type_t;
@@ -69,9 +70,10 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 //%type<expression_t> expression term factor
 %type<statementlist_t> gstatement_list statement_list opt_otherwise  elseif else_clause
 %type<statement_t> gstatement_nl g_statement
-%type<statement_t> statement statement_nl while_statement for_statement decl_statement
+%type<statement_t> statement statement_nl while_statement for_statement
 %type<statement_t> print_statement func_declaration return_statement if_statement
 %type<statement_t> assign_statement
+%type<vardecl_t> decl_statement type_and_value
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
@@ -173,11 +175,14 @@ while_statement: KW_WHILE expression opt_newlines statement_list KW_END { $$ = n
 return_statement: KW_RETURN expression { $$ = new ReturnStatement($2); }
 ;
 
-decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { $$ = new PassStatement(); }
+decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { $$ = $3; $$->SetVarName($1); }
 ;
 
-type_and_value: assert_type '=' expression { }
-	| KW_ARRAY '{' assert_type '}' '=' '[' expression_list ']' { }
+type_and_value: assert_type '=' expression { $$ = new ScalarVarDeclStatement((char*)"n", $1, $3); }
+	| KW_ARRAY '{' assert_type '}' '=' '[' expression_list ']' {
+																	ObjectType* arrType = new ObjectType($3->typeCode + 2);
+																	$$ = new ArrayVarDeclStatement((char*)"n", arrType, $7);
+																}
 ;
 
 expression_list: expression ',' expression_list { $$ = $3; $3->AddNew($1); }

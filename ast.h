@@ -393,18 +393,35 @@ public:
 	Statement* statements;
 };
 
-class VarDeclStatement: public Statement {
+
+class ObjectType{
 public:
-  VarDeclStatement(char* name) {
-    varName = varName.append(name);
+  ObjectType(int code){
+    typeCode = code;
   }
 
+  int typeCode;
+};
+
+class VarDeclStatement: public Statement {
+public:
+  VarDeclStatement(char* name, ObjectType* type) {
+    varName = varName.append(name);
+    varType = type;
+  }
+
+  void SetVarName(char* newName){
+    varName = "";
+    varName = varName.append(newName);
+  }
+
+  ObjectType* varType;
   string varName;
 };
 
 class ScalarVarDeclStatement: public VarDeclStatement{
 public:
-  ScalarVarDeclStatement(char* name, Expression* value) : VarDeclStatement(name){
+  ScalarVarDeclStatement(char* name, ObjectType* type, Expression* value) : VarDeclStatement(name, type){
     valueExpression = value;
   }
 
@@ -415,7 +432,7 @@ public:
 
 class ArrayVarDeclStatement: public VarDeclStatement{
 public:
-  ArrayVarDeclStatement(char* name, ExpressionList* value): VarDeclStatement(name){
+  ArrayVarDeclStatement(char* name, ObjectType* type, ExpressionList* value): VarDeclStatement(name, type){
     values = value;
   }
 
@@ -424,14 +441,6 @@ public:
   ExpressionList* values;
 };
 
-class ObjectType{
-public:
-  ObjectType(int code){
-    typeCode = code;
-  }
-
-  int typeCode;
-};
 
 class FuncParam{
 public:
