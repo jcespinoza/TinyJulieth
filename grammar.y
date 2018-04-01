@@ -67,10 +67,10 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token<string_t> TK_IDENTIFIER "identifier"
 
 //%type<expression_t> expression term factor
-%type<statementlist_t> gstatement_list statement_list
+%type<statementlist_t> gstatement_list statement_list opt_otherwise  elseif else_clause
 %type<statement_t> gstatement_nl g_statement
-%type<statement_t> statement statement_nl while_statement if_statement for_statement decl_statement
-%type<statement_t> print_statement func_declaration return_statement
+%type<statement_t> statement statement_nl while_statement for_statement decl_statement
+%type<statement_t> print_statement func_declaration return_statement if_statement
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
@@ -140,22 +140,27 @@ statement: assign_statement { $$ = new PassStatement(); }
 	| return_statement  { $$ = $1; }
 	| while_statement  { $$ = $1; }
 	| for_statement  { $$ = $1; }
-	| if_statement  { $$ = new PassStatement(); }
+	| if_statement  { $$ = $1; }
 	;
 
 if_statement: KW_IF expression opt_newlines statement_list
-	 							opt_otherwise KW_END { }
+	 							opt_otherwise KW_END { $$ = new IfStatement($2, $4, $5); }
 ;
 
-opt_otherwise: elseif { }
-	| else_clause { }
-	| %empty { }
+opt_otherwise: elseif { $$ = $1; }
+	| else_clause { $$ = $1; }
+	| %empty { $$ = new StatementList(); }
 ;
 
-elseif: KW_ELSEIF expression opt_newlines statement_list opt_otherwise { }
+elseif: KW_ELSEIF expression opt_newlines statement_list
+										opt_otherwise {
+											$$ = new StatementList();
+											IfStatement* ifSt = new IfStatement($2, $4, $5);
+											$$->AddNew(ifSt);
+										}
 ;
 
-else_clause: KW_ELSE opt_newlines statement_list { }
+else_clause: KW_ELSE opt_newlines statement_list { $$ = $3; }
 ;
 
 for_statement: KW_FOR TK_IDENTIFIER '=' expression ':' expression
