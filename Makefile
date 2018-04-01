@@ -44,6 +44,8 @@ test: $(TARGET)
 	./$(TARGET) ./own_samples/array_access.jl
 	./$(TARGET) ./samples/if.jl
 	./$(TARGET) ./samples/Factorial.jl
+	./$(TARGET) ./samples/functions.jl
+	./$(TARGET) ./samples/BubbleSort.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<

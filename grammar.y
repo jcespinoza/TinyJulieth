@@ -162,6 +162,7 @@ expression_list: expression ',' expression_list { }
 ;
 
 assign_statement: TK_IDENTIFIER '=' expression { }
+	| TK_IDENTIFIER '[' expression ']' '=' expression { }
 ;
 
 assert_type: KW_INT { }
