@@ -69,12 +69,12 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 //%type<expression_t> expression term factor
 %type<statementlist_t> gstatement_list statement_list
 %type<statement_t> gstatement_nl g_statement
-%type<statement_t> statement statement_nl
+%type<statement_t> statement statement_nl while_statement if_statement for_statement decl_statement
 %type<statement_t> print_statement func_declaration
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
-%type<expressionlist_t> print_args
+%type<expressionlist_t> print_args expression_list opt_call_args
 %type<expression_t> expression print_arg
 // %type<statement_t> assign_statement
 // %type<statement_t> if_statement
@@ -138,7 +138,7 @@ statement: assign_statement { $$ = new PassStatement(); }
 	| decl_statement  { $$ = new PassStatement(); }
 	| print_statement  { $$ = $1; }
 	| return_statement  { $$ = new PassStatement(); }
-	| while_statement  { $$ = new PassStatement(); }
+	| while_statement  { $$ = $1; }
 	| for_statement  { $$ = new PassStatement(); }
 	| if_statement  { $$ = new PassStatement(); }
 	;
@@ -162,7 +162,7 @@ for_statement: KW_FOR TK_IDENTIFIER '=' expression ':' expression
 	opt_newlines statement_list KW_END { }
 ;
 
-while_statement: KW_WHILE expression opt_newlines statement_list KW_END { }
+while_statement: KW_WHILE expression opt_newlines statement_list KW_END { $$ = new WhileStatement($2, $4); }
 
 return_statement: KW_RETURN expression { }
 ;
