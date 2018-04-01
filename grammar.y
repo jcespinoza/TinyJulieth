@@ -79,13 +79,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %type<type_t> assert_type
 %type<expressionlist_t> print_args expression_list opt_call_args
 %type<expression_t> expression print_arg
-// %type<statement_t> assign_statement
-// %type<statement_t> if_statement
-// %type<statement_t> opt_else
-// %type<statement_t> while_statement
-// %type<statement_t> print_statement
-// %type<statement_t> statement
-// %type<blk_statement_t> statement_list opt_statement_list
+
 %start root
 %error-verbose
 %debug
@@ -116,18 +110,18 @@ g_statement: statement { $$ = $1; }
 ;
 
 func_declaration: KW_FUNCTION TK_IDENTIFIER '(' opt_func_params ')' TK_COLONS assert_type
-											opt_newlines statement_list KW_END { $$ = new PassStatement(); }
+											opt_newlines statement_list KW_END { $$ = new FuncDeclStatement($2, $4, $7, $9); }
 ;
 
-opt_func_params: func_params { }
-	| %empty { }
+opt_func_params: func_params { $$ = $1; }
+	| %empty { $$ = new ParamList(); }
 ;
 
-func_params: param_decl ',' func_params { }
-	| param_decl { }
+func_params: param_decl ',' func_params { $$ = $3; $$->AddNew($1); }
+	| param_decl { $$ = new ParamList(); $$->AddNew($1); }
 ;
 
-param_decl: TK_IDENTIFIER TK_COLONS assert_type { }
+param_decl: TK_IDENTIFIER TK_COLONS assert_type { $$ = new FuncParam($1, $3); }
 ;
 
 statement_list: statement_nl statement_list { $$ = $2; $$->AddNew($1);  }
