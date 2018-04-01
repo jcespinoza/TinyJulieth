@@ -304,8 +304,8 @@ public:
 
 class AssignStatement: public Statement {
 public:
-	AssignStatement(string varName, Expression *expr) {
-		this->varName = varName;
+	AssignStatement(char* varName, Expression *expr) {
+		this->varName = this->varName.append(varName);
 		this->valueExpression = expr;
 	}
 

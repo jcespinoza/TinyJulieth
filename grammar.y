@@ -71,6 +71,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %type<statement_t> gstatement_nl g_statement
 %type<statement_t> statement statement_nl while_statement for_statement decl_statement
 %type<statement_t> print_statement func_declaration return_statement if_statement
+%type<statement_t> assign_statement
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
@@ -134,7 +135,7 @@ statement_list: statement_nl statement_list { $$ = new StatementList(); }
 statement_nl: statement newlines { $$ = $1; }
 ;
 
-statement: assign_statement { $$ = new PassStatement(); }
+statement: assign_statement { $$ = $1; }
 	| decl_statement  { $$ = new PassStatement(); }
 	| print_statement  { $$ = $1; }
 	| return_statement  { $$ = $1; }
@@ -183,8 +184,8 @@ expression_list: expression ',' expression_list { $$ = $3; $3->AddNew($1); }
 	| expression { $$ = new ExpressionList(); $$->AddNew($1); }
 ;
 
-assign_statement: TK_IDENTIFIER '=' expression { }
-	| TK_IDENTIFIER '[' expression ']' '=' expression { }
+assign_statement: TK_IDENTIFIER '=' expression {  $$ = new AssignStatement($1, $3); }
+	| TK_IDENTIFIER '[' expression ']' '=' expression { $$ = new PassStatement(); }
 ;
 
 assert_type: KW_INT { $$ = new ObjectType(IntType); }
