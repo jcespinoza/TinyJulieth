@@ -19,6 +19,14 @@ enum StatemetTypes{
   PrintStm,
 
   StmListStm,
+  PassStm
+};
+
+enum TypeNames{
+  IntType,
+  BoolType,
+  ArrayIntType,
+  ArrayBoolType
 };
 
 enum ExpressionTypes{
@@ -359,6 +367,61 @@ public:
 
 	Expression* condition;
 	Statement* statements;
+};
+
+class ObjectType{
+public:
+  ObjectType(int code){
+    typeCode = code;
+  }
+
+  int typeCode;
+};
+
+class FuncParam{
+public:
+  FuncParam(char* name, ObjectType* type){
+    paramName = paramName.append(name);
+    paramType = type;
+  }
+
+  string paramName;
+  ObjectType* paramType;
+};
+
+class ParamList {
+public:
+  ParamList(){}
+
+  void AddNew(FuncParam* param){
+    paramList.push_front(param);
+  }
+
+  list<FuncParam*> paramList;
+};
+
+class FuncDeclStatement : public Statement {
+public:
+  FuncDeclStatement(char* name, ParamList* params, ObjectType* type, Statement* statements){
+    funcName = funcName.append(name);
+    this->params = params;
+    this->returnType = type;
+    this->statements = statements;
+  }
+
+  int getType(){ return FuncDeclStm; }
+
+  string funcName;
+  ObjectType* returnType;
+  ParamList* params;
+  Statement* statements;
+};
+
+class PassStatement : public Statement {
+public:
+  PassStatement(){ }
+
+  int getType(){ return PassStm;}
 };
 
 class JuliaDocument {
