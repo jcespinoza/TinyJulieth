@@ -67,18 +67,21 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token<string_t> TK_STRING "str_literal"
 %token<string_t> TK_IDENTIFIER "identifier"
 
-//%type<expression_t> expression term factor
 %type<statementlist_t> gstatement_list statement_list opt_otherwise  elseif else_clause
 %type<statement_t> gstatement_nl g_statement
 %type<statement_t> statement statement_nl while_statement for_statement
 %type<statement_t> print_statement func_declaration return_statement if_statement
 %type<statement_t> assign_statement continue_statement break_statement
+
 %type<vardecl_t> decl_statement type_and_value
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
+
 %type<expressionlist_t> print_args expression_list opt_call_args
-%type<expression_t> expression print_arg
+%type<expression_t> expression print_arg term factor log_expression
+%type<expression_t> add_expression shift_expression expofactor
+%type<expression_t> id_expressions bool_literal
 
 %start root
 %error-verbose
@@ -208,7 +211,7 @@ print_arg: expression { $$ = $1; }
 	| TK_STRING { $$ = new StrExpression($1); }
 ;
 
-expression: log_expression OP_LOGAND expression { $$ = new NumExpression(0); }
+expression: log_expression OP_LOGAND expression { $$ = new LandExpression($1, $3); }
 	| log_expression OP_LOGOR expression { $$ = new NumExpression(0); }
 	| log_expression { $$ = new NumExpression(0); }
 ;
