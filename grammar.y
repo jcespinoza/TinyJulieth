@@ -215,7 +215,8 @@ bool_literal: KW_TRUE { }
 ;
 
 id_expressions: TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
-	| TK_IDENTIFIER '(' opt_call_args ')'
+	| TK_IDENTIFIER '(' opt_call_args ')' { }
+	| TK_IDENTIFIER '[' expression ']' { }
 ;
 
 opt_call_args: expression_list { }

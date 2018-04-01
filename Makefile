@@ -41,6 +41,7 @@ test: $(TARGET)
 	./$(TARGET) ./samples/while.jl
 	./$(TARGET) ./own_samples/array_declaration.jl
 	./$(TARGET) ./samples/Bitwise.jl
+	./$(TARGET) ./own_samples/array_access.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<
