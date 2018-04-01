@@ -46,7 +46,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 
 %token TK_COLONS
 %token '+' '-' '*' '%' '/' '(' ')' ';' '=' '{' '}' ':'
-%token '~' '^' '&' '|' ',' '[' ']' '?'
+%token '~' '^' '&' '|' ',' '[' ']' '?' '!' '$'
 %token OP_GEQUAL OP_LEQUAL OP_EQUALS OP_NEQUAL
 %token OP_LOGAND OP_LOGOR OP_POWER
 %token OP_ASHIFTL OP_ASHIFTR
@@ -164,30 +164,48 @@ print_arg: expression { }
 	| TK_STRING { }
 ;
 
-expression: add_expression '<' expression { /*$$ = new LthanExpression($1, $3); */ }
-| add_expression '>' expression { /*$$ = new GthanExpression($1, $3); */ }
-| add_expression OP_EQUALS expression { /*$$ = new EquExpression($1, $3); */ }
-| add_expression OP_NEQUAL expression { /*$$ = new NequExpression($1, $3); */ }
-| add_expression OP_LEQUAL expression { /*$$ = new LeqExpression($1, $3); */ }
-| add_expression OP_GEQUAL expression { /*$$ = new GeqExpression($1, $3); */ }
+expression: log_expression OP_LOGAND expression { }
+	| log_expression OP_LOGOR expression { }
+	| log_expression { }
+;
+
+log_expression: add_expression '<' log_expression { /*$$ = new LthanExpression($1, $3); */ }
+| add_expression '>' log_expression { /*$$ = new GthanExpression($1, $3); */ }
+| add_expression OP_EQUALS log_expression { /*$$ = new EquExpression($1, $3); */ }
+| add_expression OP_NEQUAL log_expression { /*$$ = new NequExpression($1, $3); */ }
+| add_expression OP_LEQUAL log_expression { /*$$ = new LeqExpression($1, $3); */ }
+| add_expression OP_GEQUAL log_expression { /*$$ = new GeqExpression($1, $3); */ }
 | add_expression { /* $$ = $1; */ }
 ;
 
-add_expression: term '+' add_expression { /* $$ = new AddExpression($1, $3); */ }
-| term '-' add_expression { /* $$ = new SubExpression($1, $3); */ }
-| term { /* $$ = $1; */ }
+add_expression: shift_expression '+' add_expression { /* $$ = new AddExpression($1, $3); */ }
+| shift_expression '-' add_expression { /* $$ = new SubExpression($1, $3); */ }
+| shift_expression '$' add_expression { }
+| shift_expression { /* $$ = $1; */ }
+;
+
+shift_expression: term OP_ASHIFTL shift_expression { }
+	| term OP_ASHIFTR shift_expression { }
+	| term { }
 ;
 
 term: factor '/' term { /* $$ = new DivExpression($1, $3); */ }
 | factor '%' term { /* $$ = new ModExpression($1, $3); */ }
 | factor '*' term { /* $$ = new MulExpression($1, $3); */ }
-| factor '^' term { /* $$ = new PowExpression($1, $3); */ }
+| factor '&' term { }
+| factor '|' term { }
 | factor { /* $$ = $1; */ }
 ;
 
-factor: TK_NUMBER { /* $$ = new NumExpression($1); */ }
+factor: expofactor '^' factor { }
+	| expofactor { }
+;
+
+expofactor: TK_NUMBER { /* $$ = new NumExpression($1); */ }
 | bool_literal { }
-| '-' factor { }
+| '-' expofactor { }
+| '~' expofactor { }
+| '!' expofactor { }
 | id_expressions { }
 | '(' expression ')' { /* $$ = $2; */ }
 ;

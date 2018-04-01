@@ -40,6 +40,7 @@ test: $(TARGET)
 	./$(TARGET) ./own_samples/for_loop.jl
 	./$(TARGET) ./samples/while.jl
 	./$(TARGET) ./own_samples/array_declaration.jl
+	./$(TARGET) ./samples/Bitwise.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<

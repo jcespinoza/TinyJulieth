@@ -54,6 +54,8 @@ letter [_a-zA-Z]
 "["                   { return '['; }
 "]"                   { return ']'; }
 "?"                   { return '?'; }
+"!"                   { return '!'; }
+"$"                   { return '$'; }
 "if"                  { return KW_IF; }
 "for"                 { return KW_FOR; }
 "else"                { return KW_ELSE; }
