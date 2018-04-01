@@ -6,12 +6,12 @@
 #include <list>
 #include <cmath>
 
-
 enum StatemetTypes{
   WhileStm,
   ForStm,
   IfStm,
   AssiStm,
+  ArrAssiStm,
   VarDeclStm,
   ArrDeclStm,
   FuncDeclStm,
@@ -317,6 +317,8 @@ public:
     statements.push_front(stm);
   }
 
+  void Print(string indent);
+
   int getType(){ return StmListStm; }
 
   std::list<Statement*> statements;
@@ -343,7 +345,7 @@ public:
 		this->valueExpression = expr;
 	}
 
-  int getType() { return AssiStm; };
+  int getType() { return ArrAssiStm; };
 
 	string varName;
   Expression* indexExpression;
@@ -365,28 +367,31 @@ public:
 
 class IfStatement: public Statement {
 public:
-	IfStatement(Expression* expr, Statement* st_true, Statement* st_false) {
+	IfStatement(Expression* expr, StatementList* st_true, StatementList* st_false) {
 		this->condition = expr;
 		this->trueStatements = st_true;
 		this->falseStatements = st_false;
 	}
 
+  void Print(string indent);
+
   int getType() { return IfStm; };
 
 	Expression* condition;
-	Statement* trueStatements;
-	Statement* falseStatements;
+	StatementList* trueStatements;
+	StatementList* falseStatements;
 };
 
 class ForStatement: public Statement {
 public:
-	ForStatement(char* varName, Expression* minExpr, Expression* maxExpr, Statement* st) {
+	ForStatement(char* varName, Expression* minExpr, Expression* maxExpr, StatementList* st) {
     this->varName = this->varName.append(varName);
 		this->minExpression = minExpr;
     this->maxExpression = maxExpr;
 		this->statements = st;
 	}
 
+  void Print(string indent);
   int getType() { return ForStm; };
 
   string varName;
@@ -394,20 +399,22 @@ public:
 	Expression* minExpression;
   Expression* maxExpression;
 
-	Statement* statements;
+	StatementList* statements;
 };
 
 class WhileStatement: public Statement {
 public:
-	WhileStatement(Expression* expr, Statement* st) {
+	WhileStatement(Expression* expr, StatementList* st) {
 		this->condition = expr;
 		this->statements = st;
 	}
 
+  void Print(string indent);
+
   int getType() { return WhileStm; };
 
 	Expression* condition;
-	Statement* statements;
+	StatementList* statements;
 };
 
 
@@ -483,19 +490,21 @@ public:
 
 class FuncDeclStatement : public Statement {
 public:
-  FuncDeclStatement(char* name, ParamList* params, ObjectType* type, Statement* statements){
+  FuncDeclStatement(char* name, ParamList* params, ObjectType* type, StatementList* statements){
     funcName = funcName.append(name);
     this->params = params;
     this->returnType = type;
     this->statements = statements;
   }
 
+  void Print(string indent);
+
   int getType(){ return FuncDeclStm; }
 
   string funcName;
   ObjectType* returnType;
   ParamList* params;
-  Statement* statements;
+  StatementList* statements;
 };
 
 class PassStatement : public Statement {
