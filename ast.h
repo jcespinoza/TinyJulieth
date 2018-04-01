@@ -19,7 +19,8 @@ enum StatemetTypes{
   PrintStm,
 
   StmListStm,
-  PassStm
+  PassStm,
+  RetStm
 };
 
 enum TypeNames{
@@ -424,6 +425,17 @@ public:
   PassStatement(){ }
 
   int getType(){ return PassStm;}
+};
+
+class ReturnStatement : public Statement {
+public:
+  ReturnStatement(Expression* expr){
+    expression = expr;
+  }
+
+  int getType(){ return RetStm;}
+
+  Expression* expression;
 };
 
 class JuliaDocument {
