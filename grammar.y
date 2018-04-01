@@ -128,7 +128,7 @@ statement: assign_statement { }
 ;
 
 if_statement: KW_IF expression opt_newlines statement_list
-	 							opt_otherwise KW_END
+	 							opt_otherwise KW_END { }
 ;
 
 opt_otherwise: elseif { }

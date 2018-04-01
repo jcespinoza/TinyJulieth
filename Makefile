@@ -43,6 +43,7 @@ test: $(TARGET)
 	./$(TARGET) ./samples/Bitwise.jl
 	./$(TARGET) ./own_samples/array_access.jl
 	./$(TARGET) ./samples/if.jl
+	./$(TARGET) ./samples/Factorial.jl
 
 gen.o: main.S
 	nasm -felf -o $@ $<
