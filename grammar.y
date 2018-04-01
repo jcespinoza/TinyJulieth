@@ -185,7 +185,7 @@ expression_list: expression ',' expression_list { $$ = $3; $3->AddNew($1); }
 ;
 
 assign_statement: TK_IDENTIFIER '=' expression {  $$ = new AssignStatement($1, $3); }
-	| TK_IDENTIFIER '[' expression ']' '=' expression { $$ = new PassStatement(); }
+	| TK_IDENTIFIER '[' expression ']' '=' expression { $$ = new ArrayItemAssignStatement($1, $3, $6); }
 ;
 
 assert_type: KW_INT { $$ = new ObjectType(IntType); }

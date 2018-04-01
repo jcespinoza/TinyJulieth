@@ -315,6 +315,21 @@ public:
 	Expression *valueExpression;
 };
 
+class ArrayItemAssignStatement: public Statement {
+public:
+	ArrayItemAssignStatement(char* varName, Expression* index, Expression *expr) {
+    this->indexExpression = indexExpression;
+		this->varName = this->varName.append(varName);
+		this->valueExpression = expr;
+	}
+
+  int getType() { return AssiStm; };
+
+	string varName;
+  Expression* indexExpression;
+	Expression *valueExpression;
+};
+
 class PrintStatement: public Statement {
 public:
 	PrintStatement(ExpressionList *expr, bool isLn) {
