@@ -80,15 +80,15 @@ letter [_a-zA-Z]
                         char* newText = new char[strlen(yytext)-1];
                         strncpy(newText, &yytext[1], strlen(yytext)-2);
 
-                        //yylval.string_t = strdup(newText);
+                        yylval.string_t = strdup(newText);
 
                         return TK_STRING;
                       }
 [0-9]+                {
-                        //yylval.int_t = strdup(yytext);
+                        yylval.int_t = atoi(strdup(yytext));
                         return TK_NUMBER;
                       }
-{letter}({letter}|[0-9])* { //yylval.string_t = strdup(yytext);
+{letter}({letter}|[0-9])* { yylval.string_t = strdup(yytext);
                         return TK_IDENTIFIER;
                       }
 <INITIAL><<EOF>>      { unput('\n'); return 0; }

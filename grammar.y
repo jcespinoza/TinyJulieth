@@ -45,6 +45,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 	Statement* statement_t;
 	StatementList* statementlist_t;
 	Expression* expression_t;
+	ExpressionList* expressionlist_t;
 	ParamList* paramlist_t;
 	FuncParam* param_t;
 	ObjectType* type_t;
@@ -73,6 +74,8 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %type<paramlist_t> opt_func_params func_params
 %type<param_t> param_decl
 %type<type_t> assert_type
+%type<expressionlist_t> print_args
+%type<expression_t> expression print_arg
 // %type<statement_t> assign_statement
 // %type<statement_t> if_statement
 // %type<statement_t> opt_else
@@ -133,7 +136,7 @@ statement_nl: statement newlines { $$ = $1; }
 
 statement: assign_statement { $$ = new PassStatement(); }
 	| decl_statement  { $$ = new PassStatement(); }
-	| print_statement  { $$ = new PassStatement(); }
+	| print_statement  { $$ = $1; }
 	| return_statement  { $$ = new PassStatement(); }
 	| while_statement  { $$ = new PassStatement(); }
 	| for_statement  { $$ = new PassStatement(); }
@@ -182,21 +185,21 @@ assert_type: KW_INT { $$ = new ObjectType(IntType); }
 	| KW_BOOL { $$ = new ObjectType(BoolType); }
 ;
 
-print_statement: KW_PRINT '(' print_args ')' { $$ = new PassStatement(); }
-	| KW_PRINTLN '(' print_args ')' { }
+print_statement: KW_PRINT '(' print_args ')' { $$ = new PrintStatement($3, false); }
+	| KW_PRINTLN '(' print_args ')' { $$ = new PrintStatement($3, true); }
 ;
 
-print_args: print_arg ',' print_args { }
-	| print_arg { }
+print_args: print_arg ',' print_args { $$ = $3; $3->AddNew($1); }
+	| print_arg { $$ = new ExpressionList(); $$->AddNew($1);  }
 ;
 
-print_arg: expression { }
-	| TK_STRING { }
+print_arg: expression { $$ = $1; }
+	| TK_STRING { $$ = new StrExpression($1); }
 ;
 
-expression: log_expression OP_LOGAND expression { }
-	| log_expression OP_LOGOR expression { }
-	| log_expression { }
+expression: log_expression OP_LOGAND expression { $$ = new NumExpression(0); }
+	| log_expression OP_LOGOR expression { $$ = new NumExpression(0); }
+	| log_expression { $$ = new NumExpression(0); }
 ;
 
 log_expression: add_expression '<' log_expression { /*$$ = new LthanExpression($1, $3); */ }

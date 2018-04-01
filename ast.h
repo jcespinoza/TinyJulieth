@@ -75,10 +75,10 @@ class ExpressionList {
 public:
   ExpressionList(){ }
   void AddNew(Expression* exp){
-    exps.push_front(exp);
+    expressions.push_front(exp);
   }
 
-  std::list<Expression*> exps;
+  std::list<Expression*> expressions;
 };
 
 class NumExpression : public Expression{
@@ -316,13 +316,15 @@ public:
 
 class PrintStatement: public Statement {
 public:
-	PrintStatement(ExpressionList *expr) {
+	PrintStatement(ExpressionList *expr, bool isLn) {
 		this->expressionList = expr;
+    withNewLine = isLn;
 	}
 
   int getType() { return PrintStm; };
 
 	ExpressionList* expressionList;
+  bool withNewLine = false;
 };
 
 class IfStatement: public Statement {
