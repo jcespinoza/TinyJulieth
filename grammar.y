@@ -197,7 +197,8 @@ log_expression: add_expression '<' log_expression { /*$$ = new LthanExpression($
 
 add_expression: shift_expression '+' add_expression { /* $$ = new AddExpression($1, $3); */ }
 | shift_expression '-' add_expression { /* $$ = new SubExpression($1, $3); */ }
-| shift_expression '$' add_expression { }
+| shift_expression '$' add_expression { } //XOR
+| shift_expression '|' add_expression { }
 | shift_expression { /* $$ = $1; */ }
 ;
 
@@ -210,7 +211,6 @@ term: factor '/' term { /* $$ = new DivExpression($1, $3); */ }
 | factor '%' term { /* $$ = new ModExpression($1, $3); */ }
 | factor '*' term { /* $$ = new MulExpression($1, $3); */ }
 | factor '&' term { }
-| factor '|' term { }
 | factor { /* $$ = $1; */ }
 ;
 
