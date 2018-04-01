@@ -169,12 +169,13 @@ return_statement: KW_RETURN expression { $$ = new ReturnStatement($2); }
 
 decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { }
 ;
+
 type_and_value: assert_type '=' expression { }
 	| KW_ARRAY '{' assert_type '}' '=' '[' expression_list ']' { }
 ;
 
-expression_list: expression ',' expression_list { }
-	| expression { }
+expression_list: expression ',' expression_list { $$ = $3; $3->AddNew($1); }
+	| expression { $$ = new ExpressionList(); $$->AddNew($1); }
 ;
 
 assign_statement: TK_IDENTIFIER '=' expression { }
