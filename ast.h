@@ -345,13 +345,16 @@ public:
 
 class ForStatement: public Statement {
 public:
-	ForStatement(Expression* minExpr, Expression* maxExpr, Statement* st) {
+	ForStatement(char* varName, Expression* minExpr, Expression* maxExpr, Statement* st) {
+    this->varName = this->varName.append(varName);
 		this->minExpression = minExpr;
     this->maxExpression = maxExpr;
 		this->statements = st;
 	}
 
   int getType() { return ForStm; };
+
+  string varName;
 
 	Expression* minExpression;
   Expression* maxExpression;

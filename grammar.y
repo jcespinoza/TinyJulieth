@@ -139,7 +139,7 @@ statement: assign_statement { $$ = new PassStatement(); }
 	| print_statement  { $$ = $1; }
 	| return_statement  { $$ = $1; }
 	| while_statement  { $$ = $1; }
-	| for_statement  { $$ = new PassStatement(); }
+	| for_statement  { $$ = $1; }
 	| if_statement  { $$ = new PassStatement(); }
 	;
 
@@ -159,7 +159,7 @@ else_clause: KW_ELSE opt_newlines statement_list { }
 ;
 
 for_statement: KW_FOR TK_IDENTIFIER '=' expression ':' expression
-	opt_newlines statement_list KW_END { }
+	opt_newlines statement_list KW_END { $$ = new ForStatement($2, $4, $6, $8); }
 ;
 
 while_statement: KW_WHILE expression opt_newlines statement_list KW_END { $$ = new WhileStatement($2, $4); }
