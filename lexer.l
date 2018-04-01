@@ -71,6 +71,8 @@ letter [_a-zA-Z]
 "continue"            { return KW_CONTINUE; }
 "local"               { return KW_LOCAL; }
 "global"              { return KW_GLOBAL; }
+"true"                { return KW_TRUE; }
+"false"               { return KW_FALSE;}
 
 \"([^\"\\]|\\.)*\"    {
                         char* newText = new char[strlen(yytext)-1];

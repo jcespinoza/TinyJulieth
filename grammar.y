@@ -52,7 +52,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %token OP_ASHIFTL OP_ASHIFTR
 %token KW_IF KW_FOR KW_ELSE KW_ELSEIF KW_PRINT KW_PRINTLN KW_WHILE KW_BOOL
 %token KW_INT KW_FUNCTION KW_END KW_RETURN KW_BREAK KW_CONTINUE
-%token KW_LOCAL KW_GLOBAL KW_ARRAY
+%token KW_LOCAL KW_GLOBAL KW_ARRAY KW_TRUE KW_FALSE
 %token TK_ERROR TK_NEWLINE
 
 %token<string_t> TK_NUMBER "number"
@@ -186,9 +186,14 @@ term: factor '/' term { /* $$ = new DivExpression($1, $3); */ }
 ;
 
 factor: TK_NUMBER { /* $$ = new NumExpression($1); */ }
+| bool_literal { }
 | '-' factor { }
 | id_expressions { }
 | '(' expression ')' { /* $$ = $2; */ }
+;
+
+bool_literal: KW_TRUE { }
+	| KW_FALSE { }
 ;
 
 id_expressions: TK_IDENTIFIER { /*$$ = new IdExpression($1); */}
