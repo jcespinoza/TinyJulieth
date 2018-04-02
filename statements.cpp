@@ -63,7 +63,7 @@ void StatementList::CheckSemantics(Scope* scope){
 }
 
 void AssignStatement::CheckSemantics(Scope* scope){
-
+  scope->AssertVariableExists(varName);
 }
 
 void ArrayItemAssignStatement::CheckSemantics(Scope* scope){
@@ -114,6 +114,11 @@ void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
 
 void FuncDeclStatement::CheckSemantics(Scope* scope){
   functionScope = new Scope(scope, FunctionScopeT);
+  //register pareters as if they were normal variables
+  for(auto& param : params->paramList){
+    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1);
+    functionScope->variables[param->paramName] = newVar;
+  }
   statements->CheckSemantics(functionScope);
 }
 

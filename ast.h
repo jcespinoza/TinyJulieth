@@ -124,7 +124,13 @@ public:
   bool IsGlobal(){ return scopeType == GlobalScopeT; }
 
   bool VariableExists(string varName){
-    return variables.find(varName) != variables.end();
+    bool existsInCurrentContext = variables.find(varName) != variables.end();
+
+    if(existsInCurrentContext) return true;
+
+    if(parentScope == NULL) return false;
+
+    return parentScope->VariableExists(varName);
   }
 
   void AssertVariableDoesntExist(string name){

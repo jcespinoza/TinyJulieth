@@ -62,7 +62,7 @@ void JuliaDocument::PrintDoc(){
     cout << f.first << "(" << ")::"<< f.second->returnType <<"\n";
   }
   for(auto& v: globalScope->variables){
-    cout << v.first << "::"<< v.second->typeCode << " [" << v.second->byteSize <<"]\n";
+    cout << v.first << "::"<< v.second->typeCode << " [" << v.second->items <<"]\n";
   }
 }
 
