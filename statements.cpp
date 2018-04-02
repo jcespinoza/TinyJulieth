@@ -108,7 +108,7 @@ void FuncDeclStatement::CheckSemantics(Scope* scope){
 }
 
 void InvokeStatement::CheckSemantics(Scope* scope){
-
+  scope->document->AsssertFunctionExists(funcName);
 }
 
 void ContinueStatement::CheckSemantics(Scope* scope){
