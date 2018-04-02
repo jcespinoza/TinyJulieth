@@ -31,22 +31,25 @@ main.S: $(TARGET)
 	./$(TARGET) input1.txt > $@
 
 test: $(TARGET)
-	./$(TARGET) ./samples/comments.jl
-	./$(TARGET) ./samples/block_comments.jl
-	./$(TARGET) ./samples/helloworld.jl
-	./$(TARGET) ./samples/Arithmetic.jl
 	./$(TARGET) ./own_samples/empty_function.jl
-	./$(TARGET) ./samples/Relational.jl
 	./$(TARGET) ./own_samples/for_loop.jl
-	./$(TARGET) ./samples/while.jl
 	./$(TARGET) ./own_samples/array_declaration.jl
-	./$(TARGET) ./samples/Bitwise.jl
 	./$(TARGET) ./own_samples/array_access.jl
-	./$(TARGET) ./samples/if.jl
+	./$(TARGET) ./samples/Arithmetic.jl
+	./$(TARGET) ./samples/Arrays.jl
+	./$(TARGET) ./samples/Bitwise.jl
+	./$(TARGET) ./samples/BubbleSort.jl
+	./$(TARGET) ./samples/comments.jl
 	./$(TARGET) ./samples/Factorial.jl
 	./$(TARGET) ./samples/functions.jl
-	./$(TARGET) ./samples/BubbleSort.jl
-	./$(TARGET) ./samples/Arrays.jl
+	./$(TARGET) ./samples/helloworld.jl
+	./$(TARGET) ./samples/if.jl
+	./$(TARGET) ./samples/printFormat.jl
+	./$(TARGET) ./samples/QuickSort.jl
+	./$(TARGET) ./samples/Relational.jl
+	./$(TARGET) ./samples/several.jl
+	./$(TARGET) ./samples/while_break.jl
+	./$(TARGET) ./samples/while.jl
 	./$(TARGET) ./own_samples/raim_test.jl
 
 gen.o: main.S
