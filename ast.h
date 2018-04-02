@@ -139,6 +139,20 @@ public:
     }
   }
 
+  bool IsInLoop(){
+    if(scopeType == ForScopeT || scopeType == WhileScopeT){
+      return true;
+    }
+    if(parentScope == NULL) return false;
+    return parentScope->IsInLoop();
+  }
+
+  void AssertIsInLoop(string message){
+    if(!IsInLoop()){
+      throw runtime_error(message);
+    }
+  }
+
   JuliaDocument* document;
   Scope* parentScope;
   map<string, VarDescriptor*> variables;
