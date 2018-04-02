@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string>
 #include <list>
+#include <map>
 #include <cmath>
 
 enum StatemetTypes{
@@ -70,7 +71,48 @@ enum ExpressionTypes{
   EquExp
 };
 
+enum ScopeType{
+  GlobalScopeT,
+  FunctionScopeT,
+  WhileScopeT,
+  IfScopeT,
+  ForScopeT
+};
+
 using namespace std;
+
+class JuliaDocument;
+
+class VarDescriptor {
+public:
+  VarDescriptor(string name, int type, int bytes){
+    varName = name;
+    typeCode = type;
+    byteSize = bytes;
+  }
+
+  string varName;
+  int typeCode;
+  int byteSize;
+};
+
+class Scope {
+public:
+  Scope(Scope* parent, int type ){
+    parentScope = parent;
+    if(parent != NULL){
+      document = parent->document;
+    }
+    scopeType = type;
+  }
+
+  bool isGlobal(){ return scopeType == GlobalScopeT; }
+
+  JuliaDocument* document;
+  Scope* parentScope;
+  map<string, VarDescriptor> variables;
+  int scopeType = GlobalScopeT;
+};
 
 class Expression {
 public:
@@ -143,8 +185,6 @@ public:
   ExpressionList* arguments;
   std::string funcName;
 };
-
-
 
 class StrExpression : public Expression{
 public:
@@ -545,6 +585,13 @@ public:
 
   void Print();
 
+  void FirstPass();
+
+  void InitLabels();
+
+  string GetLabelFor(string kind, bool includeDot);
+
+  map<string, int> labels;
   StatementList* statements;
 };
 
