@@ -107,6 +107,10 @@ void FuncDeclStatement::CheckSemantics(Scope* scope){
   statements->CheckSemantics(functionScope);
 }
 
+void InvokeStatement::CheckSemantics(Scope* scope){
+
+}
+
 void ContinueStatement::CheckSemantics(Scope* scope){
 
 }

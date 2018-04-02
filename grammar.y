@@ -73,6 +73,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 %type<statement_t> statement statement_nl while_statement for_statement
 %type<statement_t> print_statement func_declaration return_statement if_statement
 %type<statement_t> assign_statement continue_statement break_statement
+%type<statement_t> invoke_statement
 
 %type<vardecl_t> decl_statement type_and_value
 %type<paramlist_t> opt_func_params func_params
@@ -137,6 +138,7 @@ statement_nl: statement newlines { $$ = $1; }
 
 statement: assign_statement { $$ = $1; }
 	| decl_statement  { $$ = $1; }
+	| invoke_statement { $$ = $1; }
 	| print_statement  { $$ = $1; }
 	| return_statement  { $$ = $1; }
 	| while_statement  { $$ = $1; }
@@ -180,6 +182,8 @@ return_statement: KW_RETURN expression { $$ = new ReturnStatement($2); }
 
 decl_statement: TK_IDENTIFIER TK_COLONS type_and_value { $$ = $3; $$->SetVarName($1); }
 ;
+
+invoke_statement: TK_IDENTIFIER '(' opt_call_args ')' { $$ = new InvokeStatement($1, $3); }
 
 type_and_value: assert_type '=' expression { $$ = new ScalarVarDeclStatement((char*)"n", $1, $3); }
 	| KW_ARRAY '{' assert_type '}' '=' '[' expression_list ']' {

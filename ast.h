@@ -26,7 +26,9 @@ enum StatemetTypes{
   RetStm,
 
   ScVarDeclStm,
-  ArVarDeclStm
+  ArVarDeclStm,
+
+  InvokeStm
 };
 
 enum TypeNames{
@@ -115,7 +117,7 @@ public:
     if(parent != NULL){
       document = parent->document;
     }
-    
+
     scopeType = type;
   }
 

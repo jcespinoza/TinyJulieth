@@ -214,6 +214,21 @@ public:
 	Scope* functionScope;
 };
 
+class InvokeStatement: public Statement{
+public:
+	InvokeStatement(char* name, ExpressionList* args){
+		funcName = funcName.append( name);
+		arguments = args;
+	}
+
+	int getType(){ return InvokeStm; }
+	void CheckSemantics(Scope* scope);
+
+	string funcName;
+	ExpressionList* arguments;
+
+};
+
 class PassStatement : public Statement {
 public:
   PassStatement(){ }

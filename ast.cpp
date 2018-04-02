@@ -111,6 +111,9 @@ void JuliaDocument::FirstPass() {
       case PrintStm: {
         break;
       }
+      case InvokeStm: {
+        break;
+      }
       default: {
         //Well, no such thing is possible to occur so...
         cout << "YOU FORGOT ON KIND OF STATEMENT: " << stmType << "\n";
