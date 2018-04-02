@@ -48,7 +48,15 @@ void JuliaDocument::RegisterFunctions(){
           new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int));
           func->parameters.push_back(parameter);
       }
+      functions.push_back(func);
     }
+  }
+}
+
+void JuliaDocument::PrintDoc(){
+  return;
+  for(auto& f: functions){
+    cout << f->funcName << "(" << ")\n";
   }
 }
 

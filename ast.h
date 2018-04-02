@@ -168,6 +168,7 @@ public:
   void Print();
 
   void Process();
+  void PrintDoc();
 
   void FirstPass();
   void RegisterFunctions();
