@@ -147,6 +147,20 @@ public:
     return parentScope->IsInLoop();
   }
 
+  bool IsInFunction(){
+    if(scopeType == FunctionScopeT){
+      return true;
+    }
+    if(parentScope == NULL) return false;
+    return parentScope->IsInFunction();
+  }
+
+  void AssertIsInFunction(string message){
+    if(!IsInFunction()){
+      throw runtime_error(message);
+    }
+  }
+
   void AssertIsInLoop(string message){
     if(!IsInLoop()){
       throw runtime_error(message);

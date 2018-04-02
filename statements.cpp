@@ -113,16 +113,11 @@ void InvokeStatement::CheckSemantics(Scope* scope){
 }
 
 void ContinueStatement::CheckSemantics(Scope* scope){
-//Check it is inside a loop
-//Obtain the label_being of the loop statement
-//err this is when code is being generated
   scope->AssertIsInLoop("Continue statement not valid in this context.\n");
 }
 
 void BreakStatement::CheckSemantics(Scope* scope){
   scope->AssertIsInLoop("Break statement not valid in this context.\n");
-//Obtain the label_end of the current loop statement
-//Possibly a function to get the innermost loops in the context nesting could  be useful
 }
 
 void ReturnStatement::CheckSemantics(Scope* scope){
@@ -130,4 +125,5 @@ void ReturnStatement::CheckSemantics(Scope* scope){
   if(currentScope->scopeType == GlobalScopeT){
     throw runtime_error("Return statement is not valid in the global scope.\n");
   }
+  scope->AssertIsInFunction("Return statements are only valid inside a function.\n");
 }
