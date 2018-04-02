@@ -96,6 +96,18 @@ public:
   int byteSize;
 };
 
+class FuncDescriptor{
+public:
+  FuncDescriptor(string name, int type){
+    funcName = name;
+    returnType = type;
+  }
+
+  string funcName;
+  int returnType;
+  list<VarDescriptor*> parameters;
+};
+
 class Scope {
 public:
   Scope(Scope* parent, int type ){
@@ -110,7 +122,7 @@ public:
 
   JuliaDocument* document;
   Scope* parentScope;
-  map<string, VarDescriptor> variables;
+  map<string, VarDescriptor*> variables;
   int scopeType = GlobalScopeT;
 };
 
@@ -155,14 +167,19 @@ public:
 
   void Print();
 
+  void Process();
+
   void FirstPass();
+  void RegisterFunctions();
 
   void InitLabels();
 
   string GetLabelFor(string kind, bool includeDot);
 
   Scope* globalScope;
+
   map<string, int> labels;
+  list<FuncDescriptor*> functions;
   StatementList* statements;
 };
 

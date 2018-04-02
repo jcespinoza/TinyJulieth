@@ -32,39 +32,72 @@ void JuliaDocument::InitLabels(){
   labels["str"] = 0;
 }
 
+void JuliaDocument::Process(){
+  FirstPass();
+}
+
+void JuliaDocument::RegisterFunctions(){
+  for(auto& stm : statements->statements){
+    int stmType = stm->getType();
+    if(stmType == FuncDeclStm){
+      FuncDeclStatement* funcDecl = (FuncDeclStatement*)stm;
+      FuncDescriptor* func =
+        new FuncDescriptor(funcDecl->funcName, funcDecl->returnType->typeCode);
+      for(auto& param: funcDecl->params->paramList){
+        VarDescriptor* parameter =
+          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int));
+          func->parameters.push_back(parameter);
+      }
+    }
+  }
+}
+
 void JuliaDocument::FirstPass() {
   InitLabels();
   globalScope = new Scope(NULL, GlobalScopeT);
+  RegisterFunctions();
+
   for(auto& stm : statements->statements){
     int stmType = stm->getType();
     switch(stmType){
       case FuncDeclStm: {
         FuncDeclStatement* funcDecl = (FuncDeclStatement*)stm;
+        break;
       }
       case ScVarDeclStm: {
         ScalarVarDeclStatement* varDecl = (ScalarVarDeclStatement*)stm;
+        break;
       }
       case ArVarDeclStm: {
         ArrayVarDeclStatement* varDecl = (ArrayVarDeclStatement*)stm;
+        break;
       }
       case AssiStm: {
         AssignStatement* assStm = (AssignStatement*)stm;
+        break;
       }
       case ArrAssiStm: {
         ArrayItemAssignStatement* assStm = (ArrayItemAssignStatement*)stm;
+        break;
       }
       case IfStm: {
         IfStatement* ifStm = (IfStatement*)stm;
+        break;
       }
       case ForStm: {
         ForStatement* forStm = (ForStatement*)stm;
+        break;
       }
       case WhileStm: {
         WhileStatement* whileStm = (WhileStatement*)stm;
+        break;
+      }
+      case PrintStm: {
+        break;
       }
       default: {
         //Well, no such thing is possible to occur so...
-        cout << "YOU FORGOT ON KIND OF EXPRESSION\n";
+        cout << "YOU FORGOT ON KIND OF STATEMENT: " << stmType << "\n";
       }
     }
   }

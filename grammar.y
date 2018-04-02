@@ -90,7 +90,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 
 %%
 
-root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2; YYTRACE("PASSED: File with Statements\n"); }
+root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2; document->Process(); YYTRACE("PASSED: File with Statements\n"); }
 	| opt_newlines { document = new JuliaDocument(); document->statements = new StatementList();  YYTRACE("PASSED: Empty File\n"); }
 ;
 
