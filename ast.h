@@ -87,15 +87,15 @@ class JuliaDocument;
 
 class VarDescriptor {
 public:
-  VarDescriptor(string name, int type, int bytes){
+  VarDescriptor(string name, int type, int items){
     varName = name;
     typeCode = type;
-    byteSize = bytes;
+    this->items = items;
   }
 
   string varName;
   int typeCode;
-  int byteSize;
+  int items;
 };
 
 class FuncDescriptor{

@@ -94,7 +94,7 @@ void WhileStatement::CheckSemantics(Scope* scope){
 void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, sizeof(int));
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1);
 
   scope->variables[varName] = newVar;
 }
@@ -102,7 +102,7 @@ void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
 void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount()*sizeof(int));
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount());
 
   scope->variables[varName] = newVar;
 }
