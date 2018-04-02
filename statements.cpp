@@ -75,7 +75,12 @@ void PrintStatement::CheckSemantics(Scope* scope){
 }
 
 void IfStatement::CheckSemantics(Scope* scope){
+  label_begin = scope->document->GetLabelFor("if");
+  Scope* localScope = new Scope(scope, IfScopeT);
+  trueStatements->CheckSemantics(localScope);
 
+  localScope = new Scope(scope, IfScopeT);
+  falseStatements->CheckSemantics(localScope);
 }
 
 void ForStatement::CheckSemantics(Scope* scope){
@@ -87,7 +92,7 @@ void ForStatement::CheckSemantics(Scope* scope){
 
 void WhileStatement::CheckSemantics(Scope* scope){
   label_begin = scope->document->GetLabelFor("while");
-  localScope = new Scope(scope, ForScopeT);
+  localScope = new Scope(scope, WhileScopeT);
   statements->CheckSemantics(localScope);
 }
 
