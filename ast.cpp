@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
-#include "ast.h"
+#include "statements.h"
 
 void JuliaDocument::Print() {
   string indent = ">";
@@ -34,5 +34,43 @@ void JuliaDocument::InitLabels(){
 
 void JuliaDocument::FirstPass() {
   InitLabels();
+  globalScope = new Scope(NULL, GlobalScopeT);
+  for(auto& stm : statements->statements){
+    int stmType = stm->getType();
+    switch(stmType){
+      case FuncDeclStm: {
+        FuncDeclStatement* funcDecl = (FuncDeclStatement*)stm;
+      }
+      case ScVarDeclStm: {
+        ScalarVarDeclStatement* varDecl = (ScalarVarDeclStatement*)stm;
+      }
+      case ArVarDeclStm: {
+        ArrayVarDeclStatement* varDecl = (ArrayVarDeclStatement*)stm;
+      }
+      case AssiStm: {
+        AssignStatement* assStm = (AssignStatement*)stm;
+      }
+      case ArrAssiStm: {
+        ArrayItemAssignStatement* assStm = (ArrayItemAssignStatement*)stm;
+      }
+      case IfStm: {
+        IfStatement* ifStm = (IfStatement*)stm;
+      }
+      case ForStm: {
+        ForStatement* forStm = (ForStatement*)stm;
+      }
+      case WhileStm: {
+        WhileStatement* whileStm = (WhileStatement*)stm;
+      }
+      default: {
+        //Well, no such thing is possible to occur so...
+        cout << "YOU FORGOT ON KIND OF EXPRESSION\n";
+      }
+    }
+  }
+  //Check which statements are variable declarations
+  //When a variable is assigned a value, complain it doesn't exist if it hasn't been declared
+  //Begin asking for expression type
+  //Associate a type to each expression when found, they can be integer or boolean
   //attemp tp register variables anywhere they're found
 }

@@ -161,6 +161,7 @@ public:
 
   string GetLabelFor(string kind, bool includeDot);
 
+  Scope* globalScope;
   map<string, int> labels;
   StatementList* statements;
 };
