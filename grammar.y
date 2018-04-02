@@ -1,5 +1,6 @@
 %code requires {
-	#include "ast.h"
+	#include "expressions.h"
+	#include "statements.h"
 }
 %{
 #include <stdio.h>

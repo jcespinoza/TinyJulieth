@@ -12,7 +12,7 @@ $(TARGET): $(OBJ_FILES)
 $(LEXER_SRC): lexer.l
 	flex -o $@ $^
 
-$(PARSER_SRC): grammar.y
+$(PARSER_SRC): grammar.y ast.h expressions.h statements.h
 	bison -rall -t --defines=tokens.h -o $@ $<
 
 %.o:%.cpp

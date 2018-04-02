@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
-#include "ast.h"
+#include "statements.h"
 
 void StatementList::Print(string indent) {
   for (auto& var : statements) {
