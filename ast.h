@@ -118,7 +118,11 @@ public:
     scopeType = type;
   }
 
-  bool isGlobal(){ return scopeType == GlobalScopeT; }
+  bool IsGlobal(){ return scopeType == GlobalScopeT; }
+
+  bool VariableExists(string varName){
+    return variables.find(varName) != variables.end();
+  }
 
   JuliaDocument* document;
   Scope* parentScope;

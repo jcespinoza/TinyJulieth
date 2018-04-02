@@ -59,7 +59,7 @@ void JuliaDocument::RegisterGlobalVariables(){
     if(stmType == ScVarDeclStm || stmType == ArVarDeclStm){
       VarDeclStatement* var = (VarDeclStatement*)stm;
       VarDescriptor* newVar = new VarDescriptor(var->varName, var->varType->typeCode, sizeof(int));
-      if(globalScope->variables.find(var->varName) != globalScope->variables.end()){
+      if(globalScope->VariableExists(var->varName)){
         throw runtime_error("Variable " + var->varName + " has already been declared\n");
       }else{
         globalScope->variables[var->varName] = newVar;
