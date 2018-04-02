@@ -1,7 +1,7 @@
 TARGET=julieth
 PARSER_SRC=grammar.cpp
 LEXER_SRC=lexer.cpp
-SRCFILES=$(PARSER_SRC) $(LEXER_SRC) ast.cpp main.cpp
+SRCFILES=$(PARSER_SRC) $(LEXER_SRC) ast.cpp statements.cpp main.cpp
 OBJ_FILES=${SRCFILES:.cpp=.o}
 .PHONY: clean
 .SUFFIXES:
