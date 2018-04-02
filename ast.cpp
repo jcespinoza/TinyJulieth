@@ -46,9 +46,21 @@ void JuliaDocument::RegisterFunctions(){
       for(auto& param: funcDecl->params->paramList){
         VarDescriptor* parameter =
           new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int));
-          func->parameters.push_back(parameter);
+        func->parameters.push_back(parameter);
       }
       functions.push_back(func);
+    }
+  }
+}
+
+void JuliaDocument::RegisterGlobalVariables(){
+  for(auto& stm : statements->statements){
+    int stmType = stm->getType();
+    if(stmType == ScVarDeclStm || stmType == ArVarDeclStm){
+      VarDeclStatement* var = (VarDeclStatement*)stm;
+      VarDescriptor* newVar = new VarDescriptor(var->varName, var->varType->typeCode, sizeof(int));
+      //Check if doesn't exist first
+      globalScope->variables[var->varName] = newVar;
     }
   }
 }
@@ -56,7 +68,10 @@ void JuliaDocument::RegisterFunctions(){
 void JuliaDocument::PrintDoc(){
   return;
   for(auto& f: functions){
-    cout << f->funcName << "(" << ")\n";
+    cout << f->funcName << "(" << ")::"<< f->returnType <<"\n";
+  }
+  for(auto& v: globalScope->variables){
+    cout << v.first << "::"<< v.second->typeCode <<"\n";
   }
 }
 
@@ -64,6 +79,7 @@ void JuliaDocument::FirstPass() {
   InitLabels();
   globalScope = new Scope(NULL, GlobalScopeT);
   RegisterFunctions();
+  RegisterGlobalVariables();
 
   for(auto& stm : statements->statements){
     int stmType = stm->getType();

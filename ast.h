@@ -172,6 +172,7 @@ public:
 
   void FirstPass();
   void RegisterFunctions();
+  void RegisterGlobalVariables();
 
   void InitLabels();
 
