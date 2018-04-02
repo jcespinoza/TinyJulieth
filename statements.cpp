@@ -57,6 +57,7 @@ void StatementList::CheckSemantics(Scope* scope){
   for(auto& stm : statements){
     if(stm != NULL){
       stm->CheckSemantics(scope);
+      stm->currentScope = scope;
     }
   }
 }
@@ -124,5 +125,8 @@ void BreakStatement::CheckSemantics(Scope* scope){
 }
 
 void ReturnStatement::CheckSemantics(Scope* scope){
-
+  //Check the current scope is not the global scope
+  if(currentScope->scopeType == GlobalScopeT){
+    throw runtime_error("Return statement is not valid in the global scope.\n");
+  }
 }

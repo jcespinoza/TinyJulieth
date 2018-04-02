@@ -15,7 +15,7 @@ letter [_a-zA-Z]
 
 [ \t]                 { /* Nada */ }
 #=                    { BEGIN(comments); }
-#[^=][^\n]*[\r]?\n    { unput('\n'); }
+#[^=][^\n]*[\r]?      { }
 \r\n                  {
                         return TK_NEWLINE;
                       }
