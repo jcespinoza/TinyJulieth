@@ -2,6 +2,7 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include <stdexcept>
 #include "ast.h"
 #include "tokens.h"
 
@@ -26,8 +27,11 @@ int main(int argc, char *argv[]) {
 	}
 	errors = 0;
 	yylineno = 1;
-
-	yyparse();
-  
+	try{
+		yyparse();
+	}catch(std::exception& e){
+		cerr << "ERROR: " << e.what() << endl;
+		return 3;
+	}
   return errors > 0;
 }

@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <stdexcept>
 #include "statements.h"
 
 void JuliaDocument::Print() {
@@ -25,7 +26,6 @@ string JuliaDocument::GetLabelFor(string kind, bool includeDot){
 }
 
 void JuliaDocument::InitLabels(){
-  //set all label kinds to zero
   labels["for"] = 0;
   labels["if"] = 0;
   labels["while"] = 0;
@@ -59,8 +59,11 @@ void JuliaDocument::RegisterGlobalVariables(){
     if(stmType == ScVarDeclStm || stmType == ArVarDeclStm){
       VarDeclStatement* var = (VarDeclStatement*)stm;
       VarDescriptor* newVar = new VarDescriptor(var->varName, var->varType->typeCode, sizeof(int));
-      //Check if doesn't exist first
-      globalScope->variables[var->varName] = newVar;
+      if(globalScope->variables.find(var->varName) != globalScope->variables.end()){
+        throw runtime_error("Variable " + var->varName + " has already been declared\n");
+      }else{
+        globalScope->variables[var->varName] = newVar;
+      }
     }
   }
 }
@@ -125,7 +128,7 @@ void JuliaDocument::FirstPass() {
       }
     }
   }
-  //Check which statements are variable declarations
+
   //When a variable is assigned a value, complain it doesn't exist if it hasn't been declared
   //Begin asking for expression type
   //Associate a type to each expression when found, they can be integer or boolean
