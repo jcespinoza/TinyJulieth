@@ -56,8 +56,8 @@ void IfStatement::Print(string indent) {
 void StatementList::CheckSemantics(Scope* scope){
   for(auto& stm : statements){
     if(stm != NULL){
-      stm->CheckSemantics(scope);
       stm->currentScope = scope;
+      stm->CheckSemantics(scope);
     }
   }
 }
