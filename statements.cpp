@@ -101,6 +101,10 @@ void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
 
 void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
+
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount()*sizeof(int));
+
+  scope->variables[varName] = newVar;
 }
 
 void FuncDeclStatement::CheckSemantics(Scope* scope){

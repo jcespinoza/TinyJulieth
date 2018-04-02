@@ -176,7 +176,9 @@ public:
 class Expression {
 public:
   virtual int getType() = 0;
+  //virtual int getExpType() = 0;
   Scope* currentScope;
+  //virtual void CheckSemantics();
 };
 
 class ExpressionList {
@@ -187,6 +189,7 @@ public:
   }
 
   std::list<Expression*> expressions;
+  int getCount(){ return expressions.size(); }
 };
 
 class Statement {
