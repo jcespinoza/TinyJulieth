@@ -112,11 +112,15 @@ void InvokeStatement::CheckSemantics(Scope* scope){
 }
 
 void ContinueStatement::CheckSemantics(Scope* scope){
-
+//Check it is inside a loop
+//Obtain the label_being of the loop statement
+//err this is when code is being generated
 }
 
 void BreakStatement::CheckSemantics(Scope* scope){
-
+//Check it is inside a for_loop
+//Obtain the label_end of the current loop statement
+//Possibly a function to get the innermost loops in the context nesting could  be useful
 }
 
 void ReturnStatement::CheckSemantics(Scope* scope){

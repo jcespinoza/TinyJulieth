@@ -148,6 +148,7 @@ public:
 class Expression {
 public:
   virtual int getType() = 0;
+  Scope* currentScope;
 };
 
 class ExpressionList {
@@ -164,6 +165,8 @@ class Statement {
 public:
   virtual int getType() = 0;
   virtual void CheckSemantics(Scope* scope) = 0;
+
+  Scope* currentScope;
 };
 
 class StatementList : public Statement{
