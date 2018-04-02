@@ -115,6 +115,7 @@ public:
     if(parent != NULL){
       document = parent->document;
     }
+    
     scopeType = type;
   }
 
@@ -122,6 +123,18 @@ public:
 
   bool VariableExists(string varName){
     return variables.find(varName) != variables.end();
+  }
+
+  void AssertVariableDoesntExist(string name){
+    if(VariableExists(name)){
+      throw runtime_error("Variable " + name + " has already been declared\n");
+    }
+  }
+
+  void AssertVariableExists(string name){
+    if(!VariableExists(name)){
+      throw runtime_error("Variable " + name + " is not accessible in the current context or it hasn't been declared.\n");
+    }
   }
 
   JuliaDocument* document;
@@ -180,15 +193,30 @@ public:
   void FirstPass();
   void RegisterFunctions();
   void RegisterGlobalVariables();
+  bool FunctionExists(string name){
+    return functions.find(name) != functions.end();
+  }
+
+  void AsssertFunctionDoesnExist(string name){
+    if(FunctionExists(name)){
+      throw runtime_error("Function " + name + " has already been defined.\n");
+    }
+  }
+
+  void AsssertFunctionExists(string name){
+    if(!FunctionExists(name)){
+      throw runtime_error("Function " + name + " does not exist.\n");
+    }
+  }
 
   void InitLabels();
 
-  string GetLabelFor(string kind, bool includeDot);
+  string GetLabelFor(string kind, bool includeDot = false);
 
   Scope* globalScope;
 
   map<string, int> labels;
-  list<FuncDescriptor*> functions;
+  map<string, FuncDescriptor*> functions;
   StatementList* statements;
 };
 

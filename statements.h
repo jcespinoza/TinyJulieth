@@ -70,6 +70,8 @@ public:
 	Expression* condition;
 	StatementList* trueStatements;
 	StatementList* falseStatements;
+	string label_begin;
+	string label_end;
 };
 
 class ForStatement: public Statement {
@@ -91,6 +93,9 @@ public:
   Expression* maxExpression;
 
 	StatementList* statements;
+	Scope* localScope;
+	string label_begin;
+	string label_end;
 };
 
 class WhileStatement: public Statement {
@@ -107,6 +112,10 @@ public:
 
 	Expression* condition;
 	StatementList* statements;
+	string label_begin;
+	string label_end;
+
+	Scope* localScope;
 };
 
 
@@ -200,6 +209,9 @@ public:
   ObjectType* returnType;
   ParamList* params;
   StatementList* statements;
+	string label_end;
+
+	Scope* functionScope;
 };
 
 class PassStatement : public Statement {
@@ -207,7 +219,7 @@ public:
   PassStatement(){ }
 
   int getType(){ return PassStm; }
-	void CheckSemantics(Scope* scope);
+	inline void CheckSemantics(Scope* scope){}
 };
 
 class ContinueStatement : public Statement {

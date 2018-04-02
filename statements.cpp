@@ -54,7 +54,11 @@ void IfStatement::Print(string indent) {
 }
 
 void StatementList::CheckSemantics(Scope* scope){
-
+  for(auto& stm : statements){
+    if(stm != NULL){
+      stm->CheckSemantics(scope);
+    }
+  }
 }
 
 void AssignStatement::CheckSemantics(Scope* scope){
@@ -74,27 +78,33 @@ void IfStatement::CheckSemantics(Scope* scope){
 }
 
 void ForStatement::CheckSemantics(Scope* scope){
-
+  // Register counter variable
+  label_begin = scope->document->GetLabelFor("for");
+  localScope = new Scope(scope, ForScopeT);
+  statements->CheckSemantics(localScope);
 }
 
 void WhileStatement::CheckSemantics(Scope* scope){
-
+  label_begin = scope->document->GetLabelFor("while");
+  localScope = new Scope(scope, ForScopeT);
+  statements->CheckSemantics(localScope);
 }
 
 void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
+  scope->AssertVariableDoesntExist(varName);
 
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, sizeof(int));
+
+  scope->variables[varName] = newVar;
 }
 
 void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
-
+  scope->AssertVariableDoesntExist(varName);
 }
 
 void FuncDeclStatement::CheckSemantics(Scope* scope){
-
-}
-
-void PassStatement::CheckSemantics(Scope* scope){
-
+  functionScope = new Scope(scope, FunctionScopeT);
+  statements->CheckSemantics(functionScope);
 }
 
 void ContinueStatement::CheckSemantics(Scope* scope){
