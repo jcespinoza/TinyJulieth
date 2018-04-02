@@ -148,6 +148,7 @@ public:
 class Statement {
 public:
   virtual int getType() = 0;
+  virtual void CheckSemantics(Scope* scope) = 0;
 };
 
 class StatementList : public Statement{
@@ -157,6 +158,8 @@ public:
   void AddNew(Statement* stm){
     statements.push_front(stm);
   }
+
+  void CheckSemantics(Scope* scope);
 
   void Print(string indent);
 

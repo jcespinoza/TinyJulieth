@@ -86,6 +86,7 @@ void JuliaDocument::FirstPass() {
 
   for(auto& stm : statements->statements){
     int stmType = stm->getType();
+    stm->CheckSemantics(globalScope);
     switch(stmType){
       case FuncDeclStm: {
         FuncDeclStatement* funcDecl = (FuncDeclStatement*)stm;

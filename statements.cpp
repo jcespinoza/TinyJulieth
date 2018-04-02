@@ -52,3 +52,59 @@ void IfStatement::Print(string indent) {
   trueStatements->Print(indent + "^");
   trueStatements->Print(indent + "v");
 }
+
+void StatementList::CheckSemantics(Scope* scope){
+
+}
+
+void AssignStatement::CheckSemantics(Scope* scope){
+
+}
+
+void ArrayItemAssignStatement::CheckSemantics(Scope* scope){
+
+}
+
+void PrintStatement::CheckSemantics(Scope* scope){
+
+}
+
+void IfStatement::CheckSemantics(Scope* scope){
+
+}
+
+void ForStatement::CheckSemantics(Scope* scope){
+
+}
+
+void WhileStatement::CheckSemantics(Scope* scope){
+
+}
+
+void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
+
+}
+
+void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
+
+}
+
+void FuncDeclStatement::CheckSemantics(Scope* scope){
+
+}
+
+void PassStatement::CheckSemantics(Scope* scope){
+
+}
+
+void ContinueStatement::CheckSemantics(Scope* scope){
+
+}
+
+void BreakStatement::CheckSemantics(Scope* scope){
+
+}
+
+void ReturnStatement::CheckSemantics(Scope* scope){
+
+}
