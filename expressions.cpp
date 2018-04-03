@@ -8,110 +8,110 @@
 #include <stdexcept>
 #include "expressions.h"
 
-void NumExpression::CheckSemantics(Scope* scope){
+AsmCode NumExpression::GetAsm(Scope* scope){
 
 }
 
-void BoolExpression::CheckSemantics(Scope* scope){
+AsmCode BoolExpression::GetAsm(Scope* scope){
 
 }
 
-void IdExpression::CheckSemantics(Scope* scope){
+AsmCode IdExpression::GetAsm(Scope* scope){
 
 }
 
-void ArrayAccessExpression::CheckSemantics(Scope* scope){
+AsmCode ArrayAccessExpression::GetAsm(Scope* scope){
 
 }
 
-void FuncCallExpression::CheckSemantics(Scope* scope){
+AsmCode FuncCallExpression::GetAsm(Scope* scope){
 
 }
 
-void StrExpression::CheckSemantics(Scope* scope){
+AsmCode StrExpression::GetAsm(Scope* scope){
 
 }
 
-void BitNotExpression::CheckSemantics(Scope* scope){
+AsmCode BitNotExpression::GetAsm(Scope* scope){
 
 }
 
-void LogNotExpression::CheckSemantics(Scope* scope){
+AsmCode LogNotExpression::GetAsm(Scope* scope){
 
 }
 
-void AddExpression::CheckSemantics(Scope* scope){
+AsmCode AddExpression::GetAsm(Scope* scope){
 
 }
 
-void SubExpression::CheckSemantics(Scope* scope){
+AsmCode SubExpression::GetAsm(Scope* scope){
 
 }
 
-void ShiftLeftExpression::CheckSemantics(Scope* scope){
+AsmCode ShiftLeftExpression::GetAsm(Scope* scope){
 
 }
 
-void ShiftRightExpression::CheckSemantics(Scope* scope){
+AsmCode ShiftRightExpression::GetAsm(Scope* scope){
 
 }
 
-void BorExpression::CheckSemantics(Scope* scope){
+AsmCode BorExpression::GetAsm(Scope* scope){
 
 }
 
-void XorExpression::CheckSemantics(Scope* scope){
+AsmCode XorExpression::GetAsm(Scope* scope){
 
 }
 
-void DivExpression::CheckSemantics(Scope* scope){
+AsmCode DivExpression::GetAsm(Scope* scope){
 
 }
 
-void ModExpression::CheckSemantics(Scope* scope){
+AsmCode ModExpression::GetAsm(Scope* scope){
 
 }
 
-void MulExpression::CheckSemantics(Scope* scope){
+AsmCode MulExpression::GetAsm(Scope* scope){
 
 }
 
-void BandExpression::CheckSemantics(Scope* scope){
+AsmCode BandExpression::GetAsm(Scope* scope){
 
 }
 
-void PowExpression::CheckSemantics(Scope* scope){
+AsmCode PowExpression::GetAsm(Scope* scope){
 
 }
 
-void EquExpression::CheckSemantics(Scope* scope){
+AsmCode EquExpression::GetAsm(Scope* scope){
 
 }
 
-void NequExpression::CheckSemantics(Scope* scope){
+AsmCode NequExpression::GetAsm(Scope* scope){
 
 }
 
-void LthanExpression::CheckSemantics(Scope* scope){
+AsmCode LthanExpression::GetAsm(Scope* scope){
 
 }
 
-void GthanExpression::CheckSemantics(Scope* scope){
+AsmCode GthanExpression::GetAsm(Scope* scope){
 
 }
 
-void LeqExpression::CheckSemantics(Scope* scope){
+AsmCode LeqExpression::GetAsm(Scope* scope){
 
 }
 
-void GeqExpression::CheckSemantics(Scope* scope){
+AsmCode GeqExpression::GetAsm(Scope* scope){
 
 }
 
-void LorExpression::CheckSemantics(Scope* scope){
+AsmCode LorExpression::GetAsm(Scope* scope){
 
 }
 
-void LandExpression::CheckSemantics(Scope* scope){
+AsmCode LandExpression::GetAsm(Scope* scope){
 
 }

@@ -18,7 +18,7 @@ public:
 	}
 
   int getType() { return AssiStm; };
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
 	string varName;
 	Expression *valueExpression;
@@ -33,7 +33,7 @@ public:
 	}
 
   int getType() { return ArrAssiStm; };
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
 	string varName;
   Expression* indexExpression;
@@ -48,7 +48,7 @@ public:
 	}
 
   int getType() { return PrintStm; };
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
 	ExpressionList* expressionList;
   bool withNewLine = false;
@@ -65,7 +65,7 @@ public:
   void Print(string indent);
 
   int getType() { return IfStm; };
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
 	Expression* condition;
 	StatementList* trueStatements;
@@ -85,7 +85,7 @@ public:
 
   void Print(string indent);
   int getType() { return ForStm; };
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
   string varName;
 
@@ -108,7 +108,7 @@ public:
   void Print(string indent);
 
   int getType() { return WhileStm; };
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
 	Expression* condition;
 	StatementList* statements;
@@ -151,7 +151,7 @@ public:
   }
 
   int getType(){ return ScVarDeclStm; }
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
   Expression* valueExpression;
 };
@@ -163,7 +163,7 @@ public:
   }
 
   int getType(){ return ArVarDeclStm; }
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
   ExpressionList* values;
 };
@@ -203,7 +203,7 @@ public:
   void Print(string indent);
 
   int getType(){ return FuncDeclStm; }
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
   string funcName;
   ObjectType* returnType;
@@ -222,7 +222,7 @@ public:
 	}
 
 	int getType(){ return InvokeStm; }
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 
 	string funcName;
 	ExpressionList* arguments;
@@ -234,7 +234,7 @@ public:
   PassStatement(){ }
 
   int getType(){ return PassStm; }
-	inline void CheckSemantics(Scope* scope){}
+	inline AsmCode GetAsm(Scope* scope){}
 };
 
 class ContinueStatement : public Statement {
@@ -242,7 +242,7 @@ public:
   ContinueStatement(){ }
 
   int getType(){ return ContStm; }
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 };
 
 class BreakStatement : public Statement {
@@ -250,7 +250,7 @@ public:
   BreakStatement(){ }
 
   int getType(){ return BrkStm;}
-	void CheckSemantics(Scope* scope);
+	AsmCode GetAsm(Scope* scope);
 };
 
 class ReturnStatement : public Statement {
@@ -259,7 +259,7 @@ public:
     expression = expr;
   }
 
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
   int getType(){ return RetStm;}
 
   Expression* expression;

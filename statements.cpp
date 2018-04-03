@@ -53,50 +53,50 @@ void IfStatement::Print(string indent) {
   trueStatements->Print(indent + "v");
 }
 
-void StatementList::CheckSemantics(Scope* scope){
+AsmCode StatementList::GetAsm(Scope* scope){
   for(auto& stm : statements){
     if(stm != NULL){
       stm->currentScope = scope;
-      stm->CheckSemantics(scope);
+      stm->GetAsm(scope);
     }
   }
 }
 
-void AssignStatement::CheckSemantics(Scope* scope){
+AsmCode AssignStatement::GetAsm(Scope* scope){
   scope->AssertVariableExists(varName);
 }
 
-void ArrayItemAssignStatement::CheckSemantics(Scope* scope){
+AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
 
 }
 
-void PrintStatement::CheckSemantics(Scope* scope){
+AsmCode PrintStatement::GetAsm(Scope* scope){
 
 }
 
-void IfStatement::CheckSemantics(Scope* scope){
+AsmCode IfStatement::GetAsm(Scope* scope){
   label_begin = scope->document->GetLabelFor("if");
   Scope* localScope = new Scope(scope, IfScopeT);
-  trueStatements->CheckSemantics(localScope);
+  trueStatements->GetAsm(localScope);
 
   localScope = new Scope(scope, IfScopeT);
-  falseStatements->CheckSemantics(localScope);
+  falseStatements->GetAsm(localScope);
 }
 
-void ForStatement::CheckSemantics(Scope* scope){
+AsmCode ForStatement::GetAsm(Scope* scope){
   // Register counter variable
   label_begin = scope->document->GetLabelFor("for");
   localScope = new Scope(scope, ForScopeT);
-  statements->CheckSemantics(localScope);
+  statements->GetAsm(localScope);
 }
 
-void WhileStatement::CheckSemantics(Scope* scope){
+AsmCode WhileStatement::GetAsm(Scope* scope){
   label_begin = scope->document->GetLabelFor("while");
   localScope = new Scope(scope, WhileScopeT);
-  statements->CheckSemantics(localScope);
+  statements->GetAsm(localScope);
 }
 
-void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
+AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1);
@@ -104,7 +104,7 @@ void ScalarVarDeclStatement::CheckSemantics(Scope* scope){
   scope->variables[varName] = newVar;
 }
 
-void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
+AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount());
@@ -112,29 +112,29 @@ void ArrayVarDeclStatement::CheckSemantics(Scope* scope){
   scope->variables[varName] = newVar;
 }
 
-void FuncDeclStatement::CheckSemantics(Scope* scope){
+AsmCode FuncDeclStatement::GetAsm(Scope* scope){
   functionScope = new Scope(scope, FunctionScopeT);
   //register pareters as if they were normal variables
   for(auto& param : params->paramList){
     VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1);
     functionScope->variables[param->paramName] = newVar;
   }
-  statements->CheckSemantics(functionScope);
+  statements->GetAsm(functionScope);
 }
 
-void InvokeStatement::CheckSemantics(Scope* scope){
+AsmCode InvokeStatement::GetAsm(Scope* scope){
   scope->document->AsssertFunctionExists(funcName);
 }
 
-void ContinueStatement::CheckSemantics(Scope* scope){
+AsmCode ContinueStatement::GetAsm(Scope* scope){
   scope->AssertIsInLoop("Continue statement not valid in this context.\n");
 }
 
-void BreakStatement::CheckSemantics(Scope* scope){
+AsmCode BreakStatement::GetAsm(Scope* scope){
   scope->AssertIsInLoop("Break statement not valid in this context.\n");
 }
 
-void ReturnStatement::CheckSemantics(Scope* scope){
+AsmCode ReturnStatement::GetAsm(Scope* scope){
   //Check the current scope is not the global scope
   if(currentScope->scopeType == GlobalScopeT){
     throw runtime_error("Return statement is not valid in the global scope.\n");

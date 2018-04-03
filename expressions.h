@@ -17,7 +17,7 @@ public:
   }
 
   int getType(){ return NumExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   int value = 0;
 };
@@ -29,7 +29,7 @@ public:
   }
 
   int getType(){ return BoolExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   bool value = false;
 };
@@ -41,7 +41,7 @@ public:
   }
 
   int getType(){ return IdExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   std::string varName;
 };
@@ -54,7 +54,7 @@ public:
   }
 
   int getType(){ return ArrAccExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   Expression* indexExpression;
   std::string varName;
@@ -68,7 +68,7 @@ public:
   }
 
   int getType(){ return FCallExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   ExpressionList* arguments;
   std::string funcName;
@@ -81,7 +81,7 @@ public:
   }
 
   int getType(){ return StrExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   std::string strValue;
 };
@@ -93,7 +93,7 @@ public:
   }
 
   int getType(){ return BitNotExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   Expression* targetExpression;
 };
@@ -105,7 +105,7 @@ public:
   }
 
   int getType(){ return NotExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   Expression* targetExpression;
 };
@@ -124,14 +124,14 @@ class AddExpression : public BinaryExpression {
 public:
   AddExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return AddExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class SubExpression : public BinaryExpression {
 public:
   SubExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return SubExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 
@@ -139,119 +139,119 @@ class ShiftLeftExpression : public BinaryExpression {
 public:
   ShiftLeftExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return ShlExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class ShiftRightExpression : public BinaryExpression {
 public:
   ShiftRightExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return ShrExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class BorExpression : public BinaryExpression {
 public:
   BorExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return BorExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class XorExpression : public BinaryExpression {
 public:
   XorExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return XorExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class DivExpression : public BinaryExpression {
 public:
   DivExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return DivExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class ModExpression : public BinaryExpression {
 public:
   ModExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return ModExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class MulExpression : public BinaryExpression {
 public:
   MulExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return MulExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class BandExpression : public BinaryExpression {
 public:
   BandExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return BandExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class PowExpression : public BinaryExpression {
 public:
   PowExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return PowExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class EquExpression: public BinaryExpression {
 public:
   EquExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return EquExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class NequExpression: public BinaryExpression {
 public:
   NequExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return NeqExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class LthanExpression: public BinaryExpression {
 public:
   LthanExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LthExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class GthanExpression: public BinaryExpression {
 public:
   GthanExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return GthExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class GeqExpression: public BinaryExpression {
 public:
   GeqExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return GeqExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class LeqExpression: public BinaryExpression {
 public:
   LeqExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LeqExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class LorExpression: public BinaryExpression {
 public:
   LorExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LorExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 class LandExpression: public BinaryExpression {
 public:
   LandExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LandExp; }
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 };
 
 #endif

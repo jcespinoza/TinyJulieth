@@ -110,6 +110,10 @@ public:
   list<VarDescriptor*> parameters;
 };
 
+typedef struct AsmCode{
+  
+} AsmCode;
+
 class Scope {
 public:
   Scope(Scope* parent, int type ){
@@ -184,7 +188,7 @@ public:
   virtual int getType() = 0;
   //virtual int getExpType() = 0;
   Scope* currentScope;
-  virtual void CheckSemantics(Scope* scope) = 0;
+  virtual AsmCode GetAsm(Scope* scope) = 0;
 };
 
 class ExpressionList {
@@ -201,7 +205,7 @@ public:
 class Statement {
 public:
   virtual int getType() = 0;
-  virtual void CheckSemantics(Scope* scope) = 0;
+  virtual AsmCode GetAsm(Scope* scope) = 0;
 
   Scope* currentScope;
 };
@@ -214,7 +218,7 @@ public:
     statements.push_front(stm);
   }
 
-  void CheckSemantics(Scope* scope);
+  AsmCode GetAsm(Scope* scope);
 
   void Print(string indent);
 
