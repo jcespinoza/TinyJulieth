@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include "statements.h"
+#include <regex>
 
 void JuliaDocument::Print() {
   string indent = ">";
@@ -48,7 +49,7 @@ void JuliaDocument::Process(){
 
   string documentAsm = GetAsm();
 
-  //cout << documentAsm << endl << endl;
+  cout << documentAsm << endl << endl;
 }
 
 string JuliaDocument::GetAsm(){
@@ -77,9 +78,13 @@ string JuliaDocument::GetDataSegmentCode(){
   ss << "sample_text db \"This is the content:!\", 10, 0" << endl;
   ss << "dec_format db \"%d\", 0" << endl;
   ss << "str_format db \"%s\", 0" << endl;
+  ss << "dec_formatln db \"%d\", 10, 0" << endl;
+  ss << "str_formatln db \"%s\", 10, 0" << endl;
 
   for (auto& str: strings) {
-		ss << str.first << " db \"" << str.second << "\", 0" << endl;
+    string woQuotes = regex_replace(str.second, regex("\\\\\""), "\", 34, \"");
+    string woLines = regex_replace(woQuotes, regex("\\\\n"), "\", 10, \"");
+		ss << str.first << " db \"" << woLines << "\", 0" << endl;
 	}
 
   return ss.str();

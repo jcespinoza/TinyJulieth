@@ -87,8 +87,13 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       ss << expCode.code;
       ss << "pushad" << endl;
       ss << "push dword " << expCode.location << endl;
+      if(withNewLine){
+        ss << "push dword str_formatln" << endl;
+      }else{
+        ss << "push dword str_format" << endl;
+      }
       ss << "call printf" << endl;
-      ss << "add esp, 4" << endl;
+      ss << "add esp, 8" << endl;
       ss << "popad" << endl;
     }
   }
