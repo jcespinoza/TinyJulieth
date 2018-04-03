@@ -9,7 +9,12 @@
 #include "expressions.h"
 
 AsmCode NumExpression::GetAsm(Scope* scope){
+  AsmCode asmCode;
 
+  asmCode.location = to_string(value);
+  asmCode.locationType = LiteralLocationType;
+
+  return asmCode;
 }
 
 AsmCode BoolExpression::GetAsm(Scope* scope){

@@ -98,15 +98,15 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       ss << "add esp, 8" << endl;
       ss << "popad" << endl;
     }
-    if(expType == 1993){
+    if(expType == NumExp){
       AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
       ss << "pushad" << endl;
       ss << "push dword " << expCode.location << endl;
-      if(withNewLine && exp == expressionList->expressions.back()){
-        ss << "push dword str_formatln" << endl;
+      if(withNewLine){
+        ss << "push dword dec_formatln" << endl;
       }else{
-        ss << "push dword str_format" << endl;
+        ss << "push dword dec_format" << endl;
       }
       ss << "call printf" << endl;
       ss << "add esp, 8" << endl;
