@@ -54,24 +54,28 @@ void IfStatement::Print(string indent) {
 }
 
 AsmCode StatementList::GetAsm(Scope* scope){
+  int i = 0;
   for(auto& stm : statements){
     if(stm != NULL){
       stm->currentScope = scope;
       stm->GetAsm(scope);
     }
+    i++;
   }
+  return AsmCode();
 }
 
 AsmCode AssignStatement::GetAsm(Scope* scope){
   scope->AssertVariableExists(varName);
+  return AsmCode();
 }
 
 AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
-
+  return AsmCode();
 }
 
 AsmCode PrintStatement::GetAsm(Scope* scope){
-
+  return AsmCode();
 }
 
 AsmCode IfStatement::GetAsm(Scope* scope){
@@ -81,6 +85,8 @@ AsmCode IfStatement::GetAsm(Scope* scope){
 
   localScope = new Scope(scope, IfScopeT);
   falseStatements->GetAsm(localScope);
+
+  return AsmCode();
 }
 
 AsmCode ForStatement::GetAsm(Scope* scope){
@@ -88,12 +94,14 @@ AsmCode ForStatement::GetAsm(Scope* scope){
   label_begin = scope->document->GetLabelFor("for");
   localScope = new Scope(scope, ForScopeT);
   statements->GetAsm(localScope);
+  return AsmCode();
 }
 
 AsmCode WhileStatement::GetAsm(Scope* scope){
   label_begin = scope->document->GetLabelFor("while");
   localScope = new Scope(scope, WhileScopeT);
   statements->GetAsm(localScope);
+  return AsmCode();
 }
 
 AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
@@ -102,6 +110,7 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1);
 
   scope->variables[varName] = newVar;
+  return AsmCode();
 }
 
 AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
@@ -110,6 +119,8 @@ AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount());
 
   scope->variables[varName] = newVar;
+
+  return AsmCode();
 }
 
 AsmCode FuncDeclStatement::GetAsm(Scope* scope){
@@ -120,18 +131,22 @@ AsmCode FuncDeclStatement::GetAsm(Scope* scope){
     functionScope->variables[param->paramName] = newVar;
   }
   statements->GetAsm(functionScope);
+  return AsmCode();
 }
 
 AsmCode InvokeStatement::GetAsm(Scope* scope){
+  return AsmCode();
   scope->document->AsssertFunctionExists(funcName);
 }
 
 AsmCode ContinueStatement::GetAsm(Scope* scope){
   scope->AssertIsInLoop("Continue statement not valid in this context.\n");
+  return AsmCode();
 }
 
 AsmCode BreakStatement::GetAsm(Scope* scope){
   scope->AssertIsInLoop("Break statement not valid in this context.\n");
+  return AsmCode();
 }
 
 AsmCode ReturnStatement::GetAsm(Scope* scope){
@@ -140,4 +155,5 @@ AsmCode ReturnStatement::GetAsm(Scope* scope){
     throw runtime_error("Return statement is not valid in the global scope.\n");
   }
   scope->AssertIsInFunction("Return statements are only valid inside a function.\n");
+  return AsmCode();
 }

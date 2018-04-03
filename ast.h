@@ -6,6 +6,7 @@
 #include <list>
 #include <map>
 #include <cmath>
+#define MALLOCK_CHECK 1
 
 enum StatemetTypes{
   WhileStm,
@@ -81,6 +82,12 @@ enum ScopeType{
   ForScopeT
 };
 
+enum AsmLocationType{
+  AddressLocationType,
+  RegisterLocationType,
+  LiteralLocationType
+};
+
 using namespace std;
 
 class JuliaDocument;
@@ -111,7 +118,9 @@ public:
 };
 
 typedef struct AsmCode{
-  
+  string code;
+  string location;
+  int locationType;
 } AsmCode;
 
 class Scope {
@@ -256,12 +265,15 @@ public:
   }
 
   void InitLabels();
+  string GetAsm();
+  string GetDataSegmentCode();
 
   string GetLabelFor(string kind, bool includeDot = false);
 
   Scope* globalScope;
 
   map<string, int> labels;
+  map<string, string> strings;
   map<string, FuncDescriptor*> functions;
   StatementList* statements;
 };

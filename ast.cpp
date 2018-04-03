@@ -36,6 +36,37 @@ void JuliaDocument::Process(){
   FirstPass();
 }
 
+string JuliaDocument::GetAsm(){
+  string funcDecsCode = "";
+  string statementsCode = "";
+  string dataSection = GetDataSegmentCode();
+
+  stringstream ss;
+  ss << "extern printf" << endl;
+  ss << "global main" << endl;
+  ss << dataSection << endl;
+  ss << "section .text" << endl;
+  ss << "main:" << endl;
+  ss << statementsCode << endl;
+  ss << "move eax, 0" << endl;
+  ss << "ret 0" << endl;
+
+  ss << funcDecsCode << endl;
+}
+
+string JuliaDocument::GetDataSegmentCode(){
+  stringstream ss;
+  ss << "section .data" << endl;
+  ss << "sample_text db \"This is the content:!\", 10, 0" << endl;
+  ss << "decimal_format db \"%d\", 10, 0" << endl;
+
+  for (auto& str: strings) {
+		ss << str.first << " db " << str.second << endl;
+	}
+
+  return ss.str();
+}
+
 void JuliaDocument::RegisterFunctions(){
   for(auto& stm : statements->statements){
     int stmType = stm->getType();
@@ -75,7 +106,7 @@ void JuliaDocument::FirstPass() {
   for(auto& stm : statements->statements){
     int stmType = stm->getType();
     stm->currentScope = globalScope;
-    stm->CheckSemantics(globalScope);
+    stm->GetAsm(globalScope);
 
     switch(stmType){
       case FuncDeclStm: {
