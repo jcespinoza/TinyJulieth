@@ -245,7 +245,8 @@ public:
   void Process();
   void PrintDoc();
 
-  void FirstPass();
+  string GetCodeForStatements();
+  string GetCodeForFunctions();
   void RegisterFunctions();
   void RegisterGlobalVariables();
   bool FunctionExists(string name){

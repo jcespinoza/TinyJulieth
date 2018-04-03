@@ -33,12 +33,17 @@ void JuliaDocument::InitLabels(){
 }
 
 void JuliaDocument::Process(){
-  FirstPass();
+  InitLabels();
+  globalScope = new Scope(NULL, GlobalScopeT);
+  globalScope->document = this;
+  RegisterFunctions();
+
+  string documentAsm = GetAsm();
 }
 
 string JuliaDocument::GetAsm(){
-  string funcDecsCode = "";
-  string statementsCode = "";
+  string funcDecsCode = GetCodeForFunctions();
+  string statementsCode = GetCodeForStatements();
   string dataSection = GetDataSegmentCode();
 
   stringstream ss;
@@ -52,13 +57,16 @@ string JuliaDocument::GetAsm(){
   ss << "ret 0" << endl;
 
   ss << funcDecsCode << endl;
+
+  return ss.str();
 }
 
 string JuliaDocument::GetDataSegmentCode(){
   stringstream ss;
   ss << "section .data" << endl;
   ss << "sample_text db \"This is the content:!\", 10, 0" << endl;
-  ss << "decimal_format db \"%d\", 10, 0" << endl;
+  ss << "dec_format db \"%d\", 0" << endl;
+  ss << "str_format db \"%s\", 0" << endl;
 
   for (auto& str: strings) {
 		ss << str.first << " db " << str.second << endl;
@@ -97,65 +105,34 @@ void JuliaDocument::PrintDoc(){
   }
 }
 
-void JuliaDocument::FirstPass() {
-  InitLabels();
-  globalScope = new Scope(NULL, GlobalScopeT);
-  globalScope->document = this;
-  RegisterFunctions();
+string JuliaDocument::GetCodeForFunctions() {
+  stringstream ss;
 
   for(auto& stm : statements->statements){
     int stmType = stm->getType();
+
+    if(stmType != FuncDeclStm) continue;
+
     stm->currentScope = globalScope;
-    stm->GetAsm(globalScope);
+    AsmCode code = stm->GetAsm(globalScope);
 
-    switch(stmType){
-      case FuncDeclStm: {
-        FuncDeclStatement* funcDecl = (FuncDeclStatement*)stm;
-        break;
-      }
-      case ScVarDeclStm: {
-        ScalarVarDeclStatement* varDecl = (ScalarVarDeclStatement*)stm;
-        break;
-      }
-      case ArVarDeclStm: {
-        ArrayVarDeclStatement* varDecl = (ArrayVarDeclStatement*)stm;
-        break;
-      }
-      case AssiStm: {
-        AssignStatement* assStm = (AssignStatement*)stm;
-        break;
-      }
-      case ArrAssiStm: {
-        ArrayItemAssignStatement* assStm = (ArrayItemAssignStatement*)stm;
-        break;
-      }
-      case IfStm: {
-        IfStatement* ifStm = (IfStatement*)stm;
-        break;
-      }
-      case ForStm: {
-        ForStatement* forStm = (ForStatement*)stm;
-        break;
-      }
-      case WhileStm: {
-        WhileStatement* whileStm = (WhileStatement*)stm;
-        break;
-      }
-      case PrintStm: {
-        break;
-      }
-      case InvokeStm: {
-        break;
-      }
-      default: {
-        //Well, no such thing is possible to occur so...
-        cout << "YOU FORGOT ON KIND OF STATEMENT: " << stmType << "\n";
-      }
-    }
+    ss << code.code << endl;
   }
+  return ss.str();
+}
 
-  //When a variable is assigned a value, complain it doesn't exist if it hasn't been declared
-  //Begin asking for expression type
-  //Associate a type to each expression when found, they can be integer or boolean
-  //attemp tp register variables anywhere they're found
+string JuliaDocument::GetCodeForStatements() {
+  stringstream ss;
+
+  for(auto& stm : statements->statements){
+    int stmType = stm->getType();
+
+    if(stmType != FuncDeclStm) continue;
+
+    stm->currentScope = globalScope;
+    AsmCode code = stm->GetAsm(globalScope);
+
+    ss << code.code << endl;
+  }
+  return ss.str();
 }
