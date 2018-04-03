@@ -184,7 +184,7 @@ public:
   virtual int getType() = 0;
   //virtual int getExpType() = 0;
   Scope* currentScope;
-  //virtual void CheckSemantics();
+  virtual void CheckSemantics(Scope* scope) = 0;
 };
 
 class ExpressionList {
