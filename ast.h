@@ -85,6 +85,7 @@ enum ScopeType{
 enum AsmLocationType{
   AddressLocationType,
   RegisterLocationType,
+  LabelLocationType,
   LiteralLocationType
 };
 
@@ -249,6 +250,7 @@ public:
   string GetCodeForFunctions();
   void RegisterFunctions();
   void RegisterGlobalVariables();
+  string RegisterString(string stringContent);
   bool FunctionExists(string name){
     return functions.find(name) != functions.end();
   }

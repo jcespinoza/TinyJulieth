@@ -29,7 +29,14 @@ AsmCode FuncCallExpression::GetAsm(Scope* scope){
 }
 
 AsmCode StrExpression::GetAsm(Scope* scope){
+  stringstream ss;
+  AsmCode asmCode;
 
+  string label = scope->document->RegisterString(strValue);
+  asmCode.location = label;
+  asmCode.locationType = LabelLocationType;
+
+  return asmCode;
 }
 
 AsmCode BitNotExpression::GetAsm(Scope* scope){

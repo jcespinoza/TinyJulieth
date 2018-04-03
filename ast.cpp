@@ -25,6 +25,14 @@ string JuliaDocument::GetLabelFor(string kind, bool includeDot){
   return kind;
 }
 
+string JuliaDocument::RegisterString(string content){
+  string label = GetLabelFor("str");
+
+  strings[label] = content;
+
+  return label;
+}
+
 void JuliaDocument::InitLabels(){
   labels["for"] = 0;
   labels["if"] = 0;
@@ -39,6 +47,8 @@ void JuliaDocument::Process(){
   RegisterFunctions();
 
   string documentAsm = GetAsm();
+
+  //cout << documentAsm << endl << endl;
 }
 
 string JuliaDocument::GetAsm(){
@@ -53,7 +63,7 @@ string JuliaDocument::GetAsm(){
   ss << "section .text" << endl;
   ss << "main:" << endl;
   ss << statementsCode << endl;
-  ss << "move eax, 0" << endl;
+  ss << "mov eax, 0" << endl;
   ss << "ret 0" << endl;
 
   ss << funcDecsCode << endl;
@@ -69,7 +79,7 @@ string JuliaDocument::GetDataSegmentCode(){
   ss << "str_format db \"%s\", 0" << endl;
 
   for (auto& str: strings) {
-		ss << str.first << " db " << str.second << endl;
+		ss << str.first << " db \"" << str.second << "\", 0" << endl;
 	}
 
   return ss.str();
@@ -127,7 +137,7 @@ string JuliaDocument::GetCodeForStatements() {
   for(auto& stm : statements->statements){
     int stmType = stm->getType();
 
-    if(stmType != FuncDeclStm) continue;
+    if(stmType == FuncDeclStm) continue;
 
     stm->currentScope = globalScope;
     AsmCode code = stm->GetAsm(globalScope);

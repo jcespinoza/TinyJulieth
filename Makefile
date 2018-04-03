@@ -19,7 +19,10 @@ $(PARSER_SRC): grammar.y ast.h expressions.h statements.h
 	g++ -std=c++11 -g -c -o $@ $<
 
 run: $(TARGET)
-	./$(TARGET) input1.txt > main.S
+	./$(TARGET) ./samples/helloworld.jl > ./own_samples/test.S
+	nasm -felf -o ./own_samples/test.o ./own_samples/test.S
+	gcc -m32 -o ./own_samples/test ./own_samples/test.o
+	./own_samples/test
 
 lexmain:  lexer.l
 	flex -o lexer.cpp $^
@@ -70,3 +73,4 @@ clean:
 	rm -f main.S
 	rm -f genexe
 	rm -f lexmain
+	rm -f ./own_samples/test.S ./own_samples/test.o ./own_samples/test

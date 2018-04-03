@@ -54,15 +54,17 @@ void IfStatement::Print(string indent) {
 }
 
 AsmCode StatementList::GetAsm(Scope* scope){
-  int i = 0;
+  stringstream ss;
   for(auto& stm : statements){
     if(stm != NULL){
       stm->currentScope = scope;
-      stm->GetAsm(scope);
+      AsmCode stmCode = stm->GetAsm(scope);
+      ss << stmCode.code;
     }
-    i++;
   }
-  return AsmCode();
+  AsmCode sts;
+  sts.code = ss.str();
+  return sts;
 }
 
 AsmCode AssignStatement::GetAsm(Scope* scope){
@@ -75,7 +77,25 @@ AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
 }
 
 AsmCode PrintStatement::GetAsm(Scope* scope){
-  return AsmCode();
+  stringstream ss;
+
+  for(auto& exp: expressionList->expressions){
+    int expType = exp->getType();
+
+    if(expType == StrExp){
+      AsmCode expCode = exp->GetAsm(scope);
+      ss << expCode.code;
+      ss << "pushad" << endl;
+      ss << "push dword " << expCode.location << endl;
+      ss << "call printf" << endl;
+      ss << "add esp, 4" << endl;
+      ss << "popad" << endl;
+    }
+  }
+
+  AsmCode printCode;
+  printCode.code = ss.str();
+  return printCode;
 }
 
 AsmCode IfStatement::GetAsm(Scope* scope){

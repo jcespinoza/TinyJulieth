@@ -10,3 +10,4 @@ tokens.h
 main.S
 genexe
 lexmain
+/own_samples/test*
