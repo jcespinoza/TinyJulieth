@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include "statements.h"
+#include "expressions.h"
 
 void StatementList::Print(string indent) {
   for (auto& var : statements) {
@@ -87,7 +88,22 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       ss << expCode.code;
       ss << "pushad" << endl;
       ss << "push dword " << expCode.location << endl;
+      //printf("Compare '%s' and '%s'\n",((StrExpression*)exp)->strValue,  ((StrExpression*)expressionList->expressions.back())->strValue);
       if(withNewLine){
+        ss << "push dword str_formatln" << endl;
+      }else{
+        ss << "push dword str_format" << endl;
+      }
+      ss << "call printf" << endl;
+      ss << "add esp, 8" << endl;
+      ss << "popad" << endl;
+    }
+    if(expType == 1993){
+      AsmCode expCode = exp->GetAsm(scope);
+      ss << expCode.code;
+      ss << "pushad" << endl;
+      ss << "push dword " << expCode.location << endl;
+      if(withNewLine && exp == expressionList->expressions.back()){
         ss << "push dword str_formatln" << endl;
       }else{
         ss << "push dword str_format" << endl;
