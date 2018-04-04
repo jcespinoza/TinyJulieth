@@ -128,12 +128,59 @@ typedef struct AsmCode{
   int locationType;
 } AsmCode;
 
+class ScopeStack {
+public:
+  ScopeStack(){
+
+  }
+
+  void FreeUpOffset(string name){
+    auto item = namedOffsets.find(name);
+    if(item == namedOffsets.end()){
+      throw runtime_error("No such named offset\n");
+    }
+    offsets[item->second] = false;
+  }
+
+  void FreeUpOffset(int offset){
+    offsets[offset] = false;
+  }
+
+  int AllocateOffset(){
+    int max = 0;
+    for(auto& os: offsets){
+      if(os.second == false){
+        os.second = true;
+        return os.first;
+      }
+      max++;
+    }
+    //Allocating a new one and set it to taken
+    offsets[max] = true;
+    return max;
+  }
+
+  int AllocateOffset(string name){
+    int offset = AllocateOffset();
+    namedOffsets[name];
+  }
+
+  map<int, bool> offsets;
+  map<string, int> namedOffsets;
+};
+
 class Scope {
 public:
   Scope(Scope* parent, int type ){
     parentScope = parent;
     if(parent != NULL){
       document = parent->document;
+      if(parent->scopeType == FunctionScopeT || parent->scopeType == GlobalScopeT){
+        stack = parent->stack;
+      }
+    }
+    if(type == FunctionScopeT || type == GlobalScopeT){
+      stack = new ScopeStack();
     }
 
     scopeType = type;
@@ -191,9 +238,13 @@ public:
     }
   }
 
+  VarDescriptor* GetVariable(string name){
+
+  }
+
   string GetStackAllocation(){
     stringstream ss;
-    int reqBytes = offsets.size();
+    int reqBytes = stack->offsets.size();
     int missingBytes = (16 - (reqBytes % 16) );
     int bytesForAllocation = reqBytes + missingBytes;
     ss << "sub esp, " << bytesForAllocation << endl;
@@ -205,10 +256,9 @@ public:
     return 0;
   }
 
-  map<int, bool> offsets;
-  map<string, int> namedOffsets;
   JuliaDocument* document;
   Scope* parentScope;
+  ScopeStack* stack;
   map<string, VarDescriptor*> variables;
   int scopeType = GlobalScopeT;
 };

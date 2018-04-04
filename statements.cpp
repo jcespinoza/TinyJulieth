@@ -70,7 +70,18 @@ AsmCode StatementList::GetAsm(Scope* scope){
 
 AsmCode AssignStatement::GetAsm(Scope* scope){
   scope->AssertVariableExists(varName);
-  return AsmCode();
+  stringstream ss;
+  AsmCode asmCode;
+  valueExpression->currentScope = scope;
+  AsmCode expCode = valueExpression->GetAsm(scope);
+  ss << expCode.code;
+  if(expCode.locationType == LiteralLocationType){
+    string reg = scope->document->RequestRegister();
+    ss << "push " << reg << ", dword " << expCode.location;
+    
+  }
+
+  return asmCode;
 }
 
 AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
