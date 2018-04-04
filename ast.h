@@ -96,16 +96,18 @@ class JuliaDocument;
 
 class VarDescriptor {
 public:
-  VarDescriptor(string name, int type, int items, bool isParam){
+  VarDescriptor(string name, int type, int items, bool isParam, bool global){
     varName = name;
     typeCode = type;
     this->items = items;
     isParameter = isParam;
+    isGlobal = global;
   }
 
   string varName;
-  int typeCode;
-  int items;
+  bool isGlobal = false;
+  int typeCode = 0;
+  int items = 1;
   int offset = 0;
   bool isParameter = false;;
 };
@@ -175,7 +177,8 @@ public:
     parentScope = parent;
     if(parent != NULL){
       document = parent->document;
-      if(parent->scopeType == FunctionScopeT || parent->scopeType == GlobalScopeT){
+      // TODO: Should come from the first parent that is a function or the global scope
+      if(type != FunctionScopeT && type != GlobalScopeT){
         stack = parent->stack;
       }
     }

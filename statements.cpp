@@ -75,12 +75,16 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
   valueExpression->currentScope = scope;
   AsmCode expCode = valueExpression->GetAsm(scope);
   ss << expCode.code;
+  string valueLocation;
   if(expCode.locationType == LiteralLocationType){
-    string reg = scope->document->RequestRegister();
-    ss << "push " << reg << ", dword " << expCode.location;
-    
-  }
 
+    VarDescriptor* desc = scope->GetVariable(varName);
+    if(desc->isGlobal){
+      ss << "mov dword global_" << desc->varName << ", " << expCode.location << endl;
+    }else if(desc->isParameter){
+
+    }
+  }
   return asmCode;
 }
 
@@ -157,8 +161,9 @@ AsmCode WhileStatement::GetAsm(Scope* scope){
 AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false);
-  // requst an offset and assign it to variable descriptor
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false, scope->IsGlobal());
+
+  // request an offset and assign it to variable descriptor
 
   scope->variables[varName] = newVar;
   return AsmCode();
@@ -167,7 +172,8 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
 AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount(), false);
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount(), false, scope->IsGlobal());
+  newVar->offset = scope->stack->AllocateOffset(varName);
 
   scope->variables[varName] = newVar;
 
@@ -177,8 +183,10 @@ AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
 AsmCode FuncDeclStatement::GetAsm(Scope* scope){
   functionScope = new Scope(scope, FunctionScopeT);
   //register pareters as if they were normal variables
+  int order = 0;
   for(auto& param : params->paramList){
-    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true);
+    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true, false);
+    newVar->offset = 2*sizeof(int) + order*sizeof(int);
     functionScope->variables[param->paramName] = newVar;
   }
   statements->GetAsm(functionScope);
