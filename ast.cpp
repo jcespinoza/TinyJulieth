@@ -78,8 +78,7 @@ string JuliaDocument::GetDataSegmentCode(){
   ss << "sample_text db \"This is the content:!\", 10, 0" << endl;
   ss << "dec_format db \"%d\", 0" << endl;
   ss << "str_format db \"%s\", 0" << endl;
-  ss << "dec_formatln db \"%d\", 10, 0" << endl;
-  ss << "str_formatln db \"%s\", 10, 0" << endl;
+  ss << "newline_format db 10, 0" << endl;
 
   for (auto& str: strings) {
     string woQuotes = regex_replace(str.second, regex("\\\\\""), "\", 34, \"");
