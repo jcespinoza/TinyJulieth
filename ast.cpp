@@ -101,7 +101,7 @@ void JuliaDocument::RegisterFunctions(){
 
       for(auto& param: funcDecl->params->paramList){
         VarDescriptor* parameter =
-          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int));
+          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int), true);
         func->parameters.push_back(parameter);
       }
       functions[funcDecl->funcName] = func;

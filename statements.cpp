@@ -146,7 +146,8 @@ AsmCode WhileStatement::GetAsm(Scope* scope){
 AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1);
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false);
+  // requst an offset and assign it to variable descriptor
 
   scope->variables[varName] = newVar;
   return AsmCode();
@@ -155,7 +156,7 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
 AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount());
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount(), false);
 
   scope->variables[varName] = newVar;
 
@@ -166,7 +167,7 @@ AsmCode FuncDeclStatement::GetAsm(Scope* scope){
   functionScope = new Scope(scope, FunctionScopeT);
   //register pareters as if they were normal variables
   for(auto& param : params->paramList){
-    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1);
+    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true);
     functionScope->variables[param->paramName] = newVar;
   }
   statements->GetAsm(functionScope);
