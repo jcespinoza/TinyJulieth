@@ -6,6 +6,7 @@
 #include <list>
 #include <map>
 #include <cmath>
+#include <sstream>
 #define MALLOCK_CHECK 1
 
 enum StatemetTypes{
@@ -95,15 +96,18 @@ class JuliaDocument;
 
 class VarDescriptor {
 public:
-  VarDescriptor(string name, int type, int items){
+  VarDescriptor(string name, int type, int items, bool isParam){
     varName = name;
     typeCode = type;
     this->items = items;
+    isParameter = isParam;
   }
 
   string varName;
   int typeCode;
   int items;
+  int offset = 0;
+  bool isParameter = false;;
 };
 
 class FuncDescriptor{
@@ -187,6 +191,22 @@ public:
     }
   }
 
+  string GetStackAllocation(){
+    stringstream ss;
+    int reqBytes = offsets.size();
+    int missingBytes = (16 - (reqBytes % 16) );
+    int bytesForAllocation = reqBytes + missingBytes;
+    ss << "sub esp, " << bytesForAllocation << endl;
+
+    return ss.str();
+  }
+
+  int RequestOffset(){
+    return 0;
+  }
+
+  map<int, bool> offsets;
+  map<string, int> namedOffsets;
   JuliaDocument* document;
   Scope* parentScope;
   map<string, VarDescriptor*> variables;
@@ -249,7 +269,7 @@ public:
   string GetCodeForStatements();
   string GetCodeForFunctions();
   void RegisterFunctions();
-  void RegisterGlobalVariables();
+  void RegisterGlobal();
   string RegisterString(string stringContent);
   bool FunctionExists(string name){
     return functions.find(name) != functions.end();
@@ -268,15 +288,28 @@ public:
   }
 
   void InitLabels();
+  void InitRegisters();
+
   string GetAsm();
+
   string GetDataSegmentCode();
 
   string GetLabelFor(string kind, bool includeDot = false);
+
+  string GetRegister(){
+    return "";
+  }
+
+  string GetStack(){
+    return "";
+  }
 
   Scope* globalScope;
 
   map<string, int> labels;
   map<string, string> strings;
+  map<string, bool> registers;
+
   map<string, FuncDescriptor*> functions;
   StatementList* statements;
 };
