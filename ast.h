@@ -289,6 +289,8 @@ public:
 
   void InitLabels();
   void InitRegisters();
+  string RequestRegister();
+  void FreeUpRegister(string);
 
   string GetAsm();
 

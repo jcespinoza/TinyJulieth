@@ -41,8 +41,30 @@ void JuliaDocument::InitLabels(){
   labels["str"] = 0;
 }
 
+void JuliaDocument::InitRegisters(){
+  registers["ebx"] = false;
+  registers["ecx"] = false;
+  // registers["esi"] = false;
+  // registers["edi"] = false;
+}
+
+string JuliaDocument::RequestRegister(){
+  for(auto& r : registers){
+    if(r.second == false){
+      r.second = true;
+      return r.first;
+    }
+  }
+  throw runtime_error("Ran out of registers!\n");
+}
+
+void JuliaDocument::FreeUpRegister(string name){
+  registers[name] = false;
+}
+
 void JuliaDocument::Process(){
   InitLabels();
+  InitRegisters();
   globalScope = new Scope(NULL, GlobalScopeT);
   globalScope->document = this;
   RegisterFunctions();
