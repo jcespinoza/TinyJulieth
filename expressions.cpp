@@ -20,6 +20,9 @@ AsmCode NumExpression::GetAsm(Scope* scope){
 AsmCode BoolExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
 
+  asmCode.location = to_string(value);
+  asmCode.locationType = LiteralLocationType;
+
   return asmCode;
 }
 
@@ -72,13 +75,47 @@ AsmCode LogNotExpression::GetAsm(Scope* scope){
 
 AsmCode AddExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
+  stringstream ss;
 
+  AsmCode leftCode = leftSide->GetAsm(scope);
+  AsmCode rightCode = rightSide->GetAsm(scope);
+
+  if(leftCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(leftCode.location);
+  }
+  if(rightCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(rightCode.location);
+  }
+  string tReg = scope->document->RequestRegister();
+  ss << "  mov " << tReg << ", "  << leftCode.GetValue32() << endl;
+  ss << "  add " << tReg << ", " << rightCode.GetValue32() << endl;
+  asmCode.location = tReg;
+  asmCode.locationType = RegisterLocationType;
+
+  asmCode.code = ss.str();
   return asmCode;
 }
 
 AsmCode SubExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
+  stringstream ss;
 
+  AsmCode leftCode = leftSide->GetAsm(scope);
+  AsmCode rightCode = rightSide->GetAsm(scope);
+
+  if(leftCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(leftCode.location);
+  }
+  if(rightCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(rightCode.location);
+  }
+  string tReg = scope->document->RequestRegister();
+  ss << "  mov " << tReg << ", "  << leftCode.GetValue32() << endl;
+  ss << "  sub " << tReg << ", " << rightCode.GetValue32() << endl;
+  asmCode.location = tReg;
+  asmCode.locationType = RegisterLocationType;
+
+  asmCode.code = ss.str();
   return asmCode;
 }
 

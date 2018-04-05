@@ -7,3 +7,9 @@ print("Hey\nthere!\n")
 print("Hello: \"ola\"")
 println("1","2", 1, 2)
 println("X is: ", x)
+
+y::Int = 3
+
+println(x)
+println(y)
+println (x + y)

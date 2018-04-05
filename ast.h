@@ -128,6 +128,11 @@ typedef struct AsmCode{
   string code;
   string location;
   int locationType;
+
+  string GetValue32(){
+    return (locationType == LabelLocationType || locationType == AddressLocationType) ? ("[" + location + "]"):
+    location;
+  }
 } AsmCode;
 
 class ScopeStack {
@@ -345,14 +350,6 @@ public:
   string GetDataSegmentCode();
 
   string GetLabelFor(string kind, bool includeDot = false);
-
-  string GetRegister(){
-    return "";
-  }
-
-  string GetStack(){
-    return "";
-  }
 
   Scope* globalScope;
 

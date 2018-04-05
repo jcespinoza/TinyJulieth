@@ -39,8 +39,8 @@ void JuliaDocument::InitLabels(){
 void JuliaDocument::InitRegisters(){
   registers["ebx"] = false;
   registers["ecx"] = false;
-  // registers["esi"] = false;
-  // registers["edi"] = false;
+  registers["esi"] = false;
+  registers["edi"] = false;
 }
 
 string JuliaDocument::RequestRegister(){
@@ -54,6 +54,8 @@ string JuliaDocument::RequestRegister(){
 }
 
 void JuliaDocument::FreeUpRegister(string name){
+  if(registers.find(name) == registers.end()) throw runtime_error("No such register");
+
   registers[name] = false;
 }
 
