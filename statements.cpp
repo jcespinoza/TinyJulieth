@@ -118,10 +118,19 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
 
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false, scope->IsGlobal());
 
-  // request an offset and assign it to variable descriptor
-
+  stringstream ss;
+  AsmCode asmCode;
+  AsmCode expCode = valueExpression->GetAsm(scope);
+  ss << expCode.code;
+  if(scope->IsGlobal()){
+    if(expCode.locationType == LiteralLocationType){
+      ss << "  mov dword [global_" << varName  << "], " << expCode.location << endl;
+    }
+  }
   scope->variables[varName] = newVar;
-  return AsmCode();
+  asmCode.code = ss.str();
+
+  return asmCode;
 }
 
 AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
