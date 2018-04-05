@@ -19,7 +19,7 @@ $(PARSER_SRC): grammar.y ast.h expressions.h statements.h
 	g++ -std=c++11 -g -c -o $@ $<
 
 run: $(TARGET)
-	./$(TARGET) ./samples/functions.jl > ./own_samples/test.S
+	./$(TARGET) ./own_samples/hello.jl > ./own_samples/test.S
 	nasm -felf -o ./own_samples/test.o ./own_samples/test.S
 	gcc -m32 -o ./own_samples/test ./own_samples/test.o
 	./own_samples/test

@@ -1,3 +1,6 @@
+arrayzinho::Array{Int} = [5, 1, 3]
+x::Int = 5
+
 print("Hello World!")
 println("Hello World!");
 print("Hey\nthere!\n")

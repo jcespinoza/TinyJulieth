@@ -81,8 +81,8 @@ string JuliaDocument::GetAsm(){
   ss << "section .text" << endl;
   ss << "main:" << endl;
   ss << statementsCode << endl;
-  ss << "mov eax, 0" << endl;
-  ss << "ret 0" << endl;
+  ss << "  mov eax, 0" << endl;
+  ss << "  ret 0" << endl;
 
   ss << funcDecsCode << endl;
 
@@ -92,17 +92,28 @@ string JuliaDocument::GetAsm(){
 string JuliaDocument::GetDataSegmentCode(){
   stringstream ss;
   ss << "section .data" << endl;
-  ss << "sample_text db \"This is the content:!\", 10, 0" << endl;
-  ss << "dec_format db \"%d\", 0" << endl;
-  ss << "str_format db \"%s\", 0" << endl;
-  ss << "newline_format db 10, 0" << endl;
+  ss << "  sample_text db \"This is the content:!\", 10, 0" << endl;
+  ss << "  dec_format db \"%d\", 0" << endl;
+  ss << "  str_format db \"%s\", 0" << endl;
+  ss << "  newline_format db 10, 0" << endl;
 
   for (auto& str: strings) {
     string woQuotes = regex_replace(str.second, regex("\\\\\""), "\", 34, \"");
     string woTabs = regex_replace(woQuotes, regex("\\\\t"), "\", 9, \"");
     string woLines = regex_replace(woTabs, regex("\\\\n"), "\", 10, \"");
-		ss << str.first << " db \"" << woLines << "\", 0" << endl;
+		ss << "  " << str.first << " db \"" << woLines << "\", 0" << endl;
 	}
+
+  for(auto& var: globalScope->variables){
+    ss << "  global_" << var.first << " dd";
+    for(int i = 1; i <= var.second->items; i++){
+      ss << " 0";
+      if(i < var.second->items){
+        ss << ",";
+      }
+    }
+    ss << endl;
+  }
 
   return ss.str();
 }

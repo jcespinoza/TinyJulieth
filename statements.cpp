@@ -35,7 +35,7 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
 
     VarDescriptor* desc = scope->GetVariable(varName);
     if(desc->isGlobal){
-      ss << "mov dword global_" << desc->varName << ", " << expCode.location << endl;
+      ss << "  mov dword global_" << desc->varName << ", " << expCode.location << endl;
     }else if(desc->isParameter){
 
     }
@@ -56,30 +56,30 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     if(expType == StrExp){
       AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
-      ss << "pushad" << endl;
-      ss << "push dword " << expCode.location << endl;
-        ss << "push dword str_format" << endl;
-      ss << "call printf" << endl;
-      ss << "add esp, 8" << endl;
-      ss << "popad" << endl;
+      ss << "  pushad" << endl;
+      ss << "  push dword " << expCode.location << endl;
+        ss << "  push dword str_format" << endl;
+      ss << "  call printf" << endl;
+      ss << "  add esp, 8" << endl;
+      ss << "  popad" << endl;
     }
     if(expType == NumExp){
       AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
-      ss << "pushad" << endl;
-      ss << "push dword " << expCode.location << endl;
-        ss << "push dword dec_format" << endl;
-      ss << "call printf" << endl;
-      ss << "add esp, 8" << endl;
-      ss << "popad" << endl;
+      ss << "  pushad" << endl;
+      ss << "  push dword " << expCode.location << endl;
+        ss << "  push dword dec_format" << endl;
+      ss << "  call printf" << endl;
+      ss << "  add esp, 8" << endl;
+      ss << "  popad" << endl;
     }
   }
   if(withNewLine){
-    ss << "pushad" << endl;
-    ss << "push dword newline_format" << endl;
-    ss << "call printf" << endl;
-    ss << "add esp, 4" << endl;
-    ss << "popad" << endl;
+    ss << "  pushad" << endl;
+    ss << "  push dword newline_format" << endl;
+    ss << "  call printf" << endl;
+    ss << "  add esp, 4" << endl;
+    ss << "  popad" << endl;
   }
 
   AsmCode printCode;
