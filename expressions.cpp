@@ -201,6 +201,28 @@ AsmCode ModExpression::GetAsm(Scope* scope){
 
 AsmCode MulExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
+  stringstream ss;
+
+  AsmCode leftCode = leftSide->GetAsm(scope);
+  AsmCode rightCode = rightSide->GetAsm(scope);
+
+  if(leftCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(leftCode.location);
+  }
+  if(rightCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(rightCode.location);
+  }
+  string tReg = scope->document->RequestRegister();
+  ss << leftCode.code;
+  ss << rightCode.code;
+  ss << "  mov eax, dword " << leftCode.GetValue32() << endl;
+  ss << "  mov " << tReg << ", dword " << rightCode.GetValue32() << endl;
+  ss << "  cdq" << endl;
+  ss << "  mul " << tReg << endl;
+  ss << "  mov " << tReg << ", eax" << endl;
+  asmCode.location = tReg;
+  asmCode.locationType = RegisterLocationType;
+  asmCode.code = ss.str();
 
   return asmCode;
 }
