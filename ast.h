@@ -177,7 +177,7 @@ public:
     parentScope = parent;
     if(parent != NULL){
       document = parent->document;
-      // TODO: Should come from the first parent that is a function or the global scope
+
       if(type != FunctionScopeT && type != GlobalScopeT){
         stack = parent->stack;
       }
@@ -317,7 +317,7 @@ public:
   string GetCodeForStatements();
   string GetCodeForFunctions();
   void RegisterFunctions();
-  void RegisterGlobal();
+  void RegisterGlobals();
   string RegisterString(string stringContent);
   bool FunctionExists(string name){
     return functions.find(name) != functions.end();

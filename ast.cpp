@@ -127,6 +127,25 @@ void JuliaDocument::RegisterFunctions(){
   }
 }
 
+void JuliaDocument::RegisterGlobals(){
+  for(auto& stm : statements->statements){
+    int stmType = stm->getType();
+    if(stmType == ScVarDeclStm){
+      VarDeclStatement* varDecl = (VarDeclStatement*)stm;
+      VarDescriptor* varDes =
+        new VarDescriptor(varDecl->varName, varDecl->varType->typeCode, 1, false, true);
+
+      globalScope->variables[varDecl->varName] = varDes;
+    }else if(stmType == ArVarDeclStm){
+      ArrayVarDeclStatement* varDecl = (ArrayVarDeclStatement*)stm;
+      VarDescriptor* varDes =
+        new VarDescriptor(varDecl->varName, varDecl->varType->typeCode, varDecl->values->getCount(), false, true);
+
+      globalScope->variables[varDecl->varName] = varDes;
+    }
+  }
+}
+
 string JuliaDocument::GetCodeForFunctions() {
   stringstream ss;
 
