@@ -25,7 +25,13 @@ AsmCode BoolExpression::GetAsm(Scope* scope){
 
 AsmCode IdExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
+  stringstream ss;
+  if(scope->IsGlobal()){
+    asmCode.locationType = LabelLocationType;
+    asmCode.location = "global_" + varName;
+  }
 
+  asmCode.code = ss.str();
   return asmCode;
 }
 

@@ -6,3 +6,4 @@ println("Hello World!");
 print("Hey\nthere!\n")
 print("Hello: \"ola\"")
 println("1","2", 1, 2)
+println("X is: ", x)

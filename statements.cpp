@@ -73,6 +73,16 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       ss << "  add esp, 8" << endl;
       ss << "  popad" << endl;
     }
+    if(expType == IdExp && scope->IsGlobal()){
+      AsmCode expCode = exp->GetAsm(scope);
+      ss << expCode.code;
+      ss << "  pushad" << endl;
+      ss << "  push dword [" << expCode.location << "]" << endl;
+        ss << "  push dword dec_format" << endl;
+      ss << "  call printf" << endl;
+      ss << "  add esp, 8" << endl;
+      ss << "  popad" << endl;
+    }
   }
   if(withNewLine){
     ss << "  pushad" << endl;
