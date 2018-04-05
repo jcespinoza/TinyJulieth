@@ -104,7 +104,8 @@ string JuliaDocument::GetDataSegmentCode(){
 
   for (auto& str: strings) {
     string woQuotes = regex_replace(str.second, regex("\\\\\""), "\", 34, \"");
-    string woLines = regex_replace(woQuotes, regex("\\\\n"), "\", 10, \"");
+    string woTabs = regex_replace(woQuotes, regex("\\\\t"), "\", 9, \"");
+    string woLines = regex_replace(woTabs, regex("\\\\n"), "\", 10, \"");
 		ss << str.first << " db \"" << woLines << "\", 0" << endl;
 	}
 
@@ -123,7 +124,7 @@ void JuliaDocument::RegisterFunctions(){
 
       for(auto& param: funcDecl->params->paramList){
         VarDescriptor* parameter =
-          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int), true);
+          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int), true, false);
         func->parameters.push_back(parameter);
       }
       functions[funcDecl->funcName] = func;
