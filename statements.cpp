@@ -74,7 +74,8 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       ss << "  popad" << endl;
     }
     if((expType == IdExp
-      || expType == AddExp)
+      || expType == AddExp
+      || expType == DivExp)
       && scope->IsGlobal()){
       AsmCode expCode = exp->GetAsm(scope);
       if(expCode.locationType == RegisterLocationType){
