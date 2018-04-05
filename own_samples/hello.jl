@@ -13,3 +13,4 @@ y::Int = 3
 println(x)
 println(y)
 println (x + y)
+println(5+5)

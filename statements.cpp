@@ -82,12 +82,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       }
       ss << expCode.code;
       ss << "  pushad" << endl;
-      if(expCode.locationType == LabelLocationType ||
-        expCode.locationType == AddressLocationType){
-        ss << "  push dword [" << expCode.location << "]" << endl;
-      }else{
-        ss << "  push dword " << expCode.location << endl;
-      }
+        ss << "  push dword " << expCode.GetValue32() << endl;
       ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
