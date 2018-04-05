@@ -75,7 +75,8 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     }
     if((expType == IdExp
       || expType == AddExp
-      || expType == DivExp)
+      || expType == DivExp
+      || expType == ModExp)
       && scope->IsGlobal()){
       AsmCode expCode = exp->GetAsm(scope);
       if(expCode.locationType == RegisterLocationType){
