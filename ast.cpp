@@ -9,11 +9,6 @@
 #include "statements.h"
 #include <regex>
 
-void JuliaDocument::Print() {
-  string indent = ">";
-  statements->Print(indent);
-}
-
 string JuliaDocument::GetLabelFor(string kind, bool includeDot){
   //check current count for kind, generate
   if(includeDot){
@@ -129,16 +124,6 @@ void JuliaDocument::RegisterFunctions(){
       }
       functions[funcDecl->funcName] = func;
     }
-  }
-}
-
-void JuliaDocument::PrintDoc(){
-  return;
-  for(auto& f: functions){
-    cout << f.first << "(" << ")::"<< f.second->returnType <<"\n";
-  }
-  for(auto& v: globalScope->variables){
-    cout << v.first << "::"<< v.second->typeCode << " [" << v.second->items <<"]\n";
   }
 }
 

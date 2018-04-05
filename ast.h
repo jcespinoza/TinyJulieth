@@ -303,8 +303,6 @@ public:
 
   AsmCode GetAsm(Scope* scope);
 
-  void Print(string indent);
-
   int getType(){ return StmListStm; }
 
   std::list<Statement*> statements;
@@ -314,10 +312,7 @@ class JuliaDocument {
 public:
   JuliaDocument(){}
 
-  void Print();
-
   void Process();
-  void PrintDoc();
 
   string GetCodeForStatements();
   string GetCodeForFunctions();

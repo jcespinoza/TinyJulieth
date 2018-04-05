@@ -91,7 +91,7 @@ static void yyprint (FILE* file, int type, YYSTYPE value)
 
 %%
 
-root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2; document->Process(); document->PrintDoc();  }
+root: opt_newlines gstatement_list { document = new JuliaDocument(); document->statements = $2; document->Process(); }
 	| opt_newlines { document = new JuliaDocument(); document->statements = new StatementList();  }
 ;
 
