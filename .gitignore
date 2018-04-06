@@ -13,7 +13,6 @@ lexmain
 /own_samples/test*
 /UnitTesting/compare
 /UnitTesting/compare.o
-/UnitTesting/results/
-/UnitTesting/generated/
+/UnitTesting/actual/
 run
 run.asm

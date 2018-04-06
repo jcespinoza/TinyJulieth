@@ -83,10 +83,10 @@ comparer:
 check: comparer  $(TARGET) $(TESTS)
 
 $(TESTS):
+	@rm -f UnitTesting/actual/$@
 	@./$(TARGET) UnitTesting/tests/$@.jl > run.asm
 	@nasm -felf run.asm
 	@gcc -m32 -o run run.o
-	@./run > UnitTesting/generated/$@
-	@./UnitTesting/compare UnitTesting/results/$@ UnitTesting/generated/$@
+	@./run > UnitTesting/actual/$@
+	@./UnitTesting/compare UnitTesting/expected/$@ UnitTesting/actual/$@
 	@rm -f run.asm run.o run
-	@rm -f UnitTesting/generated/$@
