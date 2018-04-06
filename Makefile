@@ -1,6 +1,7 @@
 TARGET=julieth
 PARSER_SRC=grammar.cpp
 LEXER_SRC=lexer.cpp
+TESTS=Arithmetic Arrays Bitwise BubbleSort comments Factorial functions helloworld if printFormat QuickSort recursion Relational several while_break while
 SRCFILES=$(PARSER_SRC) $(LEXER_SRC) ast.cpp statements.cpp expressions.cpp main.cpp
 OBJ_FILES=${SRCFILES:.cpp=.o}
 .PHONY: clean
@@ -74,3 +75,18 @@ clean:
 	rm -f genexe
 	rm -f lexmain
 	rm -f ./own_samples/test.S ./own_samples/test.o ./own_samples/test
+
+comparer:
+	g++ -std=c++11 -g -c -o ./UnitTesting/compare.o ./UnitTesting/compare.cpp
+	g++ -g -o ./UnitTesting/compare ./UnitTesting/compare.o
+
+check: comparer  $(TARGET) $(TESTS)
+
+$(TESTS):
+	@./$(TARGET) UnitTesting/tests/$@.jl > run.asm
+	@nasm -felf run.asm
+	@gcc -m32 -o run run.o
+	@./run > UnitTesting/generated/$@
+	@./UnitTesting/compare UnitTesting/results/$@ UnitTesting/generated/$@
+	@rm -f run.asm run.o run
+	@rm -f UnitTesting/generated/$@

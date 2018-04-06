@@ -11,3 +11,9 @@ main.S
 genexe
 lexmain
 /own_samples/test*
+/UnitTesting/compare
+/UnitTesting/compare.o
+/UnitTesting/results/
+/UnitTesting/generated/
+run
+run.asm
