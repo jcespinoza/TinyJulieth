@@ -11,6 +11,7 @@ main.S
 genexe
 lexmain
 /own_samples/test*
+/own_samples/power
 /UnitTesting/compare
 /UnitTesting/compare.o
 /UnitTesting/actual/
