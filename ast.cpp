@@ -86,6 +86,7 @@ string JuliaDocument::GetAsm(){
   ss << "  push ebp" << endl;
   ss << "  mov ebp, esp" << endl << endl;
   ss << statementsCode << endl;
+  ss << "  leave" << endl;
   ss << "  mov eax, 0" << endl;
   ss << "  ret 0" << endl;
 
