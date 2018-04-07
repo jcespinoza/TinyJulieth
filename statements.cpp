@@ -290,7 +290,7 @@ AsmCode ReturnStatement::GetAsm(Scope* scope){
   }
   stringstream ss;
   AsmCode asmCode;
-  AsmCode expCode = valueExpression->GetAsm(scope);
+  AsmCode expCode = expression->GetAsm(scope);
   ss << expCode.code;
 
   if(expCode.locationType == RegisterLocationType){
