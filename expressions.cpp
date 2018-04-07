@@ -29,7 +29,8 @@ AsmCode BoolExpression::GetAsm(Scope* scope){
 AsmCode IdExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
   stringstream ss;
-  if(scope->IsGlobal()){
+  VarDescriptor* desc = scope->GetVariable(varName);
+  if(desc->isGlobal){
     asmCode.PutIntoLabel("global_" + varName);
   }
 

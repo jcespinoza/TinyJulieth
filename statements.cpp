@@ -88,7 +88,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
     }
-    if(expType == IdExp && scope->IsGlobal()){
+    if(expType == IdExp ){
       AsmCode expCode = exp->GetAsm(scope);
       //printf("got here");
       VarDescriptor* desc = scope->GetVariable(((IdExpression*)exp)->varName);
@@ -116,8 +116,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       || expType == BorExp
       || expType == BandExp
       || expType == ShlExp
-      || expType == ShrExp)
-      && scope->IsGlobal()){
+      || expType == ShrExp)){
       AsmCode expCode = exp->GetAsm(scope);
       if(expCode.locationType == RegisterLocationType){
         scope->document->FreeUpRegister(expCode.location);
