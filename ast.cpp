@@ -54,7 +54,7 @@ string JuliaDocument::RequestRegister(){
 }
 
 void JuliaDocument::FreeUpRegister(string name){
-  if(registers.find(name) == registers.end()) throw runtime_error("No such register");
+  if(registers.find(name) == registers.end()) throw runtime_error("No such register: " + name);
 
   registers[name] = false;
 }

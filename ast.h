@@ -164,7 +164,7 @@ public:
   void FreeUpOffset(string name){
     auto item = namedOffsets.find(name);
     if(item == namedOffsets.end()){
-      throw runtime_error("No such named offset\n");
+      throw runtime_error("No such named offset " + name + "\n");
     }
     offsets[item->second] = false;
   }

@@ -262,7 +262,14 @@ AsmCode InvokeStatement::GetAsm(Scope* scope){
 
 AsmCode ContinueStatement::GetAsm(Scope* scope){
   scope->AssertIsInLoop("Continue statement not valid in this context.\n");
-  return AsmCode();
+  AsmCode asmCode;
+  stringstream ss;
+
+  string jmpLabel = scope->GetLoopBegin();
+  ss << "  jmp " << jmpLabel << endl << "  nop" << endl;
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode BreakStatement::GetAsm(Scope* scope){
@@ -270,18 +277,31 @@ AsmCode BreakStatement::GetAsm(Scope* scope){
   stringstream ss;
   scope->AssertIsInLoop("Break statement not valid in this context.\n");
 
-  string label_end = scope->GetLoopEnd();
-  ss << "  jmp " << label_end << endl << "  nop" << endl;
+  string jmpLabel = scope->GetLoopEnd();
+  ss << "  jmp " << jmpLabel << endl << "  nop" << endl;
 
   asmCode.code = ss.str();
   return asmCode;
 }
 
 AsmCode ReturnStatement::GetAsm(Scope* scope){
-  //Check the current scope is not the global scope
   if(currentScope->scopeType == GlobalScopeT){
     throw runtime_error("Return statement is not valid in the global scope.\n");
   }
+  stringstream ss;
+  AsmCode asmCode;
+  AsmCode expCode = valueExpression->GetAsm(scope);
+  ss << expCode.code;
+
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+
+  ss << "  mov eax, " << expCode.GetValue32();
+  ss << "  leave" << endl << "  ret" << endl;
+
   scope->AssertIsInFunction("Return statements are only valid inside a function.\n");
-  return AsmCode();
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
