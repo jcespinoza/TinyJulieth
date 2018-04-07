@@ -160,10 +160,33 @@ AsmCode ForStatement::GetAsm(Scope* scope){
 }
 
 AsmCode WhileStatement::GetAsm(Scope* scope){
+  AsmCode asmCode;
+  stringstream ss;
+
   label_begin = scope->document->GetLabelFor("while");
   localScope = new Scope(scope, WhileScopeT);
-  statements->GetAsm(localScope);
-  return AsmCode();
+
+  ss << label_begin <<"_begin:" << endl;
+
+  AsmCode expCode = condition->GetAsm(scope);
+
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+  ss << expCode.code;
+  ss << "  xor eax, eax" << endl;
+  ss << "  cmp " << expCode.GetValue32() << ", 0" << endl;
+  ss << "  je " << label_begin << "_end" << endl << "  nop" << endl;
+
+  AsmCode stmCode = statements->GetAsm(localScope);
+  ss << stmCode.code;
+  ss << "  jmp " << label_begin << "_begin" << endl;
+  ss << "  nop" << endl;
+  ss << label_begin << "_end:" << endl;
+
+  asmCode.code = ss.str();
+
+  return asmCode;
 }
 
 AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
