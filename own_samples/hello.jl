@@ -1,29 +1,28 @@
-
 x::Int = 10
 y::Int = 20
+boolValue::Bool = true;
 
-trueValue::Bool = true
-falseValue::Bool = false
+ println("x = ",x )
+ println("y = ",y )
+ println("boolValue = ",boolValue )
 
- println("trueValue = ",trueValue)
- println("falseValue = ",falseValue)
+ println("x < y && x > y = ", x < y && x > y  )
 
+ println("x < y || x > y = ", x < y || x > y  )
 
- println("x = ",x)
- println("y = ",y)
+ println("~x = ",~x ); println("~y = ", ~y)
 
- println("x > y = ",x > y)
+ println("!boolValue = ",!boolValue )
 
- println("x >= y = ",x >= y)
+ println("x & y = ",x & y )
 
- println("x < y = ",x < y)
+ println("x | y = ",x | y )
 
- println("x <= y = ",x <= y)
+ println("x $ y = ",x $ y )
 
- println("x == y = ",x == y)
+ println("-8 >> 3 = ",-8 >> 3 )
 
- println("x != y = ",x != y)
+ println("2 << 4 = ", 2 << 4)
 
- println("trueValue == falseValue = ",trueValue == falseValue)
-
- println ("trueValue != falseValue =",trueValue != falseValue)
+ z::Bool = !true
+ println(~z)

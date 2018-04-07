@@ -67,7 +67,10 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       || expType == LthExp
       || expType == GthExp
       || expType == GeqExp
-      || expType == LeqExp){
+      || expType == LeqExp
+      || expType == LorExp
+      || expType == LandExp
+      || expType == NotExp){
         AsmCode expCode = exp->GetAsm(scope);
         if(expCode.locationType == RegisterLocationType){
           scope->document->FreeUpRegister(expCode.location);
@@ -87,6 +90,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     }
     if(expType == IdExp && scope->IsGlobal()){
       AsmCode expCode = exp->GetAsm(scope);
+      //printf("got here");
       VarDescriptor* desc = scope->GetVariable(((IdExpression*)exp)->varName);
       if(desc->typeCode == BoolType){
         ss << expCode.code;
@@ -106,7 +110,11 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       || expType == DivExp
       || expType == ModExp
       || expType == MulExp
-      || expType == PowExp)
+      || expType == PowExp
+      || expType == BitNotExp
+      || expType == XorExp
+      || expType == BorExp
+      || expType == BandExp)
       && scope->IsGlobal()){
       AsmCode expCode = exp->GetAsm(scope);
       if(expCode.locationType == RegisterLocationType){

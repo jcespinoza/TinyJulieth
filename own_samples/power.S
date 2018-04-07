@@ -5,6 +5,7 @@ global printbool
 
 section .data
 text_format db "Result is: %d", 10, 0
+dec_format db "Dec: %d", 10, 0
 true_format db "true", 0
 false_format db "false", 0
 section .text
@@ -12,6 +13,15 @@ main:
   push ebp
   mov ebp, esp
   sub esp, 16
+  
+  mov eax, dword -1
+  mov ebx, dword 10
+  xor eax, ebx
+  mov ebx, eax
+  push dword ebx
+  push dword dec_format
+  call printf
+  add esp, 8
 
   push dword 3 ;exponent
   push dword 10 ;base
