@@ -196,7 +196,7 @@ AsmCode ShiftRightExpression::GetAsm(Scope* scope){
   ss << leftCode.code;
   ss << rightCode.code;
   ss << "  mov " << tReg <<", " << leftCode.GetValue32() << endl;
-  ss << "  shr " << tReg << ", " << rightCode.GetValue32() << endl;
+  ss << "  sar " << tReg << ", " << rightCode.GetValue32() << endl;
 
   asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
@@ -382,7 +382,6 @@ AsmCode PowExpression::GetAsm(Scope* scope){
   ss << "  push dword " << leftCode.GetValue32() << endl;
   ss << "  call cpower" << endl;
   ss << "  add esp, 8" << endl;
-
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
@@ -413,7 +412,6 @@ AsmCode EquExpression::GetAsm(Scope* scope){
   ss << "  cmp " << tReg
      << ", " << rightCode.GetValue32() << endl;
   ss << "  sete al" << endl;
-
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
@@ -443,7 +441,6 @@ AsmCode NequExpression::GetAsm(Scope* scope){
   ss << "  cmp " << tReg
      << ", " << rightCode.GetValue32() << endl;
   ss << "  setne al" << endl;
-
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
@@ -473,7 +470,6 @@ AsmCode LthanExpression::GetAsm(Scope* scope){
   ss << "  cmp " << tReg
      << ", " << rightCode.GetValue32() << endl;
   ss << "  setl al" << endl;
-
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
@@ -503,7 +499,6 @@ AsmCode GthanExpression::GetAsm(Scope* scope){
   ss << "  cmp " << tReg
      << ", " << rightCode.GetValue32() << endl;
   ss << "  setg al" << endl;
-
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
@@ -532,7 +527,6 @@ AsmCode LeqExpression::GetAsm(Scope* scope){
   ss << "  cmp " << tReg
      << ", " << rightCode.GetValue32() << endl;
   ss << "  setle al" << endl;
-
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
@@ -588,7 +582,6 @@ AsmCode LorExpression::GetAsm(Scope* scope){
   ss << rightCode.code;
   ss << "  mov " << tReg <<", " << leftCode.GetValue32() << endl;
   ss << "  or " << tReg << ", " << rightCode.GetValue32() << endl;
-  ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
@@ -614,7 +607,6 @@ AsmCode LandExpression::GetAsm(Scope* scope){
   ss << rightCode.code;
   ss << "  mov " << tReg <<", " << leftCode.GetValue32() << endl;
   ss << "  and " << tReg << ", " << rightCode.GetValue32() << endl;
-  ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();

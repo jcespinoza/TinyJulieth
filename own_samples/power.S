@@ -13,11 +13,18 @@ main:
   push ebp
   mov ebp, esp
   sub esp, 16
-  
+
   mov eax, dword -1
   mov ebx, dword 10
   xor eax, ebx
   mov ebx, eax
+  push dword ebx
+  push dword dec_format
+  call printf
+  add esp, 8
+
+  mov ebx, dword -8
+  sar ebx, 3
   push dword ebx
   push dword dec_format
   call printf
