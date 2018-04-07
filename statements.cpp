@@ -137,14 +137,35 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
 }
 
 AsmCode IfStatement::GetAsm(Scope* scope){
+  AsmCode asmCode;
+  stringstream ss;
   label_begin = scope->document->GetLabelFor("if");
   Scope* localScope = new Scope(scope, IfScopeT);
-  trueStatements->GetAsm(localScope);
+
+  AsmCode expCode = condition->GetAsm(localScope);
+  ss << label_begin << "_begin:" << endl;
+  ss << expCode.code;
+
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+  ss << "  xor eax, eax" << endl;
+  ss << "  cmp " << expCode.GetValue32() << ", 0" << endl;
+  ss << "  je " << label_begin << "_else" << endl << "  nop" << endl;
+
+  AsmCode tCode = trueStatements->GetAsm(localScope);
+  ss << tCode.code;
+  ss << "  jmp " << label_begin << "_end" << endl << "  nop" << endl;
 
   localScope = new Scope(scope, IfScopeT);
-  falseStatements->GetAsm(localScope);
+  AsmCode fCode = falseStatements->GetAsm(localScope);
 
-  return AsmCode();
+  ss << label_begin << "_else:" << endl;
+  ss << fCode.code;
+  ss << label_begin << "_end:" << endl;
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode ForStatement::GetAsm(Scope* scope){
@@ -161,6 +182,8 @@ AsmCode WhileStatement::GetAsm(Scope* scope){
 
   label_begin = scope->document->GetLabelFor("while");
   localScope = new Scope(scope, WhileScopeT);
+  localScope->label_begin = label_begin +"_begin";
+  localScope->label_end = label_begin +"_end";
 
   ss << label_begin <<"_begin:" << endl;
 
@@ -240,8 +263,15 @@ AsmCode ContinueStatement::GetAsm(Scope* scope){
 }
 
 AsmCode BreakStatement::GetAsm(Scope* scope){
+  AsmCode asmCode;
+  stringstream ss;
   scope->AssertIsInLoop("Break statement not valid in this context.\n");
-  return AsmCode();
+
+  string label_end = scope->GetLoopEnd();
+  ss << "  jmp " << label_end << endl << "  nop" << endl;
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode ReturnStatement::GetAsm(Scope* scope){

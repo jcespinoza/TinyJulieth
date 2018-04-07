@@ -293,7 +293,25 @@ public:
     return 0;
   }
 
+  string GetLoopBegin(){
+    if(scopeType == ForScopeT || scopeType == WhileScopeT){
+      return label_begin;
+    }
+    if(parentScope != NULL) return parentScope->GetLoopBegin();
+    throw runtime_error("Cant find loop start label.");
+  }
+
+  string GetLoopEnd(){
+    if(scopeType == ForScopeT || scopeType == WhileScopeT){
+      return label_end;
+    }
+    if(parentScope != NULL) return parentScope->GetLoopEnd();
+    throw runtime_error("Cant find loop start label.");
+  }
+
   JuliaDocument* document;
+  string label_begin;
+  string label_end;
   Scope* parentScope;
   ScopeStack* stack;
   map<string, VarDescriptor*> variables;
