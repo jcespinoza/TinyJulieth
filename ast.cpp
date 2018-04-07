@@ -83,6 +83,8 @@ string JuliaDocument::GetAsm(){
   ss << dataSection << endl;
   ss << "section .text" << endl;
   ss << "main:" << endl;
+  ss << "  push ebp" << endl;
+  ss << "  mov ebp, esp" << endl << endl;
   ss << statementsCode << endl;
   ss << "  mov eax, 0" << endl;
   ss << "  ret 0" << endl;
