@@ -29,6 +29,7 @@ public:
   }
 
   int getType(){ return BoolExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 
   bool value = false;
@@ -188,6 +189,7 @@ class BandExpression : public BinaryExpression {
 public:
   BandExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return BandExp; }
+
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -202,6 +204,7 @@ class EquExpression: public BinaryExpression {
 public:
   EquExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return EquExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -209,6 +212,7 @@ class NequExpression: public BinaryExpression {
 public:
   NequExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return NeqExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -216,6 +220,7 @@ class LthanExpression: public BinaryExpression {
 public:
   LthanExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LthExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -223,6 +228,7 @@ class GthanExpression: public BinaryExpression {
 public:
   GthanExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return GthExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -230,6 +236,7 @@ class GeqExpression: public BinaryExpression {
 public:
   GeqExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return GeqExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -237,6 +244,7 @@ class LeqExpression: public BinaryExpression {
 public:
   LeqExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LeqExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -244,6 +252,7 @@ class LorExpression: public BinaryExpression {
 public:
   LorExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LorExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -251,6 +260,7 @@ class LandExpression: public BinaryExpression {
 public:
   LandExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LandExp; }
+  bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
 

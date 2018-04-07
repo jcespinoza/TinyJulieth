@@ -65,9 +65,9 @@ cpower:
   sub esp, 16
   mov [ebp-4], dword 1 ;result = 1
 
-while_0_begin:
+cpower_while_begin:
   cmp dword [ebp+12], 0 ;exponent == 0 ?
-  je while_0_end ;yes, then get out
+  je cpower_while_end ;yes, then get out
   nop
   mov eax, dword [ebp-4] ;result
   mov ebx, dword [ebp+8] ;base
@@ -76,9 +76,9 @@ while_0_begin:
   mov ebx, dword [ebp+12] ;exponent
   sub ebx, 1  ; exponent - 1
   mov dword [ebp+12], ebx ;exponent = exponent - 1
-  jmp while_0_begin
+  jmp cpower_while_begin
   nop
-while_0_end:
+cpower_while_end:
 
   mov eax, dword [ebp-4] ;return result;
   leave

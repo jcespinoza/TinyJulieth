@@ -63,7 +63,11 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     }
     if(expType == BoolExp
       || expType == EquExp
-      || expType == NeqExp){
+      || expType == NeqExp
+      || expType == LthExp
+      || expType == GthExp
+      || expType == GeqExp
+      || expType == LeqExp){
         AsmCode expCode = exp->GetAsm(scope);
         if(expCode.locationType == RegisterLocationType){
           scope->document->FreeUpRegister(expCode.location);
@@ -77,12 +81,27 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
       ss << "  push dword " << expCode.location << endl;
-        ss << "  push dword dec_format" << endl;
+      ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
     }
-    if((expType == IdExp
-      || expType == AddExp
+    if(expType == IdExp && scope->IsGlobal()){
+      AsmCode expCode = exp->GetAsm(scope);
+      VarDescriptor* desc = scope->GetVariable(((IdExpression*)exp)->varName);
+      if(desc->typeCode == BoolType){
+        ss << expCode.code;
+        ss << "  push dword " << expCode.GetValue32() << endl;
+        ss << "  call printbool" << endl;
+        ss << "  add esp, 4" << endl;
+      }else{
+        ss << expCode.code;
+        ss << "  push dword " << expCode.GetValue32() << endl;
+        ss << "  push dword dec_format" << endl;
+        ss << "  call printf" << endl;
+        ss << "  add esp, 8" << endl;
+      }
+    }
+    if((expType == AddExp
       || expType == SubExp
       || expType == DivExp
       || expType == ModExp

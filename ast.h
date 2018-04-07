@@ -247,7 +247,13 @@ public:
   }
 
   VarDescriptor* GetVariable(string name){
+    AssertVariableExists(name);
+    VarDescriptor* found = variables[name];
+    return found;
+  }
 
+  void RegisterVariable(VarDescriptor* desc){
+    variables[desc->varName] = desc;
   }
 
   string GetStackAllocation(){
@@ -276,6 +282,7 @@ public:
   virtual int getType() = 0;
   //virtual int getExpType() = 0;
   Scope* currentScope;
+  bool IsBoolean(){ return false; }
   virtual AsmCode GetAsm(Scope* scope) = 0;
 };
 
