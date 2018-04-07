@@ -1,30 +1,61 @@
 extern printf
 global main
 global cpower
+global printbool
 
 section .data
 text_format db "Result is: %d", 10, 0
+true_format db "true", 0
+false_format db "false", 0
 section .text
 main:
   push ebp
   mov ebp, esp
   sub esp, 16
 
-  pushad
   push dword 3 ;exponent
   push dword 10 ;base
   call cpower
   add esp, 8
   mov dword [ebp-4], eax
-  popad
 
-  pushad
   push dword [ebp-4]
   push dword text_format
   call printf
   add esp, 8
-  popad
 
+  push dword 1
+  call printbool
+  add esp, 4
+
+  push dword 0
+  call printbool
+  add esp, 4
+
+  leave
+  ret
+
+printbool:
+  push ebp
+  mov ebp, esp
+
+printbool_if_begin:
+  cmp dword [ebp+8], 1
+  jne printbool_if_else
+  nop
+
+  push dword true_format
+  call printf
+  add esp, 4
+
+  jmp printbool_if_end
+  nop
+printbool_if_else:
+  push dword false_format
+  call printf
+  add esp, 4
+
+printbool_if_end:
   leave
   ret
 

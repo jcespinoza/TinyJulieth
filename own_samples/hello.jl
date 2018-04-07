@@ -1,14 +1,29 @@
 
-println("Hello World!");
 x::Int = 10
-y::Int = 3
+y::Int = 20
 
-println(x)
-println(y)
-println(-x)
-println(-y);println (x + y)
-println(x - y)
-println(x * y)
-println(x / y)
-println(x % y)
-println(x ^ y)
+trueValue::Bool = true
+falseValue::Bool = false
+
+ println("trueValue = ",trueValue)
+ println("falseValue = ",falseValue)
+
+
+ println("x = ",x)
+ println("y = ",y)
+
+ println("x > y = ",x > y)
+
+ println("x >= y = ",x >= y)
+
+ println("x < y = ",x < y)
+
+ println("x <= y = ",x <= y)
+
+ println("x == y = ",x == y)
+
+ println("x != y = ",x != y)
+
+ println("trueValue == falseValue = ",trueValue == falseValue)
+
+ println ("trueValue != falseValue =",trueValue != falseValue)

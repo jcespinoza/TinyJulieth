@@ -263,13 +263,57 @@ AsmCode PowExpression::GetAsm(Scope* scope){
 
 AsmCode EquExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
+  stringstream ss;
 
+  AsmCode leftCode = leftSide->GetAsm(scope);
+  AsmCode rightCode = rightSide->GetAsm(scope);
+
+  string tReg = scope->document->RequestRegister();
+  if(leftCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(leftCode.location);
+  }
+  if(rightCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(rightCode.location);
+  }
+  ss << "  mov " << tReg <<", " << leftCode.GetValue32() << endl;
+  ss << "  xor eax, eax" << endl;
+  ss << "  cmp " << tReg
+     << ", " << rightCode.GetValue32() << endl;
+  ss << "  sete al" << endl;
+
+  ss << "  mov " << tReg << ", eax" << endl;
+
+  asmCode.locationType = RegisterLocationType;
+  asmCode.location = tReg;
+  asmCode.code = ss.str();
   return asmCode;
 }
 
 AsmCode NequExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
+  stringstream ss;
 
+  AsmCode leftCode = leftSide->GetAsm(scope);
+  AsmCode rightCode = rightSide->GetAsm(scope);
+
+  string tReg = scope->document->RequestRegister();
+  if(leftCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(leftCode.location);
+  }
+  if(rightCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(rightCode.location);
+  }
+  ss << "  mov " << tReg <<", " << leftCode.GetValue32() << endl;
+  ss << "  xor eax, eax" << endl;
+  ss << "  cmp " << tReg
+     << ", " << rightCode.GetValue32() << endl;
+  ss << "  setne al" << endl;
+
+  ss << "  mov " << tReg << ", eax" << endl;
+
+  asmCode.locationType = RegisterLocationType;
+  asmCode.location = tReg;
+  asmCode.code = ss.str();
   return asmCode;
 }
 

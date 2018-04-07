@@ -56,22 +56,30 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     if(expType == StrExp){
       AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
-      ss << "  pushad" << endl;
       ss << "  push dword " << expCode.location << endl;
         ss << "  push dword str_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
-      ss << "  popad" << endl;
+    }
+    if(expType == BoolExp
+      || expType == EquExp
+      || expType == NeqExp){
+        AsmCode expCode = exp->GetAsm(scope);
+        if(expCode.locationType == RegisterLocationType){
+          scope->document->FreeUpRegister(expCode.location);
+        }
+        ss << expCode.code;
+        ss << "  push dword " << expCode.GetValue32() << endl;
+        ss << "  call printbool" << endl;
+        ss << "  add esp, 4" << endl;
     }
     if(expType == NumExp){
       AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
-      ss << "  pushad" << endl;
       ss << "  push dword " << expCode.location << endl;
         ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
-      ss << "  popad" << endl;
     }
     if((expType == IdExp
       || expType == AddExp
@@ -86,20 +94,16 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
         scope->document->FreeUpRegister(expCode.location);
       }
       ss << expCode.code;
-      ss << "  pushad" << endl;
         ss << "  push dword " << expCode.GetValue32() << endl;
       ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
-      ss << "  popad" << endl;
     }
   }
   if(withNewLine){
-    ss << "  pushad" << endl;
     ss << "  push dword newline_format" << endl;
     ss << "  call printf" << endl;
     ss << "  add esp, 4" << endl;
-    ss << "  popad" << endl;
   }
 
   AsmCode printCode;

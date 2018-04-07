@@ -86,26 +86,47 @@ string JuliaDocument::GetAsm(){
   ss << statementsCode << endl;
   ss << "  mov eax, 0" << endl;
   ss << "  ret 0" << endl;
+
   ss << "cpower:" << endl;
   ss << "  push ebp" << endl;
   ss << "  mov ebp, esp" << endl;
   ss << "  sub esp, 16" << endl;
-  ss << "  mov [ebp-4], dword 1 ;result = 1" << endl << endl;
-  ss << "while_0_begin:" << endl;
-  ss << "  cmp dword [ebp+12], 0 ;exponent == 0 ?" << endl;
-  ss << "  je while_0_end ;yes, then get out" << endl;
+  ss << "  mov [ebp-4], dword 1" << endl << endl;
+  ss << "cpower_while_begin:" << endl;
+  ss << "  cmp dword [ebp+12], 0" << endl;
+  ss << "  je cpower_while_end" << endl;
   ss << "  nop" << endl;
-  ss << "  mov eax, dword [ebp-4] ;result" << endl;
-  ss << "  mov ebx, dword [ebp+8] ;base" << endl;
-  ss << "  mul ebx ;result * base" << endl;
-  ss << "  mov dword [ebp-4], eax ;result = result * base" << endl;
+  ss << "  mov eax, dword [ebp-4]" << endl;
+  ss << "  mov ebx, dword [ebp+8]" << endl;
+  ss << "  mul ebx" << endl;
+  ss << "  mov dword [ebp-4], eax" << endl;
   ss << "  mov ebx, dword [ebp+12]" << endl;
   ss << "  sub ebx, 1" << endl;
   ss << "  mov dword [ebp+12], ebx" << endl;
-  ss << "  jmp while_0_begin" << endl;
+  ss << "  jmp cpower_while_begin" << endl;
   ss << "  nop" << endl;
-  ss << "while_0_end:" << endl <<endl;
+  ss << "cpower_while_end:" << endl <<endl;
   ss << "  mov eax, dword [ebp-4]" << endl;
+  ss << "  leave" << endl;
+  ss << "  ret" << endl;
+
+  ss << "printbool:" << endl;
+  ss << "  push ebp" << endl;
+  ss << "  mov ebp, esp" << endl << endl;
+  ss << "printbool_if_begin:" << endl;
+  ss << "  cmp dword [ebp+8], 1" << endl;
+  ss << "  jne printbool_if_else" << endl;
+  ss << "  nop" << endl << endl;
+  ss << "  push dword true_format" << endl;
+  ss << "  call printf" << endl;
+  ss << "  add esp, 4" << endl << endl;
+  ss << "  jmp printbool_if_end" << endl;
+  ss << "  nop" << endl;
+  ss << "printbool_if_else:" << endl;
+  ss << "  push dword false_format" << endl;
+  ss << "  call printf" << endl;
+  ss << "  add esp, 4" << endl << endl;
+  ss << "printbool_if_end:" << endl;
   ss << "  leave" << endl;
   ss << "  ret" << endl;
 
@@ -121,6 +142,8 @@ string JuliaDocument::GetDataSegmentCode(){
   ss << "  dec_format db \"%d\", 0" << endl;
   ss << "  str_format db \"%s\", 0" << endl;
   ss << "  newline_format db 10, 0" << endl;
+  ss << "  false_format db \"false\", 0" << endl;
+  ss << "  true_format db \"true\", 0" << endl;
 
   for (auto& str: strings) {
     string woQuotes = regex_replace(str.second, regex("\\\\\""), "\", 34, \"");
