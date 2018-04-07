@@ -27,19 +27,16 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
   scope->AssertVariableExists(varName);
   stringstream ss;
   AsmCode asmCode;
-  valueExpression->currentScope = scope;
   AsmCode expCode = valueExpression->GetAsm(scope);
   ss << expCode.code;
   string valueLocation;
-  if(expCode.locationType == LiteralLocationType){
+  VarDescriptor* desc = scope->GetVariable(varName);
+  if(desc->isGlobal){
+    ss << "  mov dword  [global_" << desc->varName << "], " << expCode.location << endl;
+  }else if(desc->isParameter){
 
-    VarDescriptor* desc = scope->GetVariable(varName);
-    if(desc->isGlobal){
-      ss << "  mov dword global_" << desc->varName << ", " << expCode.location << endl;
-    }else if(desc->isParameter){
-
-    }
   }
+  asmCode.code = ss.str();
   return asmCode;
 }
 
