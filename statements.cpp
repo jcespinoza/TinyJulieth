@@ -114,7 +114,9 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       || expType == BitNotExp
       || expType == XorExp
       || expType == BorExp
-      || expType == BandExp)
+      || expType == BandExp
+      || expType == ShlExp
+      || expType == ShrExp)
       && scope->IsGlobal()){
       AsmCode expCode = exp->GetAsm(scope);
       if(expCode.locationType == RegisterLocationType){
