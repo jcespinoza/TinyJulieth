@@ -217,10 +217,13 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   AsmCode asmCode;
   AsmCode expCode = valueExpression->GetAsm(scope);
   ss << expCode.code;
+
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+
   if(scope->IsGlobal()){
-    if(expCode.locationType == LiteralLocationType){
-      ss << "  mov dword [global_" << varName  << "], " << expCode.location << endl;
-    }
+      ss << "  mov dword [global_" << varName  << "], " << expCode.GetValue32() << endl;
   }
   scope->variables[varName] = newVar;
   asmCode.code = ss.str();
