@@ -254,6 +254,7 @@ AsmCode PowExpression::GetAsm(Scope* scope){
   string tReg = scope->document->RequestRegister();
   ss << "  mov " << tReg << ", eax" << endl;
 
+
   asmCode.locationType = RegisterLocationType;
   asmCode.location = tReg;
   asmCode.code = ss.str();
