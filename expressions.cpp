@@ -30,8 +30,7 @@ AsmCode IdExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
   stringstream ss;
   if(scope->IsGlobal()){
-    asmCode.locationType = LabelLocationType;
-    asmCode.location = "global_" + varName;
+    asmCode.PutIntoLabel("global_" + varName);
   }
 
   asmCode.code = ss.str();
@@ -55,8 +54,7 @@ AsmCode StrExpression::GetAsm(Scope* scope){
   AsmCode asmCode;
 
   string label = scope->document->RegisterString(strValue);
-  asmCode.location = label;
-  asmCode.locationType = LabelLocationType;
+  asmCode.PutIntoLabel(label);
 
   return asmCode;
 }
@@ -112,8 +110,7 @@ AsmCode SubExpression::GetAsm(Scope* scope){
   string tReg = scope->document->RequestRegister();
   ss << "  mov " << tReg << ", "  << leftCode.GetValue32() << endl;
   ss << "  sub " << tReg << ", " << rightCode.GetValue32() << endl;
-  asmCode.location = tReg;
-  asmCode.locationType = RegisterLocationType;
+  asmCode.PutIntoRegister( tReg );
 
   asmCode.code = ss.str();
   return asmCode;
@@ -164,8 +161,8 @@ AsmCode DivExpression::GetAsm(Scope* scope){
   ss << "  cdq" << endl;
   ss << "  div " << tReg << endl;
   ss << "  mov " << tReg << ", eax" << endl;
-  asmCode.location = tReg;
-  asmCode.locationType = RegisterLocationType;
+  asmCode.PutIntoRegister( tReg );
+
   asmCode.code = ss.str();
 
   return asmCode;
@@ -192,8 +189,8 @@ AsmCode ModExpression::GetAsm(Scope* scope){
   ss << "  cdq" << endl;
   ss << "  div " << tReg << endl;
   ss << "  mov " << tReg << ", edx" << endl;
-  asmCode.location = tReg;
-  asmCode.locationType = RegisterLocationType;
+  asmCode.PutIntoRegister( tReg );
+
   asmCode.code = ss.str();
 
   return asmCode;
@@ -220,8 +217,8 @@ AsmCode MulExpression::GetAsm(Scope* scope){
   ss << "  cdq" << endl;
   ss << "  mul " << tReg << endl;
   ss << "  mov " << tReg << ", eax" << endl;
-  asmCode.location = tReg;
-  asmCode.locationType = RegisterLocationType;
+  asmCode.PutIntoRegister( tReg );
+
   asmCode.code = ss.str();
 
   return asmCode;
@@ -255,8 +252,8 @@ AsmCode PowExpression::GetAsm(Scope* scope){
   ss << "  mov " << tReg << ", eax" << endl;
 
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
+
   asmCode.code = ss.str();
   return asmCode;
 }
@@ -283,8 +280,7 @@ AsmCode EquExpression::GetAsm(Scope* scope){
 
   ss << "  mov " << tReg << ", eax" << endl;
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
   return asmCode;
 }
@@ -311,8 +307,7 @@ AsmCode NequExpression::GetAsm(Scope* scope){
 
   ss << "  mov " << tReg << ", eax" << endl;
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
   return asmCode;
 }
@@ -339,8 +334,7 @@ AsmCode LthanExpression::GetAsm(Scope* scope){
 
   ss << "  mov " << tReg << ", eax" << endl;
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
   return asmCode;
 }
@@ -367,8 +361,7 @@ AsmCode GthanExpression::GetAsm(Scope* scope){
 
   ss << "  mov " << tReg << ", eax" << endl;
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
   return asmCode;
 }
@@ -395,8 +388,7 @@ AsmCode LeqExpression::GetAsm(Scope* scope){
 
   ss << "  mov " << tReg << ", eax" << endl;
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
   return asmCode;
 }
@@ -423,8 +415,7 @@ AsmCode GeqExpression::GetAsm(Scope* scope){
 
   ss << "  mov " << tReg << ", eax" << endl;
 
-  asmCode.locationType = RegisterLocationType;
-  asmCode.location = tReg;
+  asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();
   return asmCode;
 }

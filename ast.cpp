@@ -147,7 +147,8 @@ string JuliaDocument::GetDataSegmentCode(){
 
   for (auto& str: strings) {
     string woQuotes = regex_replace(str.second, regex("\\\\\""), "\", 34, \"");
-    string woTabs = regex_replace(woQuotes, regex("\\\\t"), "\", 9, \"");
+    string woSlashes = regex_replace(woQuotes, regex("\\\\\\\\"), "\", 92, \"");
+    string woTabs = regex_replace(woSlashes, regex("\\\\t"), "\", 9, \"");
     string woLines = regex_replace(woTabs, regex("\\\\n"), "\", 10, \"");
 		ss << "  " << str.first << " db \"" << woLines << "\", 0" << endl;
 	}

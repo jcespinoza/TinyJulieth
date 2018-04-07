@@ -133,6 +133,26 @@ typedef struct AsmCode{
     return (locationType == LabelLocationType || locationType == AddressLocationType) ? ("[" + location + "]"):
     location;
   }
+
+  void PutIntoLabel(string value){
+    location = value;
+    locationType = LabelLocationType;
+  }
+
+  void PutIntoRegister(string value){
+    location = value;
+    locationType = RegisterLocationType;
+  }
+
+  void PutIntoAddress(string value){
+    location = value;
+    locationType = AddressLocationType;
+  }
+
+  void PutLiteral(string value){
+    location = value;
+    locationType = LiteralLocationType;
+  }
 } AsmCode;
 
 class ScopeStack {
@@ -247,9 +267,12 @@ public:
   }
 
   VarDescriptor* GetVariable(string name){
-    AssertVariableExists(name);
-    VarDescriptor* found = variables[name];
-    return found;
+    if(IsGlobal()){ AssertVariableExists(name); }
+    if(variables.find(name) != variables.end()){
+      VarDescriptor* found = variables[name];
+      return found;
+    }
+    return parentScope->GetVariable(name);;
   }
 
   void RegisterVariable(VarDescriptor* desc){
