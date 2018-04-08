@@ -383,9 +383,10 @@ AsmCode InvokeStatement::GetAsm(Scope* scope){
   for(; iter != arguments->expressions.rend(); ++iter){
     AsmCode expCode = (*iter)->GetAsm(scope);
     ss << expCode.code;
-    ss << ";  push " << expCode.GetValue32();
+    ss << "  push " << expCode.GetValue32();
   }
-  //ss <<
+  ss << "  call " << funcName << endl;
+  ss << "  add esp,  " << arguments->getCount()*4 << endl;
 
   asmCode.code = ss.str();
   return asmCode;
