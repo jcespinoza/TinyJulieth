@@ -1,12 +1,24 @@
-y::Array{Int} = [3, 2, 1]
-x::Array{Int} = [15, 34, 25, y[2]^3]
+a::Array{Int} = [7,4,9,2,10,1,5,3,8,6,false]
 
-for a = 1:4
-    if x[a] > 25
-        println("Mayor a 25 ", x[a])
-    elseif x[a] < 25
-        println("Menor a 25 ", x[a])
-    else
-        println("Igual a 25 ", x[a])
+
+for i = 1:11
+    for j = 1:11-1
+        if a[j] > a[j+1]
+            temp::Int = a[j+1]
+            a[j+1] = a[j]
+            a[j]=temp
+        end
     end
+end
+
+for i = 1:11
+    println(a[i])
+end
+
+b::Array{Bool} = [true,false,false,true,true,false]
+
+println("Imprimiendo Booleans")
+
+for j = 1:6
+   println(b[j])
 end

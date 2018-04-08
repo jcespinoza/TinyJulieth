@@ -203,11 +203,13 @@ AsmCode ForStatement::GetAsm(Scope* scope){
   scope->document->FreeUpRegister(tReg);
 
   AsmCode stmCode = statements->GetAsm(localScope);
+
   ss << stmCode.code;
   ss << "  add dword [ebp-" << offset << "], 1" << endl;
   ss << "  jmp " << label_begin << "_begin" << endl;
   ss << "  nop" << endl;
   ss << label_begin << "_end:" << endl;
+  scope->stack->FreeUpOffset(varName);
 
   asmCode.code = ss.str();
   return asmCode;
