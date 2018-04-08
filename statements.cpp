@@ -29,7 +29,7 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
   AsmCode asmCode;
   AsmCode expCode = valueExpression->GetAsm(scope);
   ss << expCode.code;
-  string valueLocation;
+
   VarDescriptor* desc = scope->GetVariable(varName);
   if(desc->isGlobal){
     ss << "  mov dword  [global_" << desc->varName << "], " << expCode.location << endl;
@@ -41,7 +41,38 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
 }
 
 AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
-  return AsmCode();
+  scope->AssertVariableExists(varName);
+  stringstream ss;
+  AsmCode asmCode;
+  AsmCode expCode = valueExpression->GetAsm(scope);
+  ss << expCode.code;
+
+  VarDescriptor* desc = scope->GetVariable(varName);
+  string tReg = scope->document->RequestRegister();
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+  int valueOffset = scope->stack->AllocateOffset();
+  ss << "  mov " << tReg << ", " << expCode.GetValue32() << endl;
+  ss << "  mov dword [ebp-" << valueOffset <<"], " << tReg << endl;
+
+  AsmCode indexCode = indexExpression->GetAsm(scope);
+  ss << indexCode.code;
+  ss << "  mov " << tReg << ", dword " << indexCode.GetValue32() << endl;
+  ss << "  sub " << tReg << ", 1" << endl;
+  ss << "  shl " << tReg << ", 2" << endl; //multiply by 4
+
+  if(desc->isGlobal){
+    string sReg = scope->document->RequestRegister();
+    ss << "  add " << tReg << ", global_" << varName << endl;
+    ss << "  mov " << sReg << ", dword [ebp-" << valueOffset << "]" << endl;
+    ss << "  mov dword [" << tReg << "], " << sReg << endl;
+    scope->document->FreeUpRegister(sReg);
+  }
+  scope->stack->FreeUpOffset(valueOffset);
+  scope->document->FreeUpRegister(tReg);
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode PrintStatement::GetAsm(Scope* scope){

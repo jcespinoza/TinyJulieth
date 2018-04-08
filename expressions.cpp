@@ -33,7 +33,7 @@ AsmCode IdExpression::GetAsm(Scope* scope){
 
   if(desc->isGlobal){
     asmCode.PutIntoLabel("global_" + varName);
-  }else if(desc->isLoop){
+  }else{
     string tReg = scope->document->RequestRegister();
     ss << "  mov " << tReg << ", dword [ebp-" << desc->offset << "]" << endl;
     asmCode.PutIntoRegister(tReg);
@@ -59,10 +59,8 @@ AsmCode ArrayAccessExpression::GetAsm(Scope* scope){
   ss << "  shl " << tReg << ", 2" << endl; //multiply by 4
 
   if(desc->isGlobal){
-    string sReg = scope->document->RequestRegister();
     ss << "  add " << tReg << ", global_" << varName << endl;
     ss << "  mov " << tReg << ", dword [" << tReg << "]" << endl;
-    scope->document->FreeUpRegister(sReg);
 
     asmCode.PutIntoRegister(tReg);
   }else{

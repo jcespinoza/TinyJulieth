@@ -27,7 +27,7 @@ public:
 class ArrayItemAssignStatement: public Statement {
 public:
 	ArrayItemAssignStatement(char* varName, Expression* index, Expression *expr) {
-    this->indexExpression = indexExpression;
+    this->indexExpression = index;
 		this->varName = this->varName.append(varName);
 		this->valueExpression = expr;
 	}
