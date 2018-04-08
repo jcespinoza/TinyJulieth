@@ -1,4 +1,5 @@
 a::Array{Int} = [7,4,9,2,10,1,5,3,8,6,false]
+x::Int = 0
 
 function quickSort(left::Int, right::Int)::Int
     i::Int = left
@@ -6,29 +7,29 @@ function quickSort(left::Int, right::Int)::Int
     tmp::Int =0
     pivot::Int = a[(left + right) / 2]
 
-    # while (i <= j)
-    #     while (a[i] < pivot)
-    #         i = i+1
-    #     end
-    #
-    #     while (a[j] > pivot)
-    #         j = j-1
-    #     end
-    #     if (i <= j)
-    #         tmp = a[i]
-    #         a[i] = a[j]
-    #         a[j] = tmp
-    #         i = i+1
-    #         j = j-1
-    #     end
-    # end
+    while (i <= j)
+        while (a[i] < pivot)
+            i = i+1
+        end
 
-    # if (left < j)
-    #     quickSort(left, j)
-    # end
-    # if (i < right)
-    #     quickSort(i, right)
-    # end
+        while (a[j] > pivot)
+            j = j-1
+        end
+        if (i <= j)
+            tmp = a[i]
+            a[i] = a[j]
+            a[j] = tmp
+            i = i+1
+            j = j-1
+        end
+    end
+
+    if (left < j)
+        quickSort(left, j)
+    end
+    if (i < right)
+        quickSort(i, right)
+    end
 end
 
 

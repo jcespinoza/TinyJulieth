@@ -63,6 +63,9 @@ AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
   ss << "  mov dword [ebp-" << valueOffset <<"], " << tReg << endl;
 
   AsmCode indexCode = indexExpression->GetAsm(scope);
+  if(indexCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(indexCode.location);
+  }
   ss << indexCode.code;
   ss << "  mov " << tReg << ", dword " << indexCode.GetValue32() << endl;
   ss << "  sub " << tReg << ", 1" << endl;
@@ -384,6 +387,11 @@ AsmCode InvokeStatement::GetAsm(Scope* scope){
   auto iter = arguments->expressions.rbegin();
   for(; iter != arguments->expressions.rend(); ++iter){
     AsmCode expCode = (*iter)->GetAsm(scope);
+
+    if(expCode.locationType == RegisterLocationType){
+      scope->document->FreeUpRegister(expCode.location);
+    }
+
     ss << expCode.code;
     ss << "  push " << expCode.GetValue32() << endl;;
   }
