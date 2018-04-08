@@ -30,6 +30,7 @@ AsmCode IdExpression::GetAsm(Scope* scope){
   AsmCode asmCode; currentScope = scope;
   stringstream ss;
   VarDescriptor* desc = scope->GetVariable(varName);
+
   if(desc->isGlobal){
     asmCode.PutIntoLabel("global_" + varName);
   }
@@ -40,7 +41,31 @@ AsmCode IdExpression::GetAsm(Scope* scope){
 
 AsmCode ArrayAccessExpression::GetAsm(Scope* scope){
   AsmCode asmCode; currentScope = scope;
+  stringstream ss;
+  VarDescriptor* desc = scope->GetVariable(varName);
+  AsmCode expCode = indexExpression->GetAsm(scope);
 
+  string tReg = scope->document->RequestRegister();
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+  ss << expCode.code;
+  ss << "  mov " << tReg << ", dword " << expCode.GetValue32() << endl;
+  ss << "  sub " << tReg << ", 1" << endl;
+  ss << "  shl " << tReg << ", 2" << endl; //multiply by 4
+
+  if(desc->isGlobal){
+    string sReg = scope->document->RequestRegister();
+    ss << "  add " << tReg << ", global_" << varName << endl;
+    ss << "  mov " << tReg << ", dword [" << tReg << "]" << endl;
+    scope->document->FreeUpRegister(sReg);
+
+    asmCode.PutIntoRegister(tReg);
+  }else{
+
+  }
+
+  asmCode.code = ss.str();
   return asmCode;
 }
 

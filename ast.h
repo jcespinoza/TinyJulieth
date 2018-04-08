@@ -155,6 +155,12 @@ typedef struct AsmCode{
   }
 } AsmCode;
 
+typedef struct ArrayAllocation{
+  string name;
+  int size;
+  int offset;
+} ArrayAllocation;
+
 class ScopeStack {
 public:
   ScopeStack(){
@@ -173,6 +179,21 @@ public:
     offsets[offset] = false;
   }
 
+  int AllocateArrayOffset(string name, int size){
+    int max = 0;
+    for(auto& as: arrayOffsets){
+      ArrayAllocation allo = as.second;
+      max += allo.size;
+    }
+
+    ArrayAllocation arlo;
+    arlo.name = name;
+    arlo.offset = max;
+    arlo.size = size;
+    arrayOffsets[name] = arlo;
+    return max;
+  }
+
   int AllocateOffset(){
     int max = 0;
     for(auto& os: offsets){
@@ -189,10 +210,11 @@ public:
 
   int AllocateOffset(string name){
     int offset = AllocateOffset();
-    namedOffsets[name];
+    namedOffsets[name] = offset;
   }
 
   map<int, bool> offsets;
+  map<string, ArrayAllocation> arrayOffsets;
   map<string, int> namedOffsets;
 };
 
@@ -287,10 +309,6 @@ public:
     ss << "sub esp, " << bytesForAllocation << endl;
 
     return ss.str();
-  }
-
-  int RequestOffset(){
-    return 0;
   }
 
   string GetLoopBegin(){

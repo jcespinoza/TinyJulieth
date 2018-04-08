@@ -113,7 +113,8 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       || expType == BorExp
       || expType == BandExp
       || expType == ShlExp
-      || expType == ShrExp)){
+      || expType == ShrExp
+      || expType == ArrAccExp)){
       AsmCode expCode = exp->GetAsm(scope);
       if(expCode.locationType == RegisterLocationType){
         scope->document->FreeUpRegister(expCode.location);
@@ -172,7 +173,7 @@ AsmCode ForStatement::GetAsm(Scope* scope){
   // Register counter variable
   label_begin = scope->document->GetLabelFor("for");
   localScope = new Scope(scope, ForScopeT);
-  statements->GetAsm(localScope);
+  //statements->GetAsm(localScope);
   return AsmCode();
 }
 
@@ -233,18 +234,40 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
 
 AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
+  AsmCode asmCode;
+  stringstream ss;
 
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount(), false, scope->IsGlobal());
-  newVar->offset = scope->stack->AllocateOffset(varName);
-
+  if(!scope->IsGlobal()){
+    newVar->offset = scope->stack->AllocateArrayOffset(varName, values->getCount());
+  }
   scope->variables[varName] = newVar;
+  int index = 0;
+  for(auto& item: values->expressions){
+    AsmCode expCode = item->GetAsm(scope);
 
-  return AsmCode();
+    string tReg = scope->document->RequestRegister();
+    if(expCode.locationType == RegisterLocationType){
+      scope->document->FreeUpRegister(expCode.location);
+    }
+    ss << expCode.code;
+    ss << "  mov " << tReg << ", " << expCode.GetValue32() << endl;
+    if(scope->IsGlobal()){
+      ss << "  mov " << "[global_" << varName << "+"<< (index*4) << "], dword " << tReg << endl;;
+    }else{
+
+    }
+    scope->document->FreeUpRegister(tReg);
+    index++;
+  }
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode FuncDeclStatement::GetAsm(Scope* scope){
   functionScope = new Scope(scope, FunctionScopeT);
-  //register pareters as if they were normal variables
+  //register parameters as if they were normal variables
   int order = 0;
   for(auto& param : params->paramList){
     VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true, false);
