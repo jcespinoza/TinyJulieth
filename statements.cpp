@@ -195,7 +195,7 @@ AsmCode ForStatement::GetAsm(Scope* scope){
   if(maxCode.locationType == RegisterLocationType){
     scope->document->FreeUpRegister(maxCode.location);
   }
-
+  ss << maxCode.code;
   ss << "  mov " << tReg << ", " << maxCode.GetValue32() << endl;
   ss << "  cmp dword [ebp-" << offset << "], " << tReg << endl;
   ss << "  jg " << label_begin << "_end" << endl << "  nop" << endl;
@@ -262,7 +262,11 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   }
 
   if(scope->IsGlobal()){
-      ss << "  mov dword [global_" << varName  << "], " << expCode.GetValue32() << endl;
+    ss << "  mov dword [global_" << varName  << "], " << expCode.GetValue32() << endl;
+  }else{
+    int offset = scope->stack->AllocateOffset(varName);
+    newVar->offset = offset;
+    ss << "  mov dword [ebp-" << offset << "], " << expCode.GetValue32() << endl;
   }
   scope->variables[varName] = newVar;
   asmCode.code = ss.str();
