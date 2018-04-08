@@ -667,3 +667,36 @@ AsmCode LandExpression::GetAsm(Scope* scope){
   asmCode.code = ss.str();
   return asmCode;
 }
+
+int ExpressionList::getExpType(){
+  for(auto& exp : expressions){
+    if(exp->getExpType() == IntType){
+      return IntType;
+    }
+  }
+  return BoolType;
+}
+
+int IdExpression::getExpType(){
+  VarDescriptor* desc = currentScope->GetVariable(varName);
+  return desc->typeCode;
+}
+
+int ArrayAccessExpression::getExpType(){
+  VarDescriptor* desc = currentScope->GetVariable(varName);
+  if(desc->typeCode == ArrayIntType) return IntType;
+  if(desc->typeCode == ArrayBoolType) return BoolType;
+  return desc->typeCode;
+}
+
+int FuncCallExpression::getExpType(){
+  FuncDescriptor* desc = currentScope->document->functions[funcName];
+  return desc->returnType;
+}
+
+int BinaryExpression::getExpType(){
+  if(leftSide->getExpType() == IntType || rightSide->getExpType() == IntType){
+    return IntType;
+  }
+  return leftSide->getExpType();
+}

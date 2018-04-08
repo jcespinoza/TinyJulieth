@@ -354,7 +354,7 @@ public:
 class Expression {
 public:
   virtual int getType() = 0;
-  //virtual int getExpType() = 0;
+  virtual int getExpType() = 0;
   Scope* currentScope;
   bool IsBoolean(){ return false; }
   virtual AsmCode GetAsm(Scope* scope) = 0;
@@ -366,7 +366,7 @@ public:
   void AddNew(Expression* exp){
     expressions.push_front(exp);
   }
-
+  int getExpType();
   std::list<Expression*> expressions;
   int getCount(){ return expressions.size(); }
 };

@@ -17,6 +17,7 @@ public:
   }
 
   int getType(){ return NumExp; }
+  int getExpType(){ return IntType; }
   AsmCode GetAsm(Scope* scope);
 
   int value = 0;
@@ -29,6 +30,7 @@ public:
   }
 
   int getType(){ return BoolExp; }
+  int getExpType(){ return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 
@@ -40,7 +42,7 @@ public:
   IdExpression(char* idName){
     varName = varName.append( idName );
   }
-
+  int getExpType();
   int getType(){ return IdExp; }
   AsmCode GetAsm(Scope* scope);
 
@@ -53,7 +55,7 @@ public:
     varName = varName.append( arrName );
     indexExpression = index;
   }
-
+  int getExpType();
   int getType(){ return ArrAccExp; }
   AsmCode GetAsm(Scope* scope);
 
@@ -69,6 +71,7 @@ public:
   }
 
   int getType(){ return FCallExp; }
+  int getExpType();
   AsmCode GetAsm(Scope* scope);
 
   ExpressionList* arguments;
@@ -81,6 +84,7 @@ public:
     strValue = strValue.append( val );
   }
 
+  int getExpType(){ return IntType; }
   int getType(){ return StrExp; }
   AsmCode GetAsm(Scope* scope);
 
@@ -92,7 +96,7 @@ public:
   BitNotExpression(Expression* exp){
     targetExpression = exp;
   }
-
+  int getExpType(){ return targetExpression->getExpType(); }
   int getType(){ return BitNotExp; }
   AsmCode GetAsm(Scope* scope);
 
@@ -106,6 +110,7 @@ public:
   }
 
   int getType(){ return NotExp; }
+  int getExpType(){ return targetExpression->getExpType(); }
   AsmCode GetAsm(Scope* scope);
 
   Expression* targetExpression;
@@ -117,6 +122,7 @@ public:
     leftSide = left;
     rightSide = right;
   }
+  int getExpType();
   Expression* leftSide;
   Expression* rightSide;
 };
