@@ -85,7 +85,7 @@ AsmCode FuncCallExpression::GetAsm(Scope* scope){
     if(expCode.locationType == RegisterLocationType){
       scope->document->FreeUpRegister(expCode.location);
     }
-    ss << "  push " << expCode.GetValue32() << endl;
+    ss << "  push dword " << expCode.GetValue32() << endl;
   }
   ss << "  call " << funcName << endl;
   ss << "  add esp, " << (arguments->getCount()*4) << endl;
