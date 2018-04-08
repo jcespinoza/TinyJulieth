@@ -15,7 +15,7 @@ main:
   sub esp, 16
 
   mov eax, dword -1
-  mov ebx, dword 10
+  mov ebx, dword (10/2)
   xor eax, ebx
   mov ebx, eax
   push dword ebx

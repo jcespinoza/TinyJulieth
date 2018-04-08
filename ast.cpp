@@ -47,6 +47,7 @@ string JuliaDocument::RequestRegister(){
   for(auto& r : registers){
     if(r.second == false){
       r.second = true;
+      //cout << ";Returning Register: " << r.first << endl;;
       return r.first;
     }
   }
@@ -54,7 +55,11 @@ string JuliaDocument::RequestRegister(){
 }
 
 void JuliaDocument::FreeUpRegister(string name){
-  if(registers.find(name) == registers.end()) throw runtime_error("No such register: " + name);
+  if(registers.find(name) == registers.end()){
+    throw runtime_error("No such register: " + name);
+  }
+
+  //cout << ";Freeing up Register: " << name << endl;;
 
   registers[name] = false;
 }
@@ -64,6 +69,7 @@ void JuliaDocument::Process(){
   InitRegisters();
   globalScope = new Scope(NULL, GlobalScopeT);
   globalScope->document = this;
+  RegisterGlobals();
   RegisterFunctions();
 
   string documentAsm = GetAsm();

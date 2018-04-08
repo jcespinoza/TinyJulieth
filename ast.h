@@ -7,6 +7,7 @@
 #include <map>
 #include <cmath>
 #include <sstream>
+#include <iostream>
 #define MALLOCK_CHECK 1
 
 enum StatemetTypes{
@@ -136,6 +137,11 @@ typedef struct AsmCode{
     location;
   }
 
+  bool IsLiteral(){  return locationType == LiteralLocationType; }
+  bool IsRegister(){  return locationType == RegisterLocationType; }
+  bool IsLabel(){  return locationType == LabelLocationType; }
+  bool IsAddress(){  return locationType == AddressLocationType; }
+
   void PutIntoLabel(string value){
     location = value;
     locationType = LabelLocationType;
@@ -249,6 +255,12 @@ public:
     if(parentScope == NULL) return false;
 
     return parentScope->VariableExists(varName);
+  }
+
+  void PrintVars(){
+    for(auto& var: variables){
+      cout << var.first << ": global" << var.second->isGlobal <<endl;
+    }
   }
 
   void AssertVariableDoesntExist(string name){

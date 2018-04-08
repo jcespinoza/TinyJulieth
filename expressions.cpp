@@ -33,7 +33,11 @@ AsmCode IdExpression::GetAsm(Scope* scope){
 
   if(desc->isGlobal){
     asmCode.PutIntoLabel("global_" + varName);
-  }else{
+  }else if(desc->isParameter){
+    string tReg = scope->document->RequestRegister();
+    ss << "  mov " << tReg << ", dword [ebp+" << desc->offset << "]" << endl;
+    asmCode.PutIntoRegister(tReg);
+  } else{
     string tReg = scope->document->RequestRegister();
     ss << "  mov " << tReg << ", dword [ebp-" << desc->offset << "]" << endl;
     asmCode.PutIntoRegister(tReg);
@@ -73,7 +77,23 @@ AsmCode ArrayAccessExpression::GetAsm(Scope* scope){
 
 AsmCode FuncCallExpression::GetAsm(Scope* scope){
   AsmCode asmCode; currentScope = scope;
+  stringstream ss;
+  auto iter = arguments->expressions.rbegin();
+  for(; iter != arguments->expressions.rend(); ++iter){
+    AsmCode expCode = (*iter)->GetAsm(scope);
+    ss << expCode.code;
+    if(expCode.locationType == RegisterLocationType){
+      scope->document->FreeUpRegister(expCode.location);
+    }
+    ss << "  push " << expCode.GetValue32() << endl;
+  }
+  ss << "  call " << funcName << endl;
+  ss << "  add esp, " << (arguments->getCount()*4) << endl;
+  string tReg = scope->document->RequestRegister();
+  ss << "  mov " << tReg << ", eax" << endl;
 
+  asmCode.PutIntoRegister(tReg);
+  asmCode.code = ss.str();
   return asmCode;
 }
 
@@ -136,21 +156,28 @@ AsmCode AddExpression::GetAsm(Scope* scope){
 
   AsmCode leftCode = leftSide->GetAsm(scope);
   AsmCode rightCode = rightSide->GetAsm(scope);
-
-  string tReg = scope->document->RequestRegister();
-  if(leftCode.locationType == RegisterLocationType){
-    scope->document->FreeUpRegister(leftCode.location);
-  }
-  if(rightCode.locationType == RegisterLocationType){
-    scope->document->FreeUpRegister(rightCode.location);
-  }
-
   ss << leftCode.code;
   ss << rightCode.code;
-  ss << "  mov " << tReg << ", "  << leftCode.GetValue32() << endl;
-  ss << "  add " << tReg << ", " << rightCode.GetValue32() << endl;
-  asmCode.location = tReg;
-  asmCode.locationType = RegisterLocationType;
+
+  if(leftCode.IsLiteral() && rightCode.IsLiteral()){
+    asmCode.PutLiteral( "("+ leftCode.GetValue32()+ "+"+ rightCode.GetValue32()+")" );
+  }else if (leftCode.IsRegister() && rightCode.IsRegister()){
+    ss << "  add " << leftCode.location << ", " << rightCode.location << endl;
+    asmCode.PutIntoRegister(leftCode.location);
+    scope->document->FreeUpRegister(rightCode.location);
+  }else if(leftCode.IsRegister() ){
+    ss << "  add " << leftCode.location << ", " << rightCode.location << endl;
+    asmCode.PutIntoRegister(leftCode.location);
+  }else if(rightCode.IsRegister()){
+    ss << "  add " << rightCode.location << ", " << leftCode.location << endl;
+    asmCode.PutIntoRegister(rightCode.location);
+  }else{
+    string tReg = scope->document->RequestRegister();
+
+    ss << "  mov " << tReg << ", "  << leftCode.GetValue32() << endl;
+    ss << "  add " << tReg << ", " << rightCode.GetValue32() << endl;
+    asmCode.PutIntoRegister(tReg);
+  }
 
   asmCode.code = ss.str();
   return asmCode;

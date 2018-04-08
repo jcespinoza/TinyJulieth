@@ -1,24 +1,12 @@
-a::Array{Int} = [7,4,9,2,10,1,5,3,8,6,false]
+x::Int = 10
+y::Int = 3
 
-
-for i = 1:11
-    for j = 1:11-1
-        if a[j] > a[j+1]
-            temp::Int = a[j+1]
-            a[j+1] = a[j]
-            a[j]=temp
-        end
-    end
-end
-
-for i = 1:11
-    println(a[i])
-end
-
-b::Array{Bool} = [true,false,false,true,true,false]
-
-println("Imprimiendo Booleans")
-
-for j = 1:6
-   println(b[j])
-end
+println(x)
+println(y)
+println(-x)
+println(-y);println (x + y)
+println(x - y)
+println(x * y)
+println(x / y)
+println(x % y)
+println(x ^ y)

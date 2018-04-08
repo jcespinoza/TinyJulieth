@@ -30,11 +30,15 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
   AsmCode expCode = valueExpression->GetAsm(scope);
   ss << expCode.code;
 
+  if(expCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(expCode.location);
+  }
+
   VarDescriptor* desc = scope->GetVariable(varName);
   if(desc->isGlobal){
     ss << "  mov dword  [global_" << desc->varName << "], " << expCode.location << endl;
   }else if(desc->isParameter){
-
+    ss << "  mov dword  [ebp+" << desc->offset << "], " << expCode.location << endl;
   }
   asmCode.code = ss.str();
   return asmCode;
@@ -118,7 +122,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     }
     if(expType == IdExp ){
       AsmCode expCode = exp->GetAsm(scope);
-      //printf("got here");
+
       VarDescriptor* desc = scope->GetVariable(((IdExpression*)exp)->varName);
       if(desc->typeCode == BoolType){
         ss << expCode.code;
@@ -131,6 +135,9 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
         ss << "  push dword dec_format" << endl;
         ss << "  call printf" << endl;
         ss << "  add esp, 8" << endl;
+      }
+      if(expCode.IsRegister()){
+        scope->document->FreeUpRegister(expCode.location);
       }
     }
     if((expType == AddExp
@@ -145,13 +152,14 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       || expType == BandExp
       || expType == ShlExp
       || expType == ShrExp
-      || expType == ArrAccExp)){
+      || expType == ArrAccExp
+      || expType == FCallExp)){
       AsmCode expCode = exp->GetAsm(scope);
-      if(expCode.locationType == RegisterLocationType){
+      if(expCode.IsRegister()){
         scope->document->FreeUpRegister(expCode.location);
       }
       ss << expCode.code;
-        ss << "  push dword " << expCode.GetValue32() << endl;
+      ss << "  push dword " << expCode.GetValue32() << endl;
       ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
@@ -279,8 +287,9 @@ AsmCode WhileStatement::GetAsm(Scope* scope){
 }
 
 AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
-  scope->AssertVariableDoesntExist(varName);
-
+  if(!scope->IsGlobal()){
+    scope->AssertVariableDoesntExist(varName);
+  }
   VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false, scope->IsGlobal(), false);
 
   stringstream ss;
@@ -306,7 +315,9 @@ AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
 }
 
 AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
-  scope->AssertVariableDoesntExist(varName);
+  if(!scope->IsGlobal()){
+    scope->AssertVariableDoesntExist(varName);
+  }
   AsmCode asmCode;
   stringstream ss;
 
@@ -339,21 +350,45 @@ AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
 }
 
 AsmCode FuncDeclStatement::GetAsm(Scope* scope){
+  AsmCode asmCode;
+  stringstream ss;
+
   functionScope = new Scope(scope, FunctionScopeT);
-  //register parameters as if they were normal variables
+
   int order = 0;
   for(auto& param : params->paramList){
     VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true, false, false);
     newVar->offset = 2*sizeof(int) + order*sizeof(int);
     functionScope->variables[param->paramName] = newVar;
+    order++;
   }
-  statements->GetAsm(functionScope);
-  return AsmCode();
+  ss << funcName << ":" << endl;
+  ss << "  push ebp" << endl;
+  ss << "  mov ebp, esp" << endl;
+  ss << "  sub esp, 256" << endl << endl;
+
+  AsmCode stmCode = statements->GetAsm(functionScope);
+  ss << stmCode.code;
+
+  ss << "  leave" << endl << "  ret" << endl;
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode InvokeStatement::GetAsm(Scope* scope){
-  return AsmCode();
-  scope->document->AsssertFunctionExists(funcName);
+  AsmCode asmCode;
+  stringstream ss;
+  auto iter = arguments->expressions.rbegin();
+  for(; iter != arguments->expressions.rend(); ++iter){
+    AsmCode expCode = (*iter)->GetAsm(scope);
+    ss << expCode.code;
+    ss << ";  push " << expCode.GetValue32();
+  }
+  //ss <<
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode ContinueStatement::GetAsm(Scope* scope){
@@ -386,16 +421,19 @@ AsmCode ReturnStatement::GetAsm(Scope* scope){
   }
   stringstream ss;
   AsmCode asmCode;
-  AsmCode expCode = expression->GetAsm(scope);
-  ss << expCode.code;
 
-  if(expCode.locationType == RegisterLocationType){
-    scope->document->FreeUpRegister(expCode.location);
+  if(expression != NULL){
+    AsmCode expCode = expression->GetAsm(scope);
+    ss << expCode.code;
+
+    if(expCode.locationType == RegisterLocationType){
+      scope->document->FreeUpRegister(expCode.location);
+    }
+
+    ss << "  mov eax, " << expCode.GetValue32() << endl;
   }
 
-  ss << "  mov eax, " << expCode.GetValue32();
   ss << "  leave" << endl << "  ret" << endl;
-
   scope->AssertIsInFunction("Return statements are only valid inside a function.\n");
 
   asmCode.code = ss.str();
