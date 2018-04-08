@@ -210,6 +210,7 @@ class EquExpression: public BinaryExpression {
 public:
   EquExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return EquExp; }
+  int getExpType() override { return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
@@ -218,6 +219,7 @@ class NequExpression: public BinaryExpression {
 public:
   NequExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return NeqExp; }
+  int getExpType() override { return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
@@ -226,6 +228,7 @@ class LthanExpression: public BinaryExpression {
 public:
   LthanExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LthExp; }
+  int getExpType() override { return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
@@ -234,6 +237,7 @@ class GthanExpression: public BinaryExpression {
 public:
   GthanExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return GthExp; }
+  int getExpType() override { return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
@@ -243,6 +247,7 @@ public:
   GeqExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return GeqExp; }
   bool IsBoolean(){ return true; }
+  int getExpType() override { return BoolType; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -251,6 +256,7 @@ public:
   LeqExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LeqExp; }
   bool IsBoolean(){ return true; }
+  int getExpType() override { return BoolType; }
   AsmCode GetAsm(Scope* scope);
 };
 
@@ -258,6 +264,7 @@ class LorExpression: public BinaryExpression {
 public:
   LorExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LorExp; }
+  int getExpType() override { return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
@@ -266,6 +273,7 @@ class LandExpression: public BinaryExpression {
 public:
   LandExpression(Expression* left, Expression* right): BinaryExpression(left, right){}
   int getType(){ return LandExp; }
+  int getExpType() override { return BoolType; }
   bool IsBoolean(){ return true; }
   AsmCode GetAsm(Scope* scope);
 };
