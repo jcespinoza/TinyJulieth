@@ -33,6 +33,10 @@ AsmCode IdExpression::GetAsm(Scope* scope){
 
   if(desc->isGlobal){
     asmCode.PutIntoLabel("global_" + varName);
+  }else if(desc->isLoop){
+    string tReg = scope->document->RequestRegister();
+    ss << "  mov " << tReg << ", dword [ebp-" << desc->offset << "]" << endl;
+    asmCode.PutIntoRegister(tReg);
   }
 
   asmCode.code = ss.str();

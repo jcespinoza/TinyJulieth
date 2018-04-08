@@ -170,11 +170,47 @@ AsmCode IfStatement::GetAsm(Scope* scope){
 }
 
 AsmCode ForStatement::GetAsm(Scope* scope){
+  AsmCode asmCode;
+  stringstream ss;
   // Register counter variable
   label_begin = scope->document->GetLabelFor("for");
   localScope = new Scope(scope, ForScopeT);
-  //statements->GetAsm(localScope);
-  return AsmCode();
+  scope->label_begin = label_begin + "_begin";
+  scope->label_end = label_begin + "_end";
+
+  VarDescriptor* newVar = new VarDescriptor(varName, IntType, 1, false, false, true);
+  int offset = scope->stack->AllocateOffset(varName);
+  newVar->offset = offset;
+  localScope->RegisterVariable(newVar);
+
+  AsmCode minCode = minExpression->GetAsm(scope);
+  if(minCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(minCode.location);
+  }
+  AsmCode maxCode = maxExpression->GetAsm(scope);
+  ss << "  mov dword [ebp-" << offset << "], " << minCode.GetValue32() << endl;
+  ss << label_begin << "_begin:" << endl;
+
+  string tReg = scope->document->RequestRegister();
+  if(maxCode.locationType == RegisterLocationType){
+    scope->document->FreeUpRegister(maxCode.location);
+  }
+
+  ss << "  mov " << tReg << ", " << maxCode.GetValue32() << endl;
+  ss << "  cmp dword [ebp-" << offset << "], " << tReg << endl;
+  ss << "  jg " << label_begin << "_end" << endl << "  nop" << endl;
+
+  scope->document->FreeUpRegister(tReg);
+
+  AsmCode stmCode = statements->GetAsm(localScope);
+  ss << stmCode.code;
+  ss << "  add dword [ebp-" << offset << "], 1" << endl;
+  ss << "  jmp " << label_begin << "_begin" << endl;
+  ss << "  nop" << endl;
+  ss << label_begin << "_end:" << endl;
+
+  asmCode.code = ss.str();
+  return asmCode;
 }
 
 AsmCode WhileStatement::GetAsm(Scope* scope){
@@ -212,7 +248,7 @@ AsmCode WhileStatement::GetAsm(Scope* scope){
 AsmCode ScalarVarDeclStatement::GetAsm(Scope* scope){
   scope->AssertVariableDoesntExist(varName);
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false, scope->IsGlobal());
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, 1, false, scope->IsGlobal(), false);
 
   stringstream ss;
   AsmCode asmCode;
@@ -237,7 +273,7 @@ AsmCode ArrayVarDeclStatement::GetAsm(Scope* scope){
   AsmCode asmCode;
   stringstream ss;
 
-  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount(), false, scope->IsGlobal());
+  VarDescriptor* newVar = new VarDescriptor(varName, varType->typeCode, values->getCount(), false, scope->IsGlobal(), false);
   if(!scope->IsGlobal()){
     newVar->offset = scope->stack->AllocateArrayOffset(varName, values->getCount());
   }
@@ -270,7 +306,7 @@ AsmCode FuncDeclStatement::GetAsm(Scope* scope){
   //register parameters as if they were normal variables
   int order = 0;
   for(auto& param : params->paramList){
-    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true, false);
+    VarDescriptor* newVar = new VarDescriptor(param->paramName, param->paramType->typeCode, 1, true, false, false);
     newVar->offset = 2*sizeof(int) + order*sizeof(int);
     functionScope->variables[param->paramName] = newVar;
   }

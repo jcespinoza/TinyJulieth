@@ -96,16 +96,18 @@ class JuliaDocument;
 
 class VarDescriptor {
 public:
-  VarDescriptor(string name, int type, int items, bool isParam, bool global){
+  VarDescriptor(string name, int type, int items, bool isParam, bool global, bool loop){
     varName = name;
     typeCode = type;
     this->items = items;
     isParameter = isParam;
     isGlobal = global;
+    isLoop = loop;
   }
 
   string varName;
   bool isGlobal = false;
+  bool isLoop = false;
   int typeCode = 0;
   int items = 1;
   int offset = 0;
@@ -180,10 +182,10 @@ public:
   }
 
   int AllocateArrayOffset(string name, int size){
-    int max = 0;
+    int max = 4;
     for(auto& as: arrayOffsets){
       ArrayAllocation allo = as.second;
-      max += allo.size;
+      max += allo.size*4;
     }
 
     ArrayAllocation arlo;
@@ -195,13 +197,13 @@ public:
   }
 
   int AllocateOffset(){
-    int max = 0;
+    int max = 4;
     for(auto& os: offsets){
       if(os.second == false){
         os.second = true;
         return os.first;
       }
-      max++;
+      max += 4;
     }
     //Allocating a new one and set it to taken
     offsets[max] = true;
@@ -216,6 +218,7 @@ public:
   map<int, bool> offsets;
   map<string, ArrayAllocation> arrayOffsets;
   map<string, int> namedOffsets;
+  int maxArrayOffset = 256;
 };
 
 class Scope {

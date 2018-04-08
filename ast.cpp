@@ -84,7 +84,8 @@ string JuliaDocument::GetAsm(){
   ss << "section .text" << endl;
   ss << "main:" << endl;
   ss << "  push ebp" << endl;
-  ss << "  mov ebp, esp" << endl << endl;
+  ss << "  mov ebp, esp" << endl;
+  ss << "  sub esp, 256" << endl << endl;
   ss << statementsCode << endl;
   ss << "  leave" << endl;
   ss << "  mov eax, 0" << endl;
@@ -182,7 +183,7 @@ void JuliaDocument::RegisterFunctions(){
 
       for(auto& param: funcDecl->params->paramList){
         VarDescriptor* parameter =
-          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int), true, false);
+          new VarDescriptor(param->paramName, param->paramType->typeCode, sizeof(int), true, false, false);
         func->parameters.push_back(parameter);
       }
       functions[funcDecl->funcName] = func;
@@ -196,13 +197,13 @@ void JuliaDocument::RegisterGlobals(){
     if(stmType == ScVarDeclStm){
       VarDeclStatement* varDecl = (VarDeclStatement*)stm;
       VarDescriptor* varDes =
-        new VarDescriptor(varDecl->varName, varDecl->varType->typeCode, 1, false, true);
+        new VarDescriptor(varDecl->varName, varDecl->varType->typeCode, 1, false, true, false);
 
       globalScope->variables[varDecl->varName] = varDes;
     }else if(stmType == ArVarDeclStm){
       ArrayVarDeclStatement* varDecl = (ArrayVarDeclStatement*)stm;
       VarDescriptor* varDes =
-        new VarDescriptor(varDecl->varName, varDecl->varType->typeCode, varDecl->values->getCount(), false, true);
+        new VarDescriptor(varDecl->varName, varDecl->varType->typeCode, varDecl->values->getCount(), false, true, false);
 
       globalScope->variables[varDecl->varName] = varDes;
     }
