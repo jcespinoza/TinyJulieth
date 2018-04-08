@@ -124,8 +124,8 @@ string JuliaDocument::GetAsm(){
   ss << "  push ebp" << endl;
   ss << "  mov ebp, esp" << endl << endl;
   ss << "printbool_if_begin:" << endl;
-  ss << "  cmp dword [ebp+8], 1" << endl;
-  ss << "  jne printbool_if_else" << endl;
+  ss << "  cmp dword [ebp+8], 0" << endl;
+  ss << "  je printbool_if_else" << endl;
   ss << "  nop" << endl << endl;
   ss << "  push dword true_format" << endl;
   ss << "  call printf" << endl;
