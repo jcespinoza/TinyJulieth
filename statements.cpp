@@ -39,6 +39,8 @@ AsmCode AssignStatement::GetAsm(Scope* scope){
     ss << "  mov dword  [global_" << desc->varName << "], " << expCode.location << endl;
   }else if(desc->isParameter){
     ss << "  mov dword  [ebp+" << desc->offset << "], " << expCode.location << endl;
+  }else{
+    ss << "  mov dword  [ebp-" << desc->offset << "], " << expCode.location << endl;
   }
   asmCode.code = ss.str();
   return asmCode;
