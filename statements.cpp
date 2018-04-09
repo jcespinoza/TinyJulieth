@@ -86,6 +86,8 @@ AsmCode ArrayItemAssignStatement::GetAsm(Scope* scope){
 
 AsmCode PrintStatement::GetAsm(Scope* scope){
   stringstream ss;
+  stringstream pre;
+  list<int> offsets;
 
   for(auto& exp: expressionList->expressions){
     int expType = exp->getType();
@@ -101,16 +103,26 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
         if(expCode.locationType == RegisterLocationType){
           scope->document->FreeUpRegister(expCode.location);
         }
-        ss << expCode.code;
-        ss << "  push dword " << expCode.GetValue32() << endl;
+        int tempOffset = scope->stack->AllocateOffset();
+        offsets.push_back(tempOffset);
+        pre << expCode.code;
+        pre << "  mov eax, dword " << expCode.GetValue32() << endl;
+        pre << "  mov dword [ebp-" << tempOffset <<"], eax" << endl;
+
+        ss << " push dword [ebp-" << tempOffset << "]" << endl;
         ss << "  call printbool" << endl;
         ss << "  add esp, 4" << endl;
     }else if(exp->getExpType() == IntType){
       if(expCode.IsRegister()){
         scope->document->FreeUpRegister(expCode.location);
       }
-      ss << expCode.code;
-      ss << "  push dword " << expCode.GetValue32() << endl;
+      int tempOffset = scope->stack->AllocateOffset();
+      offsets.push_back(tempOffset);
+      pre << expCode.code;
+      pre << "  mov eax, dword " << expCode.GetValue32() << endl;
+      pre << "  mov dword [ebp-" << tempOffset <<"], eax" << endl;
+
+      ss << " push dword [ebp-" << tempOffset << "]" << endl;
       ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
@@ -121,9 +133,12 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     ss << "  call printf" << endl;
     ss << "  add esp, 4" << endl;
   }
+  for(auto& ofs: offsets){
+    scope->stack->FreeUpOffset(ofs);
+  }
 
   AsmCode printCode;
-  printCode.code = ss.str();
+  printCode.code = pre.str() + ss.str();
   return printCode;
 }
 
