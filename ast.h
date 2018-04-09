@@ -402,6 +402,9 @@ public:
 
   string GetCodeForStatements();
   string GetCodeForFunctions();
+  string GenerateCPowerFunction();
+  string GeneratePrintBoolFunction();
+
   void RegisterFunctions();
   void RegisterGlobals();
   string RegisterString(string stringContent);

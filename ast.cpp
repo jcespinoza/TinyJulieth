@@ -81,6 +81,8 @@ string JuliaDocument::GetAsm(){
   string funcDecsCode = GetCodeForFunctions();
   string statementsCode = GetCodeForStatements();
   string dataSection = GetDataSegmentCode();
+  string printBoolCode = GeneratePrintBoolFunction();
+  string cpowerCode = GenerateCPowerFunction();
 
   stringstream ss;
   ss << "extern printf" << endl;
@@ -96,6 +98,17 @@ string JuliaDocument::GetAsm(){
   ss << "  leave" << endl;
   ss << "  mov eax, 0" << endl;
   ss << "  ret 0" << endl;
+
+  ss << cpowerCode << endl;
+  ss << printBoolCode << endl;
+
+  ss << funcDecsCode << endl;
+
+  return ss.str();
+}
+
+string JuliaDocument::GenerateCPowerFunction(){
+  stringstream ss;
 
   ss << "cpower:" << endl;
   ss << "  push ebp" << endl;
@@ -118,14 +131,20 @@ string JuliaDocument::GetAsm(){
   ss << "cpower_while_end:" << endl <<endl;
   ss << "  mov eax, dword [ebp-4]" << endl;
   ss << "  leave" << endl;
-  ss << "  ret" << endl;
+  ss << "  ret" << endl << endl;
+
+  return ss.str();
+}
+
+string JuliaDocument::GeneratePrintBoolFunction(){
+  stringstream ss;
 
   ss << "printbool:" << endl;
   ss << "  push ebp" << endl;
   ss << "  mov ebp, esp" << endl << endl;
   ss << "printbool_if_begin:" << endl;
-  ss << "  cmp dword [ebp+8], 0" << endl;
-  ss << "  je printbool_if_else" << endl;
+  ss << "  cmp dword [ebp+8], 1" << endl;
+  ss << "  jne printbool_if_else" << endl;
   ss << "  nop" << endl << endl;
   ss << "  push dword true_format" << endl;
   ss << "  call printf" << endl;
@@ -139,8 +158,6 @@ string JuliaDocument::GetAsm(){
   ss << "printbool_if_end:" << endl;
   ss << "  leave" << endl;
   ss << "  ret" << endl;
-
-  ss << funcDecsCode << endl;
 
   return ss.str();
 }
