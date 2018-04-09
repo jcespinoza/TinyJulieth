@@ -5,6 +5,7 @@
 %{
 #include <stdio.h>
 #include "tokens.h"
+bool reachedEnd = false;
 %}
 
 letter [_a-zA-Z]
@@ -91,7 +92,14 @@ letter [_a-zA-Z]
 {letter}({letter}|[0-9])* { yylval.string_t = strdup(yytext);
                         return TK_IDENTIFIER;
                       }
-<INITIAL><<EOF>>      { unput('\n'); return 0; }
+<INITIAL><<EOF>>      {
+                        unput('\n');
+                        if(reachedEnd){
+                          return 0;
+                        } else{
+                          reachedEnd = true;
+                        }
+                      }
 .                     { return TK_ERROR; }
 
 <comments>=#          { BEGIN(INITIAL); }
