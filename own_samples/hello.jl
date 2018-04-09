@@ -1,25 +1,53 @@
-el_global::Int = 100
-el_bool::Bool = false
-function IsPair(val::Int)::Bool
-    return val % 2 == 0
-end
+a::Array{Int} = [7,4,9,2,10,1,5,3,8,6,false]
 
-function WeirdStuff(val::Int)::Int
-    valor::Int = val * 2;
+function quickSort(left::Int, right::Int)::Int
+    i::Int = left
+    j::Int = right
+    tmp::Int =0
+    pivot::Int = a[(left + right) / 2]
 
-    for i = 0:valor
-        if i == 5
-            println("The favorite number, ", i, ", has been reached: ", valor);
+    while (i <= j)
+        while (a[i] < pivot)
+            i = i+1
         end
-        println("Is pair ", i, " the val: ", IsPair(i))
+
+        while (a[j] > pivot)
+            j = j-1
+        end
+        if (i <= j)
+            tmp = a[i]
+            a[i] = a[j]
+            a[j] = tmp
+            i = i+1
+            j = j-1
+        end
     end
 
-    return valor * el_global
+    if (left < j)
+        quickSort(left, j)
+    end
+    if (i < right)
+        quickSort(i, right)
+    end
 end
 
-println("#", el_global, " is pair: ", IsPair(el_global))
-println("Weird stuff from val: ", el_global, " now: ", WeirdStuff(el_global))
 
-if el_bool == false
-    println("All a lie.")
+for i = 1:11
+    if(i != 11)
+        print(a[i], ", ")
+    else
+        println(a[i])
+    end
+end
+
+println("---------------Ya Ordenado----------------------")
+
+quickSort(1, 11)
+
+for i = 1:11
+    if(i != 11)
+        print(a[i], ", ")
+    else
+        println(a[i])
+    end
 end

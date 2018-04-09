@@ -120,9 +120,23 @@ AsmCode BitNotExpression::GetAsm(Scope* scope){
 
   ss << leftCode.code;
 
-  ss << "  mov eax, dword " << leftCode.GetValue32() << endl;
-  ss << "  not eax" << endl;
-  ss << "  mov " << tReg << ", eax" << endl;
+  if(targetExpression->getExpType() == BoolType){
+    string label = scope->document->GetLabelFor("bwnot");
+    ss << "  mov eax, dword " << leftCode.GetValue32() << endl;
+    ss << "  cmp eax, 0" << endl;
+    ss << "  jne " << label << "_true" << endl;
+    ss << "  nop" << endl;
+    ss << "  mov " << tReg << ", dword 0" << endl;
+    ss << "  jmp " << label << "_end" << endl;
+    ss << "  nop" << endl;
+    ss << label << "_true:" << endl;
+    ss << "  mov " << tReg << ", dword 1" << endl;
+    ss << label << "_end:" << endl;
+  }else{
+    ss << "  mov eax, dword " << leftCode.GetValue32() << endl;
+    ss << "  not eax" << endl;
+    ss << "  mov " << tReg << ", eax" << endl;
+  }
 
   asmCode.PutIntoRegister( tReg );
   asmCode.code = ss.str();

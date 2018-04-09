@@ -96,7 +96,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
     if(expType == StrExp){
       ss << expCode.code;
       ss << "  push dword " << expCode.location << endl;
-        ss << "  push dword str_format" << endl;
+      ss << "  push dword str_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
     }else if(exp->getExpType() == BoolType){
@@ -109,7 +109,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
         pre << "  mov eax, dword " << expCode.GetValue32() << endl;
         pre << "  mov dword [ebp-" << tempOffset <<"], eax" << endl;
 
-        ss << " push dword [ebp-" << tempOffset << "]" << endl;
+        ss << "  push dword [ebp-" << tempOffset << "]" << endl;
         ss << "  call printbool" << endl;
         ss << "  add esp, 4" << endl;
     }else if(exp->getExpType() == IntType){
@@ -122,7 +122,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
       pre << "  mov eax, dword " << expCode.GetValue32() << endl;
       pre << "  mov dword [ebp-" << tempOffset <<"], eax" << endl;
 
-      ss << " push dword [ebp-" << tempOffset << "]" << endl;
+      ss << "  push dword [ebp-" << tempOffset << "]" << endl;
       ss << "  push dword dec_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;

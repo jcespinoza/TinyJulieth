@@ -1,7 +1,7 @@
 TARGET=julieth
 PARSER_SRC=grammar.cpp
 LEXER_SRC=lexer.cpp
-TESTS=Arithmetic Arrays Bitwise comments helloworld Relational printFormat while_break if BubbleSort Factorial functions recursion several while QuickSort
+TESTS=Arithmetic Arrays Bitwise BubbleSort comments Factorial functions helloworld if printFormat recursion Relational several while_break while QuickSort
 SRCFILES=$(PARSER_SRC) $(LEXER_SRC) ast.cpp statements.cpp expressions.cpp main.cpp
 OBJ_FILES=${SRCFILES:.cpp=.o}
 .PHONY: clean

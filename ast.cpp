@@ -34,6 +34,7 @@ void JuliaDocument::InitLabels(){
   labels["if"] = 0;
   labels["while"] = 0;
   labels["str"] = 0;
+  labels["bwnot"] = 0;
 }
 
 void JuliaDocument::InitRegisters(){
