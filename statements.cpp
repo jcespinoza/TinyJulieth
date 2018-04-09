@@ -89,26 +89,15 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
 
   for(auto& exp: expressionList->expressions){
     int expType = exp->getType();
+    AsmCode expCode = exp->GetAsm(scope);
 
     if(expType == StrExp){
-      AsmCode expCode = exp->GetAsm(scope);
       ss << expCode.code;
       ss << "  push dword " << expCode.location << endl;
         ss << "  push dword str_format" << endl;
       ss << "  call printf" << endl;
       ss << "  add esp, 8" << endl;
-    }
-    if(expType == BoolExp
-      || expType == EquExp
-      || expType == NeqExp
-      || expType == LthExp
-      || expType == GthExp
-      || expType == GeqExp
-      || expType == LeqExp
-      || expType == LorExp
-      || expType == LandExp
-      || expType == NotExp){
-        AsmCode expCode = exp->GetAsm(scope);
+    }else if(exp->getExpType() == BoolType){
         if(expCode.locationType == RegisterLocationType){
           scope->document->FreeUpRegister(expCode.location);
         }
@@ -116,50 +105,7 @@ AsmCode PrintStatement::GetAsm(Scope* scope){
         ss << "  push dword " << expCode.GetValue32() << endl;
         ss << "  call printbool" << endl;
         ss << "  add esp, 4" << endl;
-    }
-    if(expType == NumExp){
-      AsmCode expCode = exp->GetAsm(scope);
-      ss << expCode.code;
-      ss << "  push dword " << expCode.location << endl;
-      ss << "  push dword dec_format" << endl;
-      ss << "  call printf" << endl;
-      ss << "  add esp, 8" << endl;
-    }
-    if(expType == IdExp ){
-      AsmCode expCode = exp->GetAsm(scope);
-
-      VarDescriptor* desc = scope->GetVariable(((IdExpression*)exp)->varName);
-      if(desc->typeCode == BoolType){
-        ss << expCode.code;
-        ss << "  push dword " << expCode.GetValue32() << endl;
-        ss << "  call printbool" << endl;
-        ss << "  add esp, 4" << endl;
-      }else{
-        ss << expCode.code;
-        ss << "  push dword " << expCode.GetValue32() << endl;
-        ss << "  push dword dec_format" << endl;
-        ss << "  call printf" << endl;
-        ss << "  add esp, 8" << endl;
-      }
-      if(expCode.IsRegister()){
-        scope->document->FreeUpRegister(expCode.location);
-      }
-    }
-    if((expType == AddExp
-      || expType == SubExp
-      || expType == DivExp
-      || expType == ModExp
-      || expType == MulExp
-      || expType == PowExp
-      || expType == BitNotExp
-      || expType == XorExp
-      || expType == BorExp
-      || expType == BandExp
-      || expType == ShlExp
-      || expType == ShrExp
-      || expType == ArrAccExp
-      || expType == FCallExp)){
-      AsmCode expCode = exp->GetAsm(scope);
+    }else if(exp->getExpType() == IntType){
       if(expCode.IsRegister()){
         scope->document->FreeUpRegister(expCode.location);
       }
