@@ -119,8 +119,9 @@ AsmCode BitNotExpression::GetAsm(Scope* scope){
   }
 
   ss << leftCode.code;
-  ss << "  mov eax, dword -1" << endl;
-  ss << "  xor eax, dword " << leftCode.GetValue32() << endl;
+
+  ss << "  mov eax, dword " << leftCode.GetValue32() << endl;
+  ss << "  not eax" << endl;
   ss << "  mov " << tReg << ", eax" << endl;
 
   asmCode.PutIntoRegister( tReg );
