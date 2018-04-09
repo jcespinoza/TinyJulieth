@@ -57,7 +57,7 @@ printbool:
   mov ebp, esp
 
 printbool_if_begin:
-  cmp dword [ebp+8], 1
+  cmp dword [ebp+8], 0
   jne printbool_if_else
   nop
 
