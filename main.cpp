@@ -27,11 +27,11 @@ int main(int argc, char *argv[]) {
 	}
 	errors = 0;
 	yylineno = 1;
-	//try{
+	try{
 		yyparse();
-	// }catch(std::exception& e){
-	// 	cerr << "ERROR: " << e.what() << endl;
-	// 	return 3;
-	// }
+	}catch(std::exception& e){
+		cerr << "ERROR: " << e.what() << endl;
+		return 3;
+	}
   return errors > 0;
 }
